@@ -74,17 +74,16 @@
             font-size: 0.85rem;
             border-radius: 0;
             padding: 10px 25px;
+            transition: none;
             border-right: 1px solid var(--border-color);
         }
         .nav-pills .nav-link:last-child { border-right: none; }
-        .nav-pills .nav-link.active {
-            background-color: var(--primary);
-            color: #fff;
-        }
+        .nav-pills .nav-link.active { background-color: var(--primary); color: #fff; }
 
         .card { 
             border: 1px solid var(--border-color); 
             border-radius: var(--radius); 
+            box-shadow: none;
             margin-bottom: 1.5rem;
             background: #fff;
         }
@@ -104,20 +103,25 @@
             display: flex; align-items: center; justify-content: center;
             background: var(--primary); color: #fff;
         }
+        .total-card h6 { margin: 0; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .total-card h4 { margin: 0; font-size: 1.15rem; font-weight: 900; }
 
         .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem; }
         .form-control, .form-select {
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
             padding: 0.65rem 0.8rem;
+            font-size: 0.9rem;
         }
 
         .btn-primary {
             background-color: var(--primary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
+            padding: 0.8rem 1.5rem;
             font-weight: 700;
             text-transform: uppercase;
+            font-size: 0.8rem;
         }
 
         .table thead th { 
@@ -157,18 +161,20 @@
         <div class="container d-flex justify-content-between align-items-center">
             <div>
                 <h4 class="m-0 fw-800">GESTÃO FINANCEIRA PRO</h4>
-                <div class="mt-1"><span class="db-badge">NUVEM ATIVA</span></div>
+                <div class="mt-1"><span class="db-badge">CONEXÃO NUVEM OK</span></div>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-dark btn-sm rounded-0 fw-700 px-3" onclick="exportarBackup()">BACKUP</button>
-                <button class="btn btn-dark btn-sm rounded-0 fw-700 px-3" onclick="document.getElementById('input-import').click()">RESTAURAR (JSON)</button>
-                <input type="file" id="input-import" style="display:none" onchange="window.importarParaNuvem(this)">
+                <!-- BOTÃO PARA IMPORTAR SEU JSON ANTIGO -->
+                <button class="btn btn-dark btn-sm rounded-0 fw-700 px-3" onclick="document.getElementById('input-import-cloud').click()">SUBIR MEU JSON</button>
+                <input type="file" id="input-import-cloud" style="display:none">
             </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="mb-4">
+        
+        <div class="mb-4 text-center text-md-start">
             <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#content-lancamentos">LANÇAMENTOS</button></li>
                 <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#content-relatorios">RELATÓRIOS</button></li>
@@ -190,13 +196,13 @@
                             <div class="col-12 col-md-6"><label class="form-label">Pagante</label><select id="form-pagante" class="form-select" required></select></div>
                             <div class="col-6"><label class="form-label">Categoria</label><select id="form-categoria" class="form-select" required></select></div>
                             <div class="col-6"><label class="form-label">Status</label><select id="form-status" class="form-select" required></select></div>
-                            <div class="col-12"><label class="form-label">Configuração de Divisão:</label><div id="form-dividir-com" class="p-3 bg-light border border-dark border-opacity-10" style="max-height: 250px; overflow-y: auto;"></div></div>
+                            <div class="col-12"><label class="form-label">Divisão:</label><div id="form-dividir-com" class="p-3 bg-light border border-dark border-opacity-10" style="max-height: 250px; overflow-y: auto;"></div></div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mt-4">Salvar na Nuvem</button>
                     </form>
                 </div>
                 <div class="mt-4 pb-5">
-                    <h6 class="fw-800 text-muted mb-3 text-uppercase small">Lançamentos Sincronizados</h6>
+                    <h6 class="fw-800 text-muted mb-3 text-uppercase small">Sincronizados Recentemente</h6>
                     <div class="table-responsive"><table class="table align-middle"><tbody id="log-home-body"></tbody></table></div>
                 </div>
             </div>
@@ -238,13 +244,16 @@
         </div>
     </div>
 
-    <!-- MODAIS -->
-    <div class="modal fade" id="modal-extrato" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0 border-dark"><div class="modal-extrato-header"><h2 class="fw-900 m-0" id="extrato-nome">---</h2><p class="m-0 small fw-700" id="extrato-periodo">---</p></div><div class="modal-body p-4"><div id="extrato-tabela-container" class="table-responsive"></div><div class="mt-4 p-4 d-flex justify-content-between align-items-center border border-dark"><span class="fw-800 small">DÍVIDA CONSOLIDADA</span><h2 id="extrato-total" class="fw-900 m-0">R$ 0,00</h2></div></div><div class="modal-footer border-0 p-4 pt-0"><button type="button" class="btn btn-outline-dark fw-800" data-bs-dismiss="modal">FECHAR</button><button type="button" class="btn btn-dark fw-800" onclick="window.print()">IMPRIMIR</button></div></div></div></div>
-    <div class="modal fade" id="modal-editar" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0 border-dark"><div class="modal-header border-0 p-4"><h5 class="fw-900 m-0 text-uppercase">Modificar Lançamento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><input type="hidden" id="edit-id"><div class="row g-3"><div class="col-12"><label class="form-label">Descrição</label><input type="text" class="form-control" id="edit-desc"></div><div class="col-md-6"><label class="form-label">Vencimento</label><input type="date" class="form-control" id="edit-vencimento"></div><div class="col-md-6"><label class="form-label">Valor (BRL)</label><input type="text" class="form-control" id="edit-valor"></div><div class="col-md-6"><label class="form-label">Categoria</label><select id="edit-categoria" class="form-select"></select></div><div class="col-md-6"><label class="form-label">Status</label><select id="edit-status" class="form-select"></select></div><div class="col-md-12"><label class="form-label">Pagante</label><select id="edit-pagante" class="form-select"></select></div><div class="col-12"><label class="form-label">Divisão Corrente:</label><div id="edit-dividir-com" class="p-3 bg-light border"></div></div></div><button class="btn btn-primary w-100 mt-4 py-3" onclick="atualizarLancamento()">Salvar Alterações</button></div></div></div></div>
+    <!-- MODAIS ORIGINAIS -->
+    <div class="modal fade" id="modal-extrato" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0 border-dark"><div class="modal-extrato-header"><h2 class="fw-900 m-0" id="extrato-nome">---</h2><p class="m-0 small fw-700" id="extrato-periodo">---</p></div><div class="modal-body p-4"><div id="extrato-tabela-container" class="table-responsive"></div><div class="mt-4 p-4 d-flex justify-content-between align-items-center border border-dark"><span class="fw-800 small text-uppercase">Total Divida</span><h2 id="extrato-total" class="fw-900 m-0">R$ 0,00</h2></div></div><div class="modal-footer border-0 p-4 pt-0"><button type="button" class="btn btn-outline-dark fw-800" data-bs-dismiss="modal">FECHAR</button><button type="button" class="btn btn-dark fw-800" onclick="window.print()">IMPRIMIR</button></div></div></div></div>
+    
+    <div class="modal fade" id="modal-editar" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0 border-dark"><div class="modal-header border-0 p-4"><h5 class="fw-900 m-0 text-uppercase">Editar Lançamento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><input type="hidden" id="edit-id"><div class="row g-3"><div class="col-12"><label class="form-label">Descrição</label><input type="text" class="form-control" id="edit-desc"></div><div class="col-md-6"><label class="form-label">Vencimento</label><input type="date" class="form-control" id="edit-vencimento"></div><div class="col-md-6"><label class="form-label">Valor (BRL)</label><input type="text" class="form-control" id="edit-valor"></div><div class="col-md-6"><label class="form-label">Categoria</label><select id="edit-categoria" class="form-select"></select></div><div class="col-md-6"><label class="form-label">Status</label><select id="edit-status" class="form-select"></select></div><div class="col-md-12"><label class="form-label">Pagante</label><select id="edit-pagante" class="form-select"></select></div><div class="col-12"><label class="form-label">Divisão:</label><div id="edit-dividir-com" class="p-3 bg-light border"></div></div></div><button class="btn btn-primary w-100 mt-4 py-3" onclick="atualizarLancamento()">Atualizar na Nuvem</button></div></div></div></div>
+
     <div class="modal fade" id="modal-excluir" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0 border-dark p-4 text-center"><h5 class="fw-900 text-uppercase mb-3">Excluir Registro?</h5><div class="d-grid gap-2 mt-4"><button class="btn btn-outline-dark fw-800" id="btn-excluir-um">SÓ ESTA PARCELA</button><button class="btn btn-dark fw-800" id="btn-excluir-todos">TODO O GRUPO</button><button class="btn btn-light fw-800" data-bs-dismiss="modal">CANCELAR</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -280,6 +289,7 @@
             modalEditar = new bootstrap.Modal(document.getElementById('modal-editar'));
             modalExcluir = new bootstrap.Modal(document.getElementById('modal-excluir'));
             
+            // ESCUTAR NUVEM
             onValue(dbRoot, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -288,37 +298,37 @@
                     refreshUI();
                     renderizarRecentes();
                 } else {
-                    set(dbRoot, db);
+                    set(dbRoot, db); // Inicializa banco se estiver vazio
                 }
             });
 
             initApp();
             document.getElementById('btn-excluir-um').onclick = () => confirmarAcaoExcluir(false);
             document.getElementById('btn-excluir-todos').onclick = () => confirmarAcaoExcluir(true);
-        });
 
-        // FUNÇÃO DE RESTAURAÇÃO PARA NUVEM
-        window.importarParaNuvem = (input) => {
-            const f = input.files[0]; if(!f) return;
-            const r = new FileReader();
-            r.onload = async e => {
-                try {
-                    const j = JSON.parse(e.target.result);
-                    if(confirm("RESTAURAR BACKUP? Todos os dados atuais na NUVEM serão substituídos pelo arquivo.")) {
-                        // Converte lançamentos de Array (formato antigo) para Objeto (formato Firebase) se necessário
-                        if (Array.isArray(j.lancamentos)) {
-                            const obj = {};
-                            j.lancamentos.forEach(l => { obj[l.id || "ID-"+Math.random().toString(36).substr(2,9)] = l; });
-                            j.lancamentos = obj;
+            // Lógica para upload de backup antigo
+            document.getElementById('input-import-cloud').onchange = (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    try {
+                        const json = JSON.parse(ev.target.result);
+                        if(confirm("Substituir os dados online pelo seu arquivo JSON?")) {
+                            // Converter array para objeto se necessário
+                            if (Array.isArray(json.lancamentos)) {
+                                const obj = {};
+                                json.lancamentos.forEach(l => { obj[l.id || `ID-${Date.now()}-${Math.random()}`] = l; });
+                                json.lancamentos = obj;
+                            }
+                            await set(dbRoot, json);
+                            alert("Upload concluído! Dados sincronizados.");
                         }
-                        await set(dbRoot, j);
-                        alert("Dados restaurados com sucesso na nuvem!");
-                        location.reload();
-                    }
-                } catch(err) { alert("Arquivo inválido."); console.error(err); }
+                    } catch(err) { alert("Erro ao ler JSON."); }
+                };
+                reader.readAsText(file);
             };
-            r.readAsText(f);
-        }
+        });
 
         function initApp() {
             configurarFiltrosData();
@@ -362,13 +372,7 @@
 
         function renderizarRecentes() {
             const b = document.getElementById('log-home-body');
-            const h = new Date();
-            const m = ('0' + (h.getMonth() + 1)).slice(-2);
-            const a = h.getFullYear().toString();
-            const items = Object.values(db.lancamentos).filter(d => {
-                const p = d.vencimento.split('-');
-                return p[1] === m && p[0] === a;
-            }).sort((a,b) => b.vencimento.localeCompare(a.vencimento));
+            const items = Object.values(db.lancamentos).sort((a,b) => b.vencimento.localeCompare(a.vencimento));
             b.innerHTML = items.slice(0, 10).map(d => `<tr class="bg-white border-bottom"><td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td><td><div class="fw-bold small">${d.desc}</div><small class="text-muted text-uppercase">${d.categoria}</small></td><td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td><td class="text-end"><button class="btn-action" onclick="window.abrirEdicao('${d.id}')"><i class="bi bi-pencil-fill"></i></button><button class="btn-action text-danger" onclick="window.confirmarExcluir('${d.id}')"><i class="bi bi-trash-fill"></i></button></td></tr>`).join('');
         }
 
@@ -416,18 +420,19 @@
 
         window.abrirPopupExtrato = () => {
             const int = document.getElementById('select-extrato').value, m = document.getElementById('filtro-mes').value, a = document.getElementById('filtro-ano').value;
-            if (!int) return alert("Selecione alguém.");
+            if (!int) return alert("Selecione um pagante.");
             const items = Object.values(db.lancamentos).filter(d => { const p = d.vencimento.split('-'); const periodo = p[1] === m && p[0] === a; const participa = d.divisao.some(s => s.split(':')[0] === int); return periodo && participa; });
             if (items.length === 0) return alert("Nada encontrado.");
             let t = 0;
             const body = items.map(d => { const parte = calcularDivisaoIndividual(d.valor, d.divisao)[int] || 0; t += parte; return `<tr><td class="small text-muted">${d.vencimento.split('-').reverse().join('/')}</td><td class="fw-bold">${d.desc}</td><td class="text-end small">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td><td class="text-end fw-900">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`; }).join('');
             document.getElementById('extrato-nome').textContent = int;
-            document.getElementById('extrato-periodo').textContent = `MÊS: ${m}/${a}`;
+            document.getElementById('extrato-periodo').textContent = `EXTRATO: ${m}/${a}`;
             document.getElementById('extrato-tabela-container').innerHTML = `<table class="table table-sm border"><thead><tr><th>DATA</th><th>DESCRIÇÃO</th><th class="text-end">VALOR</th><th class="text-end">SUA PARTE</th></tr></thead><tbody>${body}</tbody></table>`;
             document.getElementById('extrato-total').textContent = "R$ " + t.toLocaleString('pt-BR',{minimumFractionDigits:2});
             modalExtrato.show();
         }
 
+        // --- HELPERS ---
         function calcularDivisaoIndividual(total, array) {
             const res = {}; let pSum = 0; let sem = [];
             array.forEach(i => { const parts = i.split(':'); if(parts.length > 1) { const v = parseFloat(parts[1])||0; res[parts[0]] = total * (v/100); pSum += v; } else sem.push(i); });
