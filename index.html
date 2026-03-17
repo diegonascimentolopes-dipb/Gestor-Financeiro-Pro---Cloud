@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gestor Financeiro Pro - Cloud</title>
     
-    <!-- PWA & Mobile -->
+    <!-- PWA & Mobile Optimization -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1e293b">
@@ -13,7 +13,7 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     
@@ -22,76 +22,68 @@
             --primary: #0f172a; --bg-body: #ffffff; --bg-secondary: #f8fafc;
             --text-main: #000000; --text-muted: #475569; --border-color: #000000; --radius: 2px;
         }
-
         body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-main); padding-bottom: 50px; }
-
-        /* Estado de Carregamento */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        
+        /* Loader */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
         
         .app-header { background: var(--bg-body); padding: 1.5rem 0; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; position: sticky; top: 0; z-index: 1000; }
         .db-badge { background: #22c55e; color: #fff; padding: 4px 10px; border-radius: var(--radius); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
-
         .nav-pills { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius); display: inline-flex; }
         .nav-pills .nav-link { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; border-radius: 0; padding: 10px 20px; border-right: 1px solid var(--border-color); }
         .nav-pills .nav-link.active { background-color: var(--primary); color: #fff; }
-
-        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; background: #fff; box-shadow: none; }
+        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; background: #fff; }
         .total-card { padding: 1.25rem; background: var(--bg-secondary); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem; }
         .total-icon { width: 40px; height: 40px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; }
-
         .form-label { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.4rem; }
         .form-control, .form-select { border-radius: var(--radius); border: 1px solid var(--border-color); padding: 0.6rem; font-size: 0.9rem; }
-        .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); border-radius: var(--radius); font-weight: 700; text-transform: uppercase; padding: 0.8rem; }
-
+        .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); border-radius: var(--radius); font-weight: 700; text-transform: uppercase; }
         .table thead th { background: var(--primary); color: #fff; font-size: 0.7rem; text-transform: uppercase; border: 1px solid var(--border-color); }
         .btn-action { width: 32px; height: 32px; border: 1px solid var(--border-color); background: white; color: var(--primary); display: inline-flex; align-items: center; justify-content: center; }
-
         .divider-box { background: var(--bg-secondary); padding: 8px 12px; border: 1px solid var(--border-color); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.65rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
-
-        @media print { .app-header, .nav-pills, .btn-primary, .card, .btn-action { display: none !important; } }
     </style>
 </head>
 <body>
 
-    <!-- ECRÃ DE CARREGAMENTO -->
     <div id="loader">
-        <div class="spinner-border text-dark mb-3" role="status"></div>
-        <div class="fw-bold small text-uppercase">A ligar à nuvem...</div>
+        <div class="spinner-border text-dark mb-3"></div>
+        <div id="loader-status" class="fw-bold small text-uppercase">Conectando ao Firebase...</div>
+        <div id="loader-hint" class="mt-2 text-muted small px-4" style="display:none">
+            Se demorar, verifique se a URL do banco e as regras estão corretas no console do Firebase.
+        </div>
     </div>
 
     <header class="app-header">
         <div class="container d-flex justify-content-between align-items-center">
             <div>
                 <h4 class="m-0 fw-800">GESTOR FINANCEIRO PRO</h4>
-                <div class="mt-1"><span class="db-badge">Sincronizado</span></div>
+                <div class="mt-1"><span class="db-badge">Nuvem Sincronizada</span></div>
             </div>
             <div class="d-flex gap-2">
-                <button class="btn btn-dark btn-sm rounded-0 fw-700 px-3" onclick="document.getElementById('file-upload').click()">IMPORTAR JSON</button>
-                <input type="file" id="file-upload" style="display:none" onchange="window.uploadJsonParaNuvem(this)">
+                <button class="btn btn-dark btn-sm rounded-0 fw-700 px-3" onclick="document.getElementById('input-json').click()">IMPORTAR JSON</button>
+                <input type="file" id="input-json" style="display:none" onchange="window.importarParaFirebase(this)">
             </div>
         </div>
     </header>
 
     <div class="container">
-        
         <div class="mb-4">
             <ul class="nav nav-pills" role="tablist">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aba-novo">LANÇAMENTOS</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#aba-relatorio">RELATÓRIOS</button></li>
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aba-lancamentos">LANÇAMENTOS</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#aba-relatorios">RELATÓRIOS</button></li>
                 <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#aba-config">AJUSTES</button></li>
             </ul>
         </div>
 
         <div class="tab-content">
-            <!-- ABA: LANÇAMENTOS -->
-            <div class="tab-pane fade show active" id="aba-novo">
+            <!-- LANÇAMENTOS -->
+            <div class="tab-pane fade show active" id="aba-lancamentos">
                 <div class="card p-4">
-                    <h6 class="fw-800 mb-4 text-uppercase">Nova Despesa</h6>
+                    <h6 class="fw-800 mb-4 text-uppercase">Nova Despesa Online</h6>
                     <form id="form-novo">
                         <div class="row g-3">
                             <div class="col-md-8"><label class="form-label">Descrição</label><input type="text" class="form-control" id="f-desc" required></div>
-                            <div class="col-md-4"><label class="form-label">Vencimento</label><input type="date" class="form-control" id="f-venc" required></div>
+                            <div class="col-md-4"><label class="form-label">Data Vencimento</label><input type="date" class="form-control" id="f-venc" required></div>
                             <div class="col-6 col-md-4"><label class="form-label">Valor (BRL)</label><input type="text" class="form-control" id="f-valor" placeholder="0,00" required></div>
                             <div class="col-6 col-md-2"><label class="form-label">Parcelas</label><input type="number" class="form-control" id="f-parcelas" value="1" min="1"></div>
                             <div class="col-12 col-md-6"><label class="form-label">Pagante</label><select id="f-pagante" class="form-select" required></select></div>
@@ -102,44 +94,43 @@
                         <button type="submit" class="btn btn-primary w-100 mt-4">Salvar na Nuvem</button>
                     </form>
                 </div>
-                <div class="mt-4"><h6 class="fw-800 text-muted mb-3 text-uppercase small">Últimas Atividades</h6><div class="table-responsive"><table class="table align-middle"><tbody id="lista-recente"></tbody></table></div></div>
+                <div class="mt-4"><h6 class="fw-800 text-muted mb-3 text-uppercase small">Recentemente Sincronizados</h6><div class="table-responsive"><table class="table align-middle"><tbody id="lista-recente"></tbody></table></div></div>
             </div>
 
-            <!-- ABA: RELATÓRIOS -->
-            <div class="tab-pane fade" id="aba-relatorio">
+            <!-- RELATÓRIOS -->
+            <div class="tab-pane fade" id="aba-relatorios">
                 <div class="card p-4 mb-4">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-4"><label class="form-label">Mês</label><select id="filtro-m" class="form-select"></select></div>
                         <div class="col-md-4"><label class="form-label">Ano</label><select id="filtro-a" class="form-select"></select></div>
-                        <div class="col-md-4"><button class="btn btn-primary w-100" onclick="window.gerarRelatorio()">Filtrar</button></div>
+                        <div class="col-md-4"><button class="btn btn-primary w-100" onclick="window.filtrarRelatorio()">Filtrar</button></div>
                     </div>
                 </div>
-                <div id="relatorio-visivel" style="display: none;">
-                    <div id="cards-totais" class="row row-cols-1 row-cols-md-3 g-3 mb-4"></div>
-                    <div class="card p-3 mb-4 bg-light"><div class="row g-2"><div class="col-9"><select id="sel-extrato" class="form-select"></select></div><div class="col-3"><button class="btn btn-dark w-100" onclick="window.exibirExtrato()">EXTRATO</button></div></div></div>
-                    <div class="table-responsive"><table class="table"><thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="lista-relatorio"></tbody></table></div>
+                <div id="relatorio-box" style="display: none;">
+                    <div id="relatorio-totais" class="row row-cols-1 row-cols-md-3 g-3 mb-5"></div>
+                    <div class="card p-3 mb-4 bg-light"><div class="row g-2"><div class="col-9"><select id="sel-extrato" class="form-select"></select></div><div class="col-3"><button class="btn btn-dark w-100" onclick="window.exibirExtrato()">GERAR EXTRATO</button></div></div></div>
+                    <div class="table-responsive"><table class="table"><thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="corpo-relatorio"></tbody></table></div>
                 </div>
             </div>
 
-            <!-- ABA: AJUSTES -->
+            <!-- AJUSTES -->
             <div class="tab-pane fade" id="aba-config">
                 <div class="row g-4">
-                    <div class="col-md-4"><div class="card p-4"><h6>NOMES</h6><div class="input-group mb-3"><input type="text" id="in-nome" class="form-control"><button class="btn btn-dark" onclick="window.addConf('nomes','in-nome')">+</button></div><div id="l-nomes"></div></div></div>
-                    <div class="col-md-4"><div class="card p-4"><h6>CATEGORIAS</h6><div class="input-group mb-3"><input type="text" id="in-cat" class="form-control"><button class="btn btn-dark" onclick="window.addConf('categorias','in-cat')">+</button></div><div id="l-cats"></div></div></div>
-                    <div class="col-md-4"><div class="card p-4"><h6>STATUS</h6><div class="input-group mb-3"><input type="text" id="in-stat" class="form-control"><button class="btn btn-dark" onclick="window.addConf('status','in-stat')">+</button></div><div id="l-stats"></div></div></div>
+                    <div class="col-md-4"><div class="card p-4"><h6>NOMES</h6><div class="input-group mb-3"><input type="text" id="add-n" class="form-control"><button class="btn btn-dark" onclick="window.addConfig('nomes','add-n')">+</button></div><div id="l-nomes"></div></div></div>
+                    <div class="col-md-4"><div class="card p-4"><h6>CATEGORIAS</h6><div class="input-group mb-3"><input type="text" id="add-c" class="form-control"><button class="btn btn-dark" onclick="window.addConfig('categorias','add-c')">+</button></div><div id="l-cats"></div></div></div>
+                    <div class="col-md-4"><div class="card p-4"><h6>STATUS</h6><div class="input-group mb-3"><input type="text" id="add-s" class="form-control"><button class="btn btn-dark" onclick="window.addConfig('status','add-s')">+</button></div><div id="l-stats"></div></div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAIS -->
-    <div class="modal fade" id="modal-extrato" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0 border-dark"><div class="modal-body p-4"><h3 class="fw-900" id="ext-nome">---</h3><p class="small mb-4" id="ext-periodo">---</p><div id="ext-tabela" class="table-responsive"></div><div class="mt-4 p-3 border border-dark d-flex justify-content-between align-items-center"><span class="fw-800">TOTAL A PAGAR</span><h3 id="ext-total" class="m-0 fw-900">R$ 0,00</h3></div><div class="mt-4 text-end"><button class="btn btn-outline-dark me-2" data-bs-dismiss="modal">FECHAR</button><button class="btn btn-dark" onclick="window.print()">IMPRIMIR</button></div></div></div></div></div>
+    <!-- MODAL EXTRATO -->
+    <div class="modal fade" id="modal-extrato" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0 border-dark"><div class="modal-body p-4"><h2 id="ext-nome" class="fw-900">---</h2><p id="ext-periodo" class="small mb-4">---</p><div id="ext-tabela" class="table-responsive"></div><div class="mt-4 p-4 border border-dark d-flex justify-content-between align-items-center"><span class="fw-800">DÍVIDA TOTAL</span><h2 id="ext-total" class="m-0 fw-900">R$ 0,00</h2></div><div class="mt-4 text-end"><button class="btn btn-outline-dark me-2" data-bs-dismiss="modal">FECHAR</button><button class="btn btn-dark" onclick="window.print()">IMPRIMIR</button></div></div></div></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIGURAÇÃO
         const firebaseConfig = {
             apiKey: "AIzaSyA_2v8Gs8D_j-QGXlCJMLit-CkLe3LWpU8",
             authDomain: "gestorfinanceiro-eb906.firebaseapp.com",
@@ -152,83 +143,79 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const rootRef = ref(db, 'projeto_gestor');
+        const dbRoot = ref(db, 'gestor_cloud_final');
 
-        let dadosLocal = { lancamentos: {}, config: { nomes: ["EU"], categorias: ["CONTAS"], status: ["PENDENTE"] } };
+        let appData = { lancamentos: {}, config: { nomes: ["USUÁRIO"], categorias: ["CONTAS"], status: ["PENDENTE"] } };
 
-        // --- SINCRONIZAÇÃO ---
-        onValue(rootRef, (snap) => {
+        // Alerta de demora
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            if (loader && loader.style.display !== 'none') {
+                document.getElementById('loader-hint').style.display = 'block';
+                console.warn("A conexão está demorando. Verifique o console para erros.");
+            }
+        }, 5000);
+
+        // SINCRONIZAÇÃO
+        onValue(dbRoot, (snap) => {
             const val = snap.val();
             if (val) {
-                dadosLocal.lancamentos = val.lancamentos || {};
-                dadosLocal.config = val.config || dadosLocal.config;
+                appData.lancamentos = val.lancamentos || {};
+                appData.config = val.config || appData.config;
             } else {
-                set(rootRef, dadosLocal);
+                set(dbRoot, appData);
             }
-            renderGeral();
             document.getElementById('loader').style.display = 'none';
-        }, (err) => {
-            alert("Erro de conexão. Verifique as regras do Firebase.");
-            console.error(err);
+            renderizar();
+        }, (error) => {
+            document.getElementById('loader-status').innerText = "ERRO DE CONEXÃO";
+            document.getElementById('loader-status').style.color = "red";
+            console.error("Erro no Firebase:", error);
         });
 
-        // --- FUNÇÕES GLOBAIS ---
-        window.uploadJsonParaNuvem = (input) => {
-            const file = input.files[0];
-            if(!file) return;
+        // IMPORTAR JSON
+        window.importarParaFirebase = (input) => {
+            const file = input.files[0]; if(!file) return;
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
                     const json = JSON.parse(e.target.result);
-                    if(confirm("Substituir dados da nuvem pelo seu arquivo JSON?")) {
-                        if(Array.isArray(json.lancamentos)) {
+                    if(confirm("Deseja substituir os dados online pelo seu backup?")) {
+                        if (Array.isArray(json.lancamentos)) {
                             const obj = {};
-                            json.lancamentos.forEach(l => { obj[l.id || `ID-${Math.random().toString(36).substr(2,9)}`] = l; });
+                            json.lancamentos.forEach(l => { obj[l.id || `ID-${Date.now()}-${Math.random()}`] = l; });
                             json.lancamentos = obj;
                         }
-                        await set(rootRef, json);
-                        alert("Histórico carregado!");
+                        await set(dbRoot, json);
+                        alert("Sincronizado com sucesso!");
+                        location.reload();
                     }
-                } catch(err) { alert("Erro no JSON."); }
+                } catch(err) { alert("Erro ao ler JSON."); }
             };
             reader.readAsText(file);
         };
 
-        window.addConf = (tipo, inId) => {
-            const v = document.getElementById(inId).value.trim().toUpperCase();
-            if(!v) return;
-            if(!dadosLocal.config[tipo].includes(v)) {
-                dadosLocal.config[tipo].push(v);
-                set(ref(db, `projeto_gestor/config/${tipo}`), dadosLocal.config[tipo]);
-                document.getElementById(inId).value = '';
-            }
-        };
+        // LÓGICA DE INTERFACE
+        function renderizar() {
+            popSel('f-pagante', appData.config.nomes);
+            popSel('f-cat', appData.config.categorias);
+            popSel('f-status', appData.config.status);
 
-        window.excluir = (id) => {
-            if(confirm("Excluir registro da nuvem?")) remove(ref(db, `projeto_gestor/lancamentos/${id}`));
-        };
-
-        // --- LÓGICA DE INTERFACE ---
-        function renderGeral() {
-            popSel('f-pagante', dadosLocal.config.nomes);
-            popSel('f-cat', dadosLocal.config.categorias);
-            popSel('f-status', dadosLocal.config.status);
-            
             const div = document.getElementById('f-divisao');
-            div.innerHTML = dadosLocal.config.nomes.map(n => `
+            div.innerHTML = appData.config.nomes.map(n => `
                 <div class="divider-box">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="${n}" id="chk-${n}"><label class="form-check-label fw-bold" for="chk-${n}">${n}</label></div>
-                    <input type="number" class="form-control" style="width:70px" placeholder="%" id="perc-${n}">
+                    <div class="form-check m-0"><input class="form-check-input" type="checkbox" id="chk-${n}" value="${n}"><label class="form-check-label fw-bold" for="chk-${n}">${n}</label></div>
+                    <input type="number" class="form-control form-control-sm" style="width:70px" placeholder="%" id="perc-${n}">
                 </div>
             `).join('');
 
             ['nomes','categorias','status'].forEach(t => {
                 const el = document.getElementById(`l-${t.substring(0,4)}s`);
-                el.innerHTML = dadosLocal.config[t].map((n, i) => `<div class="d-flex justify-content-between border-bottom py-1 small">${n}<button class="btn btn-sm text-danger p-0" onclick="window.remConf('${t}',${i})">×</button></div>`).join('');
+                el.innerHTML = appData.config[t].map((n, i) => `<div class="d-flex justify-content-between border-bottom py-1 small">${n} <button class="btn btn-sm text-danger p-0" onclick="window.delConfig('${t}',${i})">×</button></div>`).join('');
             });
 
             const rec = document.getElementById('lista-recente');
-            const lista = Object.values(dadosLocal.lancamentos).sort((a,b) => b.vencimento.localeCompare(a.vencimento)).slice(0, 10);
+            const lista = Object.values(appData.lancamentos).sort((a,b) => b.vencimento.localeCompare(a.vencimento)).slice(0, 10);
             rec.innerHTML = lista.map(d => `
                 <tr class="border-bottom">
                     <td class="small text-muted" width="80">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
@@ -239,71 +226,73 @@
             `).join('');
         }
 
-        window.remConf = (t, i) => {
-            dadosLocal.config[t].splice(i, 1);
-            set(ref(db, `projeto_gestor/config/${t}`), dadosLocal.config[t]);
+        window.addConfig = (tipo, inId) => {
+            const v = document.getElementById(inId).value.trim().toUpperCase();
+            if(!v) return;
+            if(!appData.config[tipo].includes(v)) {
+                appData.config[tipo].push(v);
+                set(ref(db, `gestor_cloud_final/config/${tipo}`), appData.config[tipo]);
+                document.getElementById(inId).value = '';
+            }
+        };
+
+        window.delConfig = (t, i) => {
+            appData.config[t].splice(i, 1);
+            set(ref(db, `gestor_cloud_final/config/${t}`), appData.config[t]);
+        };
+
+        window.excluir = (id) => {
+            if(confirm("Excluir definitivamente?")) remove(ref(db, `gestor_cloud_final/lancamentos/${id}`));
         };
 
         function popSel(id, lista) {
-            const el = document.getElementById(id);
-            const val = el.value;
+            const el = document.getElementById(id); const val = el.value;
             el.innerHTML = '<option value="">- SELECIONAR -</option>' + lista.map(n => `<option value="${n}">${n}</option>`).join('');
             if(val) el.value = val;
         }
 
         document.getElementById('form-novo').onsubmit = async (e) => {
             e.preventDefault();
-            const valor = parseFloat(document.getElementById('f-valor').value.replace(/\./g, '').replace(',', '.'));
+            const val = parseFloat(document.getElementById('f-valor').value.replace(/\./g, '').replace(',', '.'));
             const qtd = parseInt(document.getElementById('f-parcelas').value) || 1;
             const dataOrig = document.getElementById('f-venc').value;
-            
             const divi = [];
-            dadosLocal.config.nomes.forEach(n => {
-                const chk = document.getElementById(`chk-${n}`);
-                const perc = document.getElementById(`perc-${n}`).value;
-                if(chk.checked) divi.push(perc ? `${n}:${perc}` : n);
+            appData.config.nomes.forEach(n => {
+                if(document.getElementById(`chk-${n}`).checked) {
+                    const p = document.getElementById(`perc-${n}`).value;
+                    divi.push(p ? `${n}:${p}` : n);
+                }
             });
 
-            if(divi.length === 0) return alert("Selecione quem divide!");
+            if(divi.length === 0) return alert("Selecione os envolvidos!");
 
             const novos = {};
             for(let i=0; i<qtd; i++) {
-                const dt = new Date(dataOrig + 'T12:00:00');
-                dt.setMonth(dt.getMonth() + i);
+                const dt = new Date(dataOrig + 'T12:00:00'); dt.setMonth(dt.getMonth() + i);
                 const id = "ID-" + Date.now() + "-" + i;
-                novos[id] = {
-                    id, desc: document.getElementById('f-desc').value.toUpperCase() + (qtd > 1 ? ` (${i+1}/${qtd})` : ""),
-                    vencimento: dt.toISOString().split('T')[0],
-                    valor, categoria: document.getElementById('f-cat').value,
-                    pagante: document.getElementById('f-pagante').value,
-                    status: document.getElementById('f-status').value,
-                    divisao: divi
-                };
+                novos[id] = { id, desc: document.getElementById('f-desc').value.toUpperCase() + (qtd > 1 ? ` (${i+1}/${qtd})` : ""), vencimento: dt.toISOString().split('T')[0], valor: val, categoria: document.getElementById('f-cat').value, pagante: document.getElementById('f-pagante').value, status: document.getElementById('f-status').value, divisao: divi };
             }
-            await update(ref(db, 'projeto_gestor/lancamentos'), novos);
+            await update(ref(db, 'gestor_cloud_final/lancamentos'), novos);
             e.target.reset();
-            alert("Sincronizado!");
+            alert("Lançamento salvo!");
         };
 
-        // --- RELATÓRIOS ---
-        window.gerarRelatorio = () => {
-            const m = document.getElementById('filtro-m').value;
-            const a = document.getElementById('filtro-a').value;
-            const filtrados = Object.values(dadosLocal.lancamentos).filter(d => d.vencimento.startsWith(`${a}-${m}`));
+        window.filtrarRelatorio = () => {
+            const m = document.getElementById('filtro-m').value, a = document.getElementById('filtro-a').value;
+            const filtrados = Object.values(appData.lancamentos).filter(d => d.vencimento.startsWith(`${a}-${m}`));
+            document.getElementById('relatorio-box').style.display = 'block';
             
-            document.getElementById('relatorio-visivel').style.display = 'block';
-            const totais = {}; dadosLocal.config.nomes.forEach(n => totais[n] = 0);
-            
+            const totais = {}; appData.config.nomes.forEach(n => totais[n] = 0);
             filtrados.forEach(d => {
-                const res = calcDiv(d.valor, d.divisao);
+                const res = calcular(d.valor, d.divisao);
                 for(let n in res) if(totais.hasOwnProperty(n)) totais[n] += res[n];
             });
 
-            document.getElementById('cards-totais').innerHTML = Object.entries(totais).map(([n,v]) => `
-                <div class="col"><div class="total-card"><div class="total-icon"><i class="bi bi-person"></i></div><div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div></div></div>
+            document.getElementById('relatorio-totais').innerHTML = Object.entries(totais).map(([n,v]) => `
+                <div class="col"><div class="total-card"><div class="total-icon"><i class="bi bi-hash"></i></div><div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div></div></div>
             `).join('');
 
-            document.getElementById('lista-relatorio').innerHTML = filtrados.map(d => `
+            document.getElementById('corpo-relatorio').innerHTML = filtrados.map(d => `
                 <tr class="border-bottom">
                     <td class="small">${d.vencimento.split('-').reverse().join('/')}</td>
                     <td class="fw-bold small">${d.desc}</td>
@@ -312,49 +301,41 @@
                     <td class="text-end"><button class="btn btn-sm btn-outline-danger" onclick="window.excluir('${d.id}')">Excluir</button></td>
                 </tr>
             `).join('');
-
-            popSel('sel-extrato', dadosLocal.config.nomes);
+            popSel('sel-extrato', appData.config.nomes);
         };
 
-        function calcDiv(total, array) {
-            const res = {}; let pSum = 0; let sem = [];
-            array.forEach(i => {
+        function calcular(t, arr) {
+            const r = {}; let pS = 0; let sem = [];
+            arr.forEach(i => {
                 const p = i.split(':');
-                if(p.length > 1) { const v = parseFloat(p[1]); res[p[0]] = total * (v/100); pSum += v; }
+                if(p.length > 1) { const v = parseFloat(p[1]); r[p[0]] = t * (v/100); pS += v; }
                 else sem.push(i);
             });
-            if(sem.length > 0) { const resto = total * ((100 - pSum)/100); sem.forEach(n => res[n] = resto / sem.length); }
-            return res;
+            if(sem.length > 0) { const rem = t * ((100 - pS)/100); sem.forEach(n => r[n] = rem / sem.length); }
+            return r;
         }
 
         window.exibirExtrato = () => {
-            const n = document.getElementById('sel-extrato').value;
-            const m = document.getElementById('filtro-m').value;
-            const a = document.getElementById('filtro-a').value;
+            const n = document.getElementById('sel-extrato').value, m = document.getElementById('filtro-m').value, a = document.getElementById('filtro-a').value;
             if(!n) return;
-            const items = Object.values(dadosLocal.lancamentos).filter(d => d.vencimento.startsWith(`${a}-${m}`) && d.divisao.some(s => s.split(':')[0] === n));
-            
-            let total = 0;
+            const items = Object.values(appData.lancamentos).filter(d => d.vencimento.startsWith(`${a}-${m}`) && d.divisao.some(s => s.split(':')[0] === n));
+            let t = 0;
             const rows = items.map(d => {
-                const parte = calcDiv(d.valor, d.divisao)[n] || 0;
-                total += parte;
-                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td>${d.desc}</td><td class="text-end">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
+                const p = calcular(d.valor, d.divisao)[n] || 0; t += p;
+                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td>${d.desc}</td><td class="text-end fw-bold">R$ ${p.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
             }).join('');
-
             document.getElementById('ext-nome').innerText = n;
             document.getElementById('ext-periodo').innerText = `PERÍODO: ${m}/${a}`;
             document.getElementById('ext-tabela').innerHTML = `<table class="table table-sm"><thead><tr><th>DATA</th><th>DESCRIÇÃO</th><th class="text-end">PARTE</th></tr></thead><tbody>${rows}</tbody></table>`;
-            document.getElementById('ext-total').innerText = "R$ " + total.toLocaleString('pt-BR',{minimumFractionDigits:2});
+            document.getElementById('ext-total').innerText = "R$ " + t.toLocaleString('pt-BR',{minimumFractionDigits:2});
             new bootstrap.Modal(document.getElementById('modal-extrato')).show();
         };
 
-        // --- FILTROS DATA ---
         (function() {
             const m = document.getElementById('filtro-m'), a = document.getElementById('filtro-a'), h = new Date();
-            const nomesM = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-            nomesM.forEach((nm, i) => m.add(new Option(nm.toUpperCase(), ('0'+(i+1)).slice(-2), false, i === h.getMonth())));
+            const nm = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+            nm.forEach((n, i) => m.add(new Option(n.toUpperCase(), ('0'+(i+1)).slice(-2), false, i === h.getMonth())));
             for(let i = h.getFullYear(); i >= h.getFullYear()-2; i--) a.add(new Option(i, i));
-            
             document.getElementById('f-valor').oninput = (e) => {
                 let v = e.target.value.replace(/\D/g, '');
                 v = (parseInt(v, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
