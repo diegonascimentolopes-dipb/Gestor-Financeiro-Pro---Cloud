@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestor Financeiro Pro | Secure Cloud</title>
+    <title>Gestor Financeiro Pro | Cloud</title>
     
-    <!-- Otimização Mobile -->
+    <!-- Otimização para Mobile -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
     
+    <!-- Estilos Externos -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,7 +38,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* Tela de Login Industrial */
+        /* Ecrã de Login */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); z-index: 10000;
@@ -48,7 +49,7 @@
             width: 100%; max-width: 400px; border: 4px solid #000;
         }
 
-        /* Estrutura do App */
+        /* Conteúdo Principal */
         #app-content { display: none; padding-bottom: 50px; }
 
         .app-header {
@@ -74,8 +75,8 @@
         .nav-pills .nav-link:last-child { border-right: none; }
         .nav-pills .nav-link.active { background-color: var(--primary); color: #fff; }
 
-        /* Cards e Listas */
-        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; }
+        /* Estilos de Cartões e Tabelas */
+        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; box-shadow: none; }
         .total-card { 
             padding: 1.25rem; background: var(--bg-secondary);
             border-radius: var(--radius); display: flex; align-items: center;
@@ -87,13 +88,13 @@
             background: var(--primary); color: #fff;
         }
 
-        .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
-        .form-control, .form-select { border-radius: var(--radius); border: 1px solid var(--border-color); padding: 0.6rem; font-size: 0.95rem; }
+        .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.4rem; }
+        .form-control, .form-select { border-radius: var(--radius); border: 1px solid var(--border-color); padding: 0.65rem; font-size: 0.95rem; }
         
-        .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; }
+        .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; padding: 0.75rem; }
 
-        .table thead th { background: var(--primary); color: #fff; font-size: 0.7rem; text-transform: uppercase; border: 1px solid var(--border-color); }
-        .table tbody td { border: 1px solid var(--border-soft); }
+        .table thead th { background: var(--primary); color: #fff; font-size: 0.7rem; text-transform: uppercase; border: 1px solid var(--border-color); padding: 0.8rem; }
+        .table tbody td { border: 1px solid var(--border-soft); font-size: 0.85rem; padding: 0.8rem; }
 
         .divider-box {
             background: var(--bg-secondary); padding: 8px 12px;
@@ -116,33 +117,35 @@
         }
         
         .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.65rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
+        
+        .modal-extrato-header { background: var(--primary); color: white; padding: 2rem; }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
+    <!-- ECRÃ DE LOGIN -->
     <section id="login-screen">
         <div class="login-card">
             <h4 class="fw-900 mb-4 text-center">GESTOR PRO ACCESS</h4>
             <form id="login-form">
                 <div class="mb-3">
                     <label class="form-label">E-mail</label>
-                    <input type="email" id="login-email" class="form-control" required placeholder="seu@email.com">
+                    <input type="email" id="login-email" class="form-control" required placeholder="seu@email.com" autocomplete="email">
                 </div>
                 <div class="mb-4">
-                    <label class="form-label">Senha</label>
-                    <input type="password" id="login-pass" class="form-control" required placeholder="••••••••">
+                    <label class="form-label">Palavra-passe</label>
+                    <input type="password" id="login-pass" class="form-control" required placeholder="••••••••" autocomplete="current-password">
                 </div>
-                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100 py-3">Entrar no Sistema</button>
+                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100">Aceder ao Sistema</button>
             </form>
             <div id="login-error" class="alert alert-danger mt-3 fw-bold p-2 small" style="display:none; border-radius: 0; border: 2px solid #000;"></div>
         </div>
     </section>
 
-    <!-- LOADING OVERLAY -->
+    <!-- SOBREPOSIÇÃO DE CARREGAMENTO -->
     <div id="loading-overlay">
-        <div class="spinner-border mb-3"></div>
-        <span>Sincronizando Dados...</span>
+        <div class="spinner-border mb-3 text-primary" role="status"></div>
+        <span>A sincronizar dados...</span>
     </div>
 
     <!-- CONTEÚDO PRINCIPAL -->
@@ -151,16 +154,17 @@
             <div class="container d-flex justify-content-between align-items-center">
                 <div>
                     <h4 class="m-0 fw-800">GESTOR FINANCEIRO</h4>
-                    <div class="mt-1"><span class="db-badge">CONEXÃO SEGURA</span></div>
+                    <div class="mt-1"><span class="db-badge">LIGADO À NUVEM</span></div>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-outline-dark btn-sm rounded-0 fw-700" onclick="window.exportarBackup()">BACKUP</button>
-                    <button class="btn btn-outline-danger btn-sm rounded-0 fw-700" onclick="window.fazerLogout()">SAIR</button>
+                    <button class="btn btn-outline-dark btn-sm rounded-0 fw-700 px-3" onclick="window.exportarBackup()">BACKUP</button>
+                    <button class="btn btn-outline-danger btn-sm rounded-0 fw-700 px-3" onclick="window.fazerLogout()">SAIR</button>
                 </div>
             </div>
         </header>
 
         <div class="container">
+            <!-- Navegação por Abas -->
             <div class="mb-4">
                 <ul class="nav nav-pills" id="mainTabs" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#content-lancamentos">LANÇAMENTOS</button></li>
@@ -170,7 +174,7 @@
             </div>
 
             <div class="tab-content">
-                <!-- LANÇAMENTOS -->
+                <!-- ABA: LANÇAMENTOS -->
                 <div class="tab-pane fade show active" id="content-lancamentos">
                     <div class="card p-4">
                         <h6 class="fw-800 mb-4 text-uppercase">Nova Despesa</h6>
@@ -178,10 +182,10 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Descrição</label>
-                                    <input type="text" class="form-control" id="form-desc" required placeholder="Ex: Aluguel, Supermercado...">
+                                    <input type="text" class="form-control" id="form-desc" required placeholder="Ex: Mercado, Aluguer...">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Vencimento</label>
+                                    <label class="form-label">Data de Vencimento</label>
                                     <input type="date" class="form-control" id="form-vencimento" required>
                                 </div>
                                 <div class="col-6 col-md-4">
@@ -193,7 +197,7 @@
                                     <input type="number" class="form-control" id="form-qtd-parcelas" value="1" min="1">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label">Pagante Original</label>
+                                    <label class="form-label">Pagador Original</label>
                                     <select id="form-pagante" class="form-select" required></select>
                                 </div>
                                 <div class="col-6">
@@ -201,7 +205,7 @@
                                     <select id="form-categoria" class="form-select" required></select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">Status</label>
+                                    <label class="form-label">Estado</label>
                                     <select id="form-status" class="form-select" required></select>
                                 </div>
                                 <div class="col-12">
@@ -209,12 +213,12 @@
                                     <div id="form-dividir-com" class="p-3 bg-light border" style="max-height: 200px; overflow-y: auto;"></div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-4 py-3">Salvar na Nuvem</button>
+                            <button type="submit" class="btn btn-primary w-100 mt-4">Guardar Registo Cloud</button>
                         </form>
                     </div>
 
                     <div class="mt-4 pb-5">
-                        <h6 class="fw-800 text-muted mb-3 text-uppercase small">Atividades Recentes</h6>
+                        <h6 class="fw-800 text-muted mb-3 text-uppercase small">Últimos Movimentos</h6>
                         <div class="table-responsive">
                             <table class="table align-middle">
                                 <tbody id="log-home-body"></tbody>
@@ -223,7 +227,7 @@
                     </div>
                 </div>
 
-                <!-- RELATÓRIOS -->
+                <!-- ABA: RELATÓRIOS -->
                 <div class="tab-pane fade" id="content-relatorios">
                     <div class="card p-4 mb-4">
                         <div class="row g-2 align-items-end">
@@ -237,24 +241,24 @@
                         <div class="card p-4 mb-4 bg-light text-center">
                              <div class="row g-2 justify-content-center">
                                  <div class="col-sm-8"><select id="select-extrato" class="form-select"></select></div>
-                                 <div class="col-sm-3"><button class="btn btn-dark w-100 fw-700" onclick="window.abrirPopupExtrato()">Ver Quadro</button></div>
+                                 <div class="col-sm-3"><button class="btn btn-dark w-100 fw-700" onclick="window.abrirPopupExtrato()">Gerar Quadro</button></div>
                              </div>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Pagante</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                                <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Pagador</th><th>Estado</th><th class="text-end">Ações</th></tr></thead>
                                 <tbody id="tabela-relatorio-body"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- AJUSTES -->
+                <!-- ABA: AJUSTES -->
                 <div class="tab-pane fade" id="content-config">
                     <div class="row g-4">
                         <div class="col-md-4">
                             <div class="card p-4 h-100">
-                                <h6>Integrantes</h6>
+                                <h6>Nomes</h6>
                                 <div class="input-group mb-3">
                                     <input type="text" id="add-nome" class="form-control">
                                     <button class="btn btn-dark" onclick="window.salvarConfig('nomes', 'add-nome')">+</button>
@@ -274,7 +278,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="card p-4 h-100">
-                                <h6>Status</h6>
+                                <h6>Estados de Pagamento</h6>
                                 <div class="input-group mb-3">
                                     <input type="text" id="add-status" class="form-control">
                                     <button class="btn btn-dark" onclick="window.salvarConfig('status', 'add-status')">+</button>
@@ -284,9 +288,9 @@
                         </div>
                     </div>
                     <div class="card p-4 mt-4 text-center">
-                        <h6 class="fw-800">Restaurar Backup JSON</h6>
-                        <p class="small text-muted">Use esta opção para carregar seus dados offline antigos para a nuvem.</p>
+                        <h6 class="fw-800">Restaurar Dados Antigos (JSON)</h6>
                         <input type="file" id="input-import" class="form-control mt-2" onchange="window.importarParaFirebase(this)">
+                        <p class="small text-muted mt-2">Isto irá migrar o seu ficheiro offline diretamente para o Firebase.</p>
                     </div>
                 </div>
             </div>
@@ -294,7 +298,7 @@
     </div>
 
     <!-- MODAIS -->
-    <!-- Modal Extrato -->
+    <!-- Quadro de Extrato -->
     <div class="modal fade" id="modal-extrato" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark">
@@ -307,7 +311,8 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-outline-dark fw-800" data-bs-dismiss="modal">FECHAR</button>
+                    <button type="button" class="btn btn-outline-dark fw-800 px-4" data-bs-dismiss="modal">FECHAR</button>
+                    <button type="button" class="btn btn-dark fw-800 px-4" onclick="window.print()">IMPRIMIR</button>
                 </div>
             </div>
         </div>
@@ -318,7 +323,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark">
                 <div class="modal-header border-0 px-4 pt-4">
-                    <h5 class="fw-900 m-0 text-uppercase">Editar Lançamento</h5>
+                    <h5 class="fw-900 m-0 text-uppercase">Modificar Lançamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -328,16 +333,32 @@
                         <div class="col-md-6"><label class="form-label">Vencimento</label><input type="date" class="form-control" id="edit-vencimento"></div>
                         <div class="col-md-6"><label class="form-label">Valor (BRL)</label><input type="text" class="form-control" id="edit-valor"></div>
                         <div class="col-md-6"><label class="form-label">Categoria</label><select id="edit-categoria" class="form-select"></select></div>
-                        <div class="col-md-6"><label class="form-label">Status</label><select id="edit-status" class="form-select"></select></div>
+                        <div class="col-md-6"><label class="form-label">Estado</label><select id="edit-status" class="form-select"></select></div>
                         <div class="col-12"><label class="form-label">Pagador</label><select id="edit-pagante" class="form-select"></select></div>
                         <div class="col-12"><label class="form-label">Divisão:</label><div id="edit-dividir-com" class="p-3 bg-light border"></div></div>
                     </div>
-                    <button class="btn btn-primary w-100 mt-4 py-3" onclick="window.atualizarLancamento()">Salvar Alterações</button>
+                    <button class="btn btn-primary w-100 mt-4 py-3" onclick="window.atualizarLancamento()">Guardar Alterações</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal Exclusão -->
+    <div class="modal fade" id="modal-excluir" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-0 border-dark p-4 text-center">
+                <h5 class="fw-900 text-uppercase mb-3">Eliminar Registo?</h5>
+                <p class="text-muted small">Este item faz parte de um grupo de parcelas.</p>
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-outline-dark fw-800" onclick="window.confirmarAcaoExcluir(false)">SÓ ESTA PARCELA</button>
+                    <button class="btn btn-dark fw-800" onclick="window.confirmarAcaoExcluir(true)">TODO O GRUPO</button>
+                    <button class="btn btn-light fw-800" data-bs-dismiss="modal">CANCELAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK e Lógica -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="module">
@@ -345,7 +366,7 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIGURAÇÃO FIREBASE DO USUÁRIO
+        // CONFIGURAÇÃO DO SEU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyA_2v8Gs8D_j-QGXlCJMLit-CkLe3LWpU8",
             authDomain: "gestorfinanceiro-eb906.firebaseapp.com",
@@ -362,34 +383,33 @@
         const rootRef = ref(dbFirebase, 'gestor_pro');
 
         let dbLocal = { lancamentos: {}, config: { nomes: [], categorias: [], status: [] } };
-        let modalExtrato, modalEditar;
+        let modalExtrato, modalEditar, modalExcluir;
+        let idFilaExclusao = null;
 
-        // --- LÓGICA DE AUTENTICAÇÃO ---
-        document.getElementById('login-form').onsubmit = async (e) => {
+        // --- AUTENTICAÇÃO ---
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
             const btn = document.getElementById('btn-login-submit');
             const errEl = document.getElementById('login-error');
 
             try {
                 btn.disabled = true;
-                btn.textContent = "Validando Acesso...";
+                btn.textContent = "A validar acesso...";
                 errEl.style.display = 'none';
-                
                 await signInWithEmailAndPassword(auth, email, pass);
-                // O onAuthStateChanged redirecionará
             } catch (err) {
-                console.error(err);
                 btn.disabled = false;
-                btn.textContent = "Entrar no Sistema";
-                errEl.textContent = "Acesso Negado: E-mail ou Senha incorretos. Verifique as credenciais no Console do Firebase.";
+                btn.textContent = "Aceder ao Sistema";
+                errEl.textContent = "Erro: " + (err.code === 'auth/invalid-credential' ? "E-mail ou senha incorretos." : err.message);
                 errEl.style.display = 'block';
             }
-        };
+        });
 
         window.fazerLogout = () => {
-            if(confirm("Deseja encerrar a sessão?")) signOut(auth);
+            if(confirm("Deseja encerrar a sessão atual?")) signOut(auth);
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -403,7 +423,7 @@
             }
         });
 
-        // --- LÓGICA DE DADOS ---
+        // --- SINCRONIZAÇÃO EM TEMPO REAL ---
         function iniciarSyncRealtime() {
             document.getElementById('loading-overlay').style.display = 'flex';
             onValue(rootRef, (snapshot) => {
@@ -420,6 +440,7 @@
             });
         }
 
+        // --- LANÇAMENTOS ---
         window.salvarNovoLancamento = async (e) => {
             e.preventDefault();
             const valorTotal = parseFloat(document.getElementById('form-valor').value.replace(/\./g, '').replace(',', '.'));
@@ -428,7 +449,7 @@
             const dataOrig = document.getElementById('form-vencimento').value;
             const groupId = qtd > 1 ? "G" + Date.now() : null;
 
-            if (divisao.length === 0) return alert("Erro: Selecione quem participa da divisão desta conta.");
+            if (divisao.length === 0) return alert("Erro: Identifique quem participa da divisão.");
 
             for (let i = 0; i < qtd; i++) {
                 const dataObj = new Date(dataOrig + 'T12:00:00');
@@ -449,9 +470,10 @@
             }
             e.target.reset();
             document.getElementById('form-qtd-parcelas').value = 1;
-            alert("Sincronizado com a nuvem!");
+            alert("Lançamento(s) sincronizado(s)!");
         };
 
+        // --- RELATÓRIOS ---
         window.buscarRelatorio = () => {
             const m = document.getElementById('filtro-mes').value;
             const a = document.getElementById('filtro-ano').value;
@@ -473,7 +495,7 @@
             document.getElementById('container-totais').innerHTML = Object.entries(totais).map(([n,v]) => `
                 <div class="col">
                     <div class="total-card">
-                        <div class="total-icon"><i class="bi bi-person-fill"></i></div>
+                        <div class="total-icon"><i class="bi bi-person-badge"></i></div>
                         <div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div>
                     </div>
                 </div>
@@ -499,7 +521,7 @@
         window.abrirPopupExtrato = () => {
             const int = document.getElementById('select-extrato').value;
             const m = document.getElementById('filtro-mes').value, a = document.getElementById('filtro-ano').value;
-            if (!int) return alert("Selecione o integrante.");
+            if (!int) return alert("Selecione um nome.");
 
             const items = Object.values(dbLocal.lancamentos).filter(d => {
                 const p = d.vencimento.split('-');
@@ -510,15 +532,16 @@
             const rows = items.map(d => {
                 const parte = calcularDivisaoIndividual(d.valor, d.divisao)[int] || 0;
                 t += parte;
-                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td class="fw-bold">${d.desc}</td><td class="text-end fw-900">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
+                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td class="fw-bold small">${d.desc}</td><td class="text-end fw-900">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
             }).join('');
 
             document.getElementById('extrato-nome-header').innerHTML = `<h2 class="m-0 text-uppercase fw-900">${int}</h2><p class="m-0 small">PERÍODO: ${m}/${a}</p>`;
-            document.getElementById('extrato-tabela-container').innerHTML = `<table class="table table-sm border"><thead><tr><th>DATA</th><th>DESCRIÇÃO</th><th class="text-end">SUA PARTE</th></tr></thead><tbody>${rows}</tbody></table>`;
+            document.getElementById('extrato-tabela-container').innerHTML = `<table class="table table-sm border"><thead><tr><th>DATA</th><th>DESCRIÇÃO</th><th class="text-end">A SUA PARTE</th></tr></thead><tbody>${rows}</tbody></table>`;
             document.getElementById('extrato-total').textContent = "R$ " + t.toLocaleString('pt-BR',{minimumFractionDigits:2});
             modalExtrato.show();
         };
 
+        // --- EDIÇÃO E EXCLUSÃO ---
         window.abrirEdicao = (id) => {
             const d = dbLocal.lancamentos[id];
             if(!d) return;
@@ -535,11 +558,11 @@
 
         window.atualizarLancamento = async () => {
             const id = document.getElementById('edit-id').value;
-            const valor = parseFloat(document.getElementById('edit-valor').value.replace(/\./g, '').replace(',', '.'));
+            const val = parseFloat(document.getElementById('edit-valor').value.replace(/\./g, '').replace(',', '.'));
             const data = {
                 desc: document.getElementById('edit-desc').value.toUpperCase(),
                 vencimento: document.getElementById('edit-vencimento').value,
-                valor: valor,
+                valor: val,
                 categoria: document.getElementById('edit-categoria').value,
                 status: document.getElementById('edit-status').value,
                 pagante: document.getElementById('edit-pagante').value,
@@ -550,58 +573,74 @@
             window.buscarRelatorio();
         };
 
-        window.confirmarExcluir = async (id) => {
-            if(confirm("Deseja apagar este registro permanentemente da nuvem?")) {
-                await remove(ref(dbFirebase, `gestor_pro/lancamentos/${id}`));
-                window.buscarRelatorio();
-            }
+        window.confirmarExcluir = (id) => {
+            idFilaExclusao = id;
+            const item = dbLocal.lancamentos[id];
+            if (item && item.groupId) modalExcluir.show();
+            else if(confirm("Deseja eliminar este registo permanentemente?")) window.confirmarAcaoExcluir(false);
         };
 
+        window.confirmarAcaoExcluir = async (todos) => {
+            const item = dbLocal.lancamentos[idFilaExclusao];
+            if (todos && item.groupId) {
+                const ids = Object.keys(dbLocal.lancamentos).filter(k => dbLocal.lancamentos[k].groupId === item.groupId);
+                for(let key of ids) await remove(ref(dbFirebase, `gestor_pro/lancamentos/${key}`));
+            } else {
+                await remove(ref(dbFirebase, `gestor_pro/lancamentos/${idFilaExclusao}`));
+            }
+            modalExcluir.hide();
+            window.buscarRelatorio();
+        };
+
+        // --- AJUSTES ---
         window.salvarConfig = (path, inputId) => {
-            const v = document.getElementById(inputId).value.trim().toUpperCase();
-            if(!v) return;
+            const val = document.getElementById(inputId).value.trim().toUpperCase();
+            if(!val) return;
             const lista = dbLocal.config[path] || [];
-            if(lista.includes(v)) return;
-            update(ref(dbFirebase, 'gestor_pro/config'), { [path]: [...lista, v] });
+            if(lista.includes(val)) return;
+            update(ref(dbFirebase, 'gestor_pro/config'), { [path]: [...lista, val] });
             document.getElementById(inputId).value = '';
         };
 
         window.removerConfig = (path, idx) => {
-            if(!confirm("Remover permanentemente?")) return;
+            if(!confirm("Eliminar permanentemente?")) return;
             const lista = [...dbLocal.config[path]];
             lista.splice(idx, 1);
             update(ref(dbFirebase, 'gestor_pro/config'), { [path]: lista });
         };
 
+        // --- BACKUP E IMPORTAÇÃO ---
         window.importarParaFirebase = (input) => {
             const f = input.files[0];
-            const r = new FileReader();
-            r.onload = async (e) => {
+            if(!f) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
                 try {
-                    const j = JSON.parse(e.target.result);
-                    if(confirm("IMPORTAR DADOS? Os dados atuais da nuvem serão substituídos.")) {
+                    const json = JSON.parse(e.target.result);
+                    if(confirm("Deseja migrar os dados do ficheiro para a nuvem? Isto substituirá os atuais.")) {
                         let finalL = {};
-                        if(Array.isArray(j.lancamentos)) {
-                            j.lancamentos.forEach(l => { const k = push(ref(dbFirebase, 't')).key; finalL[k] = {...l, id: k}; });
-                        } else {
-                            finalL = j.lancamentos || {};
-                        }
-                        await set(rootRef, { config: j.config, lancamentos: finalL });
-                        alert("Migração concluída com sucesso!");
+                        if(Array.isArray(json.lancamentos)) {
+                            json.lancamentos.forEach(l => { 
+                                const k = push(ref(dbFirebase, 'temp')).key; 
+                                finalL[k] = {...l, id: k}; 
+                            });
+                        } else { finalL = json.lancamentos || {}; }
+                        await set(rootRef, { config: json.config || dbLocal.config, lancamentos: finalL });
+                        alert("Migração bem-sucedida!");
                     }
-                } catch(e) { alert("Arquivo JSON inválido."); }
+                } catch(e) { alert("Erro ao ler o ficheiro JSON."); }
             };
-            r.readAsText(f);
+            reader.readAsText(f);
         };
 
         window.exportarBackup = () => {
             const blob = new Blob([JSON.stringify(dbLocal, null, 2)], {type: 'application/json'});
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `GESTOR_SECURE_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `GESTOR_SECURE_CLOUD_BK.json`;
             a.click();
         };
 
-        // --- HELPERS LÓGICA ---
+        // --- HELPERS UI ---
         function refreshUI() {
             const c = dbLocal.config;
             popularSelect('form-categoria', c.categorias || []);
@@ -617,8 +656,8 @@
 
         function renderizarRecentes() {
             const b = document.getElementById('log-home-body');
-            const lista = Object.values(dbLocal.lancamentos).sort((x,y) => y.vencimento.localeCompare(x.vencimento)).slice(0, 10);
-            b.innerHTML = lista.map(d => `
+            const list = Object.values(dbLocal.lancamentos).sort((x,y) => y.vencimento.localeCompare(x.vencimento)).slice(0, 10);
+            b.innerHTML = list.map(d => `
                 <tr class="bg-white">
                     <td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
                     <td><div class="fw-bold small">${d.desc}</div><small class="text-muted text-uppercase">${d.categoria}</small></td>
@@ -630,7 +669,8 @@
         function renderizarListasConfig() {
             ['nomes','categorias','status'].forEach(t => {
                 const cid = (t === 'nomes') ? 'lista-nomes' : (t === 'categorias') ? 'lista-categorias' : 'lista-status';
-                document.getElementById(cid).innerHTML = (dbLocal.config[t] || []).map((it, idx) => `
+                const container = document.getElementById(cid);
+                if(container) container.innerHTML = (dbLocal.config[t] || []).map((it, idx) => `
                     <div class="config-pill"><span>${it}</span><button class="btn btn-sm text-danger p-0" onclick="window.removerConfig('${t}', ${idx})"><i class="bi bi-x-circle-fill"></i></button></div>
                 `).join('');
             });
@@ -644,8 +684,8 @@
                 else sem.push(i);
             });
             if(sem.length > 0) {
-                const restoVal = total * (Math.max(0, 100 - pSum) / 100);
-                sem.forEach(n => res[n] = restoVal / sem.length);
+                const resto = total * (Math.max(0, 100 - pSum) / 100);
+                sem.forEach(n => res[n] = resto / sem.length);
             }
             return res;
         }
@@ -679,15 +719,21 @@
         function gerarOpcoesDivisao(containerId, nomes) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            container.innerHTML = nomes.map((nome, idx) => `
+            const sel = capturarValoresDivisao(containerId);
+            container.innerHTML = nomes.map((nome, idx) => {
+                const match = sel.find(s => s.split(':')[0] === nome);
+                const isChecked = !!match;
+                const percVal = match && match.includes(':') ? match.split(':')[1] : '';
+                return `
                 <div class="divider-box">
                     <div class="form-check m-0">
-                        <input class="form-check-input border-dark" type="checkbox" id="${containerId}-${idx}" value="${nome}" onchange="this.closest('.divider-box').querySelector('.perc-field').disabled = !this.checked">
+                        <input class="form-check-input border-dark" type="checkbox" id="${containerId}-${idx}" value="${nome}" ${isChecked ? 'checked' : ''} onchange="this.closest('.divider-box').querySelector('.perc-field').disabled = !this.checked">
                         <label class="form-check-label small fw-bold text-uppercase" for="${containerId}-${idx}">${nome}</label>
                     </div>
-                    <div class="input-group input-group-sm" style="width: 80px;"><input type="number" class="form-control perc-field border-dark" placeholder="%" disabled></div>
+                    <div class="input-group input-group-sm" style="width: 80px;"><input type="number" class="form-control perc-field border-dark" placeholder="%" ${!isChecked ? 'disabled' : ''} value="${percVal}"></div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function aplicarMascaraMoeda(el) {
@@ -702,15 +748,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             modalExtrato = new bootstrap.Modal(document.getElementById('modal-extrato'));
             modalEditar = new bootstrap.Modal(document.getElementById('modal-editar'));
-            
+            modalExcluir = new bootstrap.Modal(document.getElementById('modal-excluir'));
             aplicarMascaraMoeda(document.getElementById('form-valor'));
             aplicarMascaraMoeda(document.getElementById('edit-valor'));
-            
             const mF = document.getElementById('filtro-mes'), aF = document.getElementById('filtro-ano'), h = new Date();
             const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-            meses.forEach((n, i) => mF.add(new Option(n.toUpperCase(), ('0'+(i+1)).slice(-2), false, i === h.getMonth())));
-            for(let i = h.getFullYear(); i >= h.getFullYear()-2; i--) aF.add(new Option(i, i));
-
+            if(mF) meses.forEach((n, i) => mF.add(new Option(n.toUpperCase(), ('0'+(i+1)).slice(-2), false, i === h.getMonth())));
+            if(aF) for(let i = h.getFullYear(); i >= h.getFullYear()-2; i--) aF.add(new Option(i, i));
             document.getElementById('form-nova-despesa').onsubmit = window.salvarNovoLancamento;
         });
     </script>
