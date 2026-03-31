@@ -36,7 +36,6 @@
             letter-spacing: -0.02em;
         }
 
-        /* Login Screen */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); z-index: 10000;
@@ -47,7 +46,6 @@
             width: 100%; max-width: 400px; border: 4px solid #000;
         }
 
-        /* App Layout */
         #app-content { display: none; padding-bottom: 50px; }
 
         .app-header {
@@ -70,10 +68,9 @@
             color: var(--text-muted); font-weight: 600; font-size: 0.85rem;
             border-radius: 0; padding: 10px 25px; border-right: 1px solid var(--border-color);
         }
-        .nav-pills .nav-link:last-child { border-right: none; }
         .nav-pills .nav-link.active { background-color: var(--primary); color: #fff; }
 
-        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; box-shadow: none; }
+        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; }
         .total-card { 
             padding: 1.25rem; background: var(--bg-secondary);
             border-radius: var(--radius); display: flex; align-items: center;
@@ -87,12 +84,10 @@
 
         .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
         .form-control, .form-select { border-radius: var(--radius); border: 1px solid var(--border-color); padding: 0.65rem; font-size: 0.95rem; }
-        
         .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; padding: 0.75rem; }
 
         .table thead th { background: var(--primary); color: #fff; font-size: 0.7rem; text-transform: uppercase; border: 1px solid var(--border-color); padding: 0.8rem; }
-        .table tbody td { border: 1px solid var(--border-soft); font-size: 0.85rem; padding: 0.8rem; }
-
+        
         .divider-box {
             background: var(--bg-secondary); padding: 8px 12px;
             border: 1px solid var(--border-soft); margin-bottom: 8px;
@@ -106,28 +101,21 @@
             font-weight: 800; text-transform: uppercase;
         }
 
-        .config-pill {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px; border: 1px solid var(--border-soft);
-            margin-bottom: 5px; background: var(--bg-secondary);
-            font-size: 0.75rem; font-weight: 700;
-        }
-        
-        .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.65rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
-        .modal-extrato-header { background: var(--primary); color: white; padding: 2rem; }
-
         .btn-action {
             width: 32px; height: 32px; border-radius: var(--radius);
             display: inline-flex; align-items: center; justify-content: center;
             border: 1px solid var(--border-color); background: white;
-            color: var(--primary); font-size: 0.9rem;
+            color: var(--primary); font-size: 0.9rem; margin-left: 4px;
         }
         .btn-action:hover { background: var(--primary); color: #fff; }
+        
+        .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.65rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
+        .modal-extrato-header { background: var(--primary); color: white; padding: 2rem; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
+    <!-- TELA DE LOGIN -->
     <section id="login-screen">
         <div class="login-card">
             <h4 class="fw-900 mb-4 text-center">GESTOR PRO ACCESS</h4>
@@ -140,7 +128,7 @@
                     <label class="form-label">Senha</label>
                     <input type="password" id="login-pass" class="form-control" required placeholder="••••••••">
                 </div>
-                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100">Entrar no Sistema</button>
+                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100">Iniciar Sessão</button>
             </form>
             <div id="login-error" class="alert alert-danger mt-3 fw-bold p-2 small" style="display:none; border-radius: 0; border: 2px solid #000;"></div>
         </div>
@@ -148,16 +136,16 @@
 
     <!-- LOADING -->
     <div id="loading-overlay">
-        <div class="spinner-border mb-3 text-primary" role="status"></div>
+        <div class="spinner-border mb-3 text-primary"></div>
         <span>Sincronizando Nuvem...</span>
     </div>
 
-    <!-- APP CONTENT -->
+    <!-- CONTEÚDO -->
     <div id="app-content">
         <header class="app-header">
             <div class="container d-flex justify-content-between align-items-center">
                 <div>
-                    <h4 class="m-0 fw-800">GESTÃO FINANCEIRA</h4>
+                    <h4 class="m-0 fw-800">GESTOR FINANCEIRO</h4>
                     <div class="mt-1"><span class="db-badge">CLOUD ATIVO</span></div>
                 </div>
                 <div class="d-flex gap-2">
@@ -200,7 +188,7 @@
                                     <input type="number" class="form-control" id="form-qtd-parcelas" value="1" min="1">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label">Pagante Original</label>
+                                    <label class="form-label">Pagador Original</label>
                                     <select id="form-pagante" class="form-select" required></select>
                                 </div>
                                 <div class="col-6">
@@ -216,12 +204,12 @@
                                     <div id="form-dividir-com" class="p-3 bg-light border" style="max-height: 200px; overflow-y: auto;"></div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-4">Salvar no Cloud</button>
+                            <button type="submit" class="btn btn-primary w-100 mt-4">Salvar Dados</button>
                         </form>
                     </div>
 
                     <div class="mt-4 pb-5">
-                        <h6 class="fw-800 text-muted mb-3 text-uppercase small">Últimas Atividades</h6>
+                        <h6 class="fw-800 text-muted mb-3 text-uppercase small">Últimos Lançamentos</h6>
                         <div class="table-responsive">
                             <table class="table align-middle">
                                 <tbody id="log-home-body"></tbody>
@@ -281,7 +269,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="card p-4 h-100">
-                                <h6>Estados de Pagamento</h6>
+                                <h6>Status</h6>
                                 <div class="input-group mb-3">
                                     <input type="text" id="add-status" class="form-control">
                                     <button class="btn btn-dark" onclick="window.salvarConfig('status', 'add-status')">+</button>
@@ -291,7 +279,7 @@
                         </div>
                     </div>
                     <div class="card p-4 mt-4 text-center">
-                        <h6 class="fw-800">Restaurar Dados (JSON)</h6>
+                        <h6 class="fw-800">Restaurar do JSON</h6>
                         <input type="file" id="input-import" class="form-control mt-2" onchange="window.importarParaFirebase(this)">
                     </div>
                 </div>
@@ -300,28 +288,12 @@
     </div>
 
     <!-- MODAIS -->
-    <!-- Extrato -->
-    <div class="modal fade" id="modal-extrato" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-0 border-dark">
-                <div class="modal-extrato-header" id="extrato-nome-header"></div>
-                <div class="modal-body p-4">
-                    <div id="extrato-tabela-container" class="table-responsive"></div>
-                    <div class="mt-4 p-4 d-flex justify-content-between align-items-center border border-dark">
-                        <span class="fw-800 text-uppercase small">Saldo Devedor</span>
-                        <h2 id="extrato-total" class="fw-900 m-0">R$ 0,00</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Editar -->
+    <!-- Modal Editar -->
     <div class="modal fade" id="modal-editar" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark">
                 <div class="modal-header border-0 px-4 pt-4">
-                    <h5 class="fw-900 m-0 text-uppercase">Modificar Lançamento</h5>
+                    <h5 class="fw-900 m-0 text-uppercase">Editar Lançamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -336,25 +308,40 @@
                         <div class="col-12"><label class="form-label">Divisão:</label><div id="edit-dividir-com" class="p-3 bg-light border"></div></div>
                     </div>
                     
-                    <div id="edit-group-notice" class="alert alert-info mt-3 p-2 small" style="display:none">
-                        <i class="bi bi-info-circle"></i> Este item pertence a um grupo de parcelas.
+                    <div id="edit-group-notice" class="alert alert-info mt-3 p-2 small fw-bold" style="display:none">
+                        <i class="bi bi-info-circle"></i> Item vinculado a um grupo de parcelas.
                     </div>
 
                     <div class="d-grid gap-2 mt-4">
-                        <button class="btn btn-primary py-3" onclick="window.atualizarLancamento(false)">Salvar Apenas Este</button>
-                        <button id="btn-update-group" class="btn btn-dark py-3" style="display:none" onclick="window.atualizarLancamento(true)">Salvar em Todo o Grupo</button>
+                        <button class="btn btn-primary py-3" onclick="window.atualizarLancamento(false)">SALVAR APENAS ESTE</button>
+                        <button id="btn-update-group" class="btn btn-dark py-3" style="display:none" onclick="window.atualizarLancamento(true)">SALVAR EM TODO O GRUPO</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Excluir -->
+    <!-- Modal Extrato -->
+    <div class="modal fade" id="modal-extrato" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-0 border-dark">
+                <div class="modal-extrato-header" id="extrato-nome-header"></div>
+                <div class="modal-body p-4">
+                    <div id="extrato-tabela-container" class="table-responsive"></div>
+                    <div class="mt-4 p-4 d-flex justify-content-between align-items-center border border-dark">
+                        <span class="fw-800 text-uppercase small">Dívida Consolidada</span>
+                        <h2 id="extrato-total" class="fw-900 m-0">R$ 0,00</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Excluir -->
     <div class="modal fade" id="modal-excluir" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark p-4 text-center">
-                <h5 class="fw-900 text-uppercase mb-3">Eliminar Registo?</h5>
-                <p class="text-muted small">Escolha como deseja excluir este item.</p>
+                <h5 class="fw-900 text-uppercase mb-3">Excluir Lançamento?</h5>
                 <div class="d-grid gap-2 mt-4">
                     <button class="btn btn-outline-dark fw-800" onclick="window.confirmarAcaoExcluir(false)">SÓ ESTA PARCELA</button>
                     <button class="btn btn-dark fw-800" onclick="window.confirmarAcaoExcluir(true)">TODO O GRUPO</button>
@@ -395,18 +382,11 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
-            const btn = document.getElementById('btn-login-submit');
             const errEl = document.getElementById('login-error');
-
             try {
-                btn.disabled = true;
-                btn.textContent = "Verificando...";
-                errEl.style.display = 'none';
                 await signInWithEmailAndPassword(auth, email, pass);
             } catch (err) {
-                btn.disabled = false;
-                btn.textContent = "Entrar no Sistema";
-                errEl.textContent = "Erro: Credenciais inválidas.";
+                errEl.textContent = "E-mail ou senha incorretos.";
                 errEl.style.display = 'block';
             }
         };
@@ -424,62 +404,26 @@
             }
         });
 
-        // --- SYNC ---
+        // --- CORE LOGIC ---
         function iniciarSync() {
             document.getElementById('loading-overlay').style.display = 'flex';
             onValue(rootRef, (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
-                    dbLocal = {
-                        lancamentos: data.lancamentos || {},
-                        config: data.config || { nomes: [], categorias: [], status: [] }
-                    };
-                }
+                dbLocal = {
+                    lancamentos: data?.lancamentos || {},
+                    config: data?.config || { nomes: [], categorias: [], status: [] }
+                };
                 document.getElementById('loading-overlay').style.display = 'none';
                 refreshUI();
                 renderizarRecentes();
-                if (document.getElementById('area-relatorio').style.display === 'block') buscarRelatorio();
+                if(document.getElementById('area-relatorio').style.display === 'block') window.buscarRelatorio();
             });
         }
 
-        // --- CORE ---
-        window.salvarNovoLancamento = async (e) => {
-            e.preventDefault();
-            const valorTotal = parseFloat(document.getElementById('form-valor').value.replace(/\./g, '').replace(',', '.'));
-            const qtd = parseInt(document.getElementById('form-qtd-parcelas').value) || 1;
-            const divisao = capturarValoresDivisao('form-dividir-com');
-            const dataOrig = document.getElementById('form-vencimento').value;
-            const groupId = qtd > 1 ? "G" + Date.now() : null;
-
-            if (divisao.length === 0) return alert("Erro: Selecione os integrantes.");
-
-            for (let i = 0; i < qtd; i++) {
-                const d = new Date(dataOrig + 'T12:00:00');
-                d.setMonth(d.getMonth() + i);
-                
-                const itemRef = push(ref(dbFirebase, 'gestor_pro/lancamentos'));
-                await set(itemRef, {
-                    id: itemRef.key,
-                    groupId: groupId,
-                    desc: document.getElementById('form-desc').value.toUpperCase() + (qtd > 1 ? ` (${i+1}/${qtd})` : ""),
-                    vencimento: d.toISOString().split('T')[0],
-                    valor: valorTotal,
-                    categoria: document.getElementById('form-categoria').value,
-                    pagante: document.getElementById('form-pagante').value,
-                    status: document.getElementById('form-status').value,
-                    divisao: divisao
-                });
-            }
-            e.target.reset();
-            document.getElementById('form-qtd-parcelas').value = 1;
-        };
-
         window.abrirEdicao = (id) => {
             const d = dbLocal.lancamentos[id];
-            if(!d) {
-                console.error("Lançamento não encontrado para o ID:", id);
-                return;
-            }
+            if(!d) return;
+
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-desc').value = d.desc;
             document.getElementById('edit-vencimento').value = d.vencimento;
@@ -508,7 +452,7 @@
             const original = dbLocal.lancamentos[id];
             const valor = parseFloat(document.getElementById('edit-valor').value.replace(/\./g, '').replace(',', '.'));
             
-            const data = {
+            const payload = {
                 desc: document.getElementById('edit-desc').value.toUpperCase(),
                 vencimento: document.getElementById('edit-vencimento').value,
                 valor: valor,
@@ -519,38 +463,38 @@
             };
 
             if (aplicarAoGrupo && original.groupId) {
-                // Atualiza todos do mesmo grupo (Exceto a data e descrição da parcela específica)
-                const idsGrupo = Object.keys(dbLocal.lancamentos).filter(k => dbLocal.lancamentos[k].groupId === original.groupId);
-                for(let gid of idsGrupo) {
-                    const itemGrupo = dbLocal.lancamentos[gid];
-                    await update(ref(dbFirebase, `gestor_pro/lancamentos/${gid}`), {
-                        // Não mudamos a data e o numero da parcela na descrição geral, mantemos o padrão
-                        categoria: data.categoria,
-                        status: data.status,
-                        pagante: data.pagante,
-                        divisao: data.divisao,
-                        valor: data.valor
-                    });
-                }
+                const updates = {};
+                Object.entries(dbLocal.lancamentos).forEach(([key, item]) => {
+                    if (item.groupId === original.groupId) {
+                        updates[`gestor_pro/lancamentos/${key}`] = {
+                            ...item,
+                            categoria: payload.categoria,
+                            status: payload.status,
+                            pagante: payload.pagante,
+                            divisao: payload.divisao,
+                            valor: payload.valor
+                        };
+                    }
+                });
+                await update(ref(dbFirebase), updates);
             } else {
-                await update(ref(dbFirebase, `gestor_pro/lancamentos/${id}`), data);
+                await update(ref(dbFirebase, `gestor_pro/lancamentos/${id}`), payload);
             }
-            
             modalEditar.hide();
         };
 
         window.confirmarExcluir = (id) => {
             idFilaExclusao = id;
             const item = dbLocal.lancamentos[id];
-            if (item && item.groupId) modalExcluir.show();
-            else if(confirm("Deseja eliminar este registo?")) window.confirmarAcaoExcluir(false);
+            if (item?.groupId) modalExcluir.show();
+            else if(confirm("Excluir registro?")) window.confirmarAcaoExcluir(false);
         };
 
         window.confirmarAcaoExcluir = async (todos) => {
             const item = dbLocal.lancamentos[idFilaExclusao];
             if (todos && item.groupId) {
                 const ids = Object.keys(dbLocal.lancamentos).filter(k => dbLocal.lancamentos[k].groupId === item.groupId);
-                for(let key of ids) await remove(ref(dbFirebase, `gestor_pro/lancamentos/${key}`));
+                for(let k of ids) await remove(ref(dbFirebase, `gestor_pro/lancamentos/${k}`));
             } else {
                 await remove(ref(dbFirebase, `gestor_pro/lancamentos/${idFilaExclusao}`));
             }
@@ -560,16 +504,16 @@
         window.buscarRelatorio = () => {
             const m = document.getElementById('filtro-mes').value;
             const a = document.getElementById('filtro-ano').value;
-            const filtrados = Object.values(dbLocal.lancamentos).filter(d => {
+            const filtrados = Object.entries(dbLocal.lancamentos).filter(([k, d]) => {
                 const p = d.vencimento.split('-');
                 return p[1] === m && p[0] === a;
-            }).sort((x, y) => x.vencimento.localeCompare(y.vencimento));
+            }).sort((x, y) => x[1].vencimento.localeCompare(y[1].vencimento));
 
             document.getElementById('area-relatorio').style.display = 'block';
             
             const totais = {};
             (dbLocal.config.nomes || []).forEach(n => totais[n] = 0);
-            filtrados.forEach(d => {
+            filtrados.forEach(([k, d]) => {
                 const res = calcularDivisaoIndividual(d.valor, d.divisao);
                 for(let n in res) if(totais.hasOwnProperty(n)) totais[n] += res[n];
             });
@@ -578,7 +522,7 @@
                 <div class="col"><div class="total-card"><div class="total-icon"><i class="bi bi-hash"></i></div><div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div></div></div>
             `).join('');
 
-            document.getElementById('tabela-relatorio-body').innerHTML = filtrados.map(d => `
+            document.getElementById('tabela-relatorio-body').innerHTML = filtrados.map(([id, d]) => `
                 <tr>
                     <td class="small fw-bold text-muted">${d.vencimento.split('-').reverse().join('/')}</td>
                     <td class="small fw-bold">${d.desc}</td>
@@ -586,12 +530,33 @@
                     <td class="small text-uppercase">${d.pagante}</td>
                     <td><span class="badge-status">${d.status}</span></td>
                     <td class="text-end">
-                        <button class="btn-action" onclick="window.abrirEdicao('${d.id}')"><i class="bi bi-pencil-fill"></i></button>
-                        <button class="btn-action text-danger" onclick="window.confirmarExcluir('${d.id}')"><i class="bi bi-trash-fill"></i></button>
+                        <button class="btn-action" onclick="window.abrirEdicao('${id}')"><i class="bi bi-pencil-fill"></i></button>
+                        <button class="btn-action text-danger" onclick="window.confirmarExcluir('${id}')"><i class="bi bi-trash-fill"></i></button>
                     </td>
                 </tr>
             `).join('');
             popularSelect('select-extrato', dbLocal.config.nomes || []);
+        };
+
+        // --- ATTACH TO WINDOW ---
+        window.salvarNovoLancamento = async (e) => {
+            e.preventDefault();
+            const valorTotal = parseFloat(document.getElementById('form-valor').value.replace(/\./g, '').replace(',', '.'));
+            const qtd = parseInt(document.getElementById('form-qtd-parcelas').value) || 1;
+            const divisao = capturarValoresDivisao('form-dividir-com');
+            const dataOrig = document.getElementById('form-vencimento').value;
+            const groupId = qtd > 1 ? "G" + Date.now() : null;
+
+            for (let i = 0; i < qtd; i++) {
+                const d = new Date(dataOrig + 'T12:00:00'); d.setMonth(d.getMonth() + i);
+                const itemRef = push(ref(dbFirebase, 'gestor_pro/lancamentos'));
+                await set(itemRef, {
+                    id: itemRef.key, groupId: groupId, desc: document.getElementById('form-desc').value.toUpperCase() + (qtd > 1 ? ` (${i+1}/${qtd})` : ""),
+                    vencimento: d.toISOString().split('T')[0], valor: valorTotal, categoria: document.getElementById('form-categoria').value,
+                    pagante: document.getElementById('form-pagante').value, status: document.getElementById('form-status').value, divisao: divisao
+                });
+            }
+            e.target.reset(); document.getElementById('form-qtd-parcelas').value = 1;
         };
 
         window.abrirPopupExtrato = () => {
@@ -603,8 +568,7 @@
             });
             let t = 0;
             const rows = items.map(d => {
-                const parte = calcularDivisaoIndividual(d.valor, d.divisao)[int] || 0;
-                t += parte;
+                const parte = calcularDivisaoIndividual(d.valor, d.divisao)[int] || 0; t += parte;
                 return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td class="fw-bold">${d.desc}</td><td class="text-end fw-900">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
             }).join('');
             document.getElementById('extrato-nome-header').innerHTML = `<h2 class="m-0 text-uppercase fw-900">${int}</h2><p class="m-0 small">EXTRATO: ${m}/${a}</p>`;
@@ -623,34 +587,31 @@
 
         window.removerConfig = (path, idx) => {
             if(!confirm("Remover?")) return;
-            const lista = [...dbLocal.config[path]];
-            lista.splice(idx, 1);
+            const lista = [...dbLocal.config[path]]; lista.splice(idx, 1);
             update(ref(dbFirebase, 'gestor_pro/config'), { [path]: lista });
         };
 
         window.exportarBackup = () => {
             const blob = new Blob([JSON.stringify(dbLocal, null, 2)], {type: 'application/json'});
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `GESTOR_PRO_CLOUD_BK.json`;
-            a.click();
+            a.download = `GESTOR_BK_CLOUD.json`; a.click();
         };
 
         window.importarParaFirebase = (input) => {
-            const f = input.files[0];
-            const r = new FileReader();
+            const f = input.files[0]; const r = new FileReader();
             r.onload = async (e) => {
                 const j = JSON.parse(e.target.result);
                 if(confirm("Importar backup?")) {
-                    let finalL = {};
-                    if(Array.isArray(j.lancamentos)) j.lancamentos.forEach(l => { const k = push(ref(dbFirebase, 't')).key; finalL[k] = {...l, id: k}; });
-                    else finalL = j.lancamentos || {};
-                    await set(rootRef, { config: j.config, lancamentos: finalL });
+                    let fl = {};
+                    if(Array.isArray(j.lancamentos)) j.lancamentos.forEach(l => { const k = push(ref(dbFirebase, 't')).key; fl[k] = {...l, id: k}; });
+                    else fl = j.lancamentos || {};
+                    await set(rootRef, { config: j.config, lancamentos: fl });
                 }
             };
             r.readAsText(f);
         };
 
-        // --- HELPERS ---
+        // --- UI HELPERS ---
         function refreshUI() {
             const c = dbLocal.config;
             popularSelect('form-categoria', c.categorias || []);
@@ -666,15 +627,13 @@
 
         function renderizarRecentes() {
             const b = document.getElementById('log-home-body');
-            const lista = Object.values(dbLocal.lancamentos).sort((x,y) => y.vencimento.localeCompare(x.vencimento)).slice(0, 10);
-            b.innerHTML = lista.map(d => `
+            const entries = Object.entries(dbLocal.lancamentos).sort((x,y) => y[1].vencimento.localeCompare(x[1].vencimento)).slice(0, 10);
+            b.innerHTML = entries.map(([id, d]) => `
                 <tr class="bg-white">
                     <td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
                     <td><div class="fw-bold small">${d.desc}</div><small class="text-muted text-uppercase">${d.categoria}</small></td>
                     <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td class="text-end">
-                        <button class="btn-action" onclick="window.abrirEdicao('${d.id}')"><i class="bi bi-pencil-fill"></i></button>
-                    </td>
+                    <td class="text-end"><button class="btn-action" onclick="window.abrirEdicao('${id}')"><i class="bi bi-pencil-fill"></i></button></td>
                 </tr>
             `).join('');
         }
@@ -688,7 +647,7 @@
 
         function calcularDivisaoIndividual(total, array) {
             const res = {}; let pSum = 0; let sem = [];
-            array.forEach(i => {
+            (array || []).forEach(i => {
                 const p = i.split(':');
                 if(p.length > 1) { const v = parseFloat(p[1])||0; res[p[0]] = total * (v/100); pSum += v; }
                 else sem.push(i);
@@ -716,16 +675,14 @@
         }
 
         function popularSelect(id, lista) {
-            const el = document.getElementById(id);
-            if (!el) return;
+            const el = document.getElementById(id); if (!el) return;
             const cur = el.value;
             el.innerHTML = '<option value="">- SELECIONAR -</option>' + lista.map(i => `<option value="${i}">${i}</option>`).join('');
             el.value = cur;
         }
 
         function gerarOpcoesDivisao(containerId, nomes) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
+            const container = document.getElementById(containerId); if (!container) return;
             const sel = capturarValoresDivisao(containerId);
             container.innerHTML = nomes.map((nome, idx) => {
                 const match = sel.find(s => s.split(':')[0] === nome);
@@ -737,8 +694,7 @@
 
         function aplicarMascaraMoeda(el) {
             el.addEventListener('input', e => {
-                let v = e.target.value.replace(/\D/g, '');
-                if (!v) { e.target.value = ''; return; }
+                let v = e.target.value.replace(/\D/g, ''); if (!v) { e.target.value = ''; return; }
                 v = (parseInt(v, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 e.target.value = v;
             });
