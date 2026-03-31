@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestor Financeiro Pro | Cloud</title>
+    <title>Gestor Financeiro Pro | Cloud & Secure</title>
     
-    <!-- Otimização para Mobile -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
     
-    <!-- Estilos Externos -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,7 +36,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* Ecrã de Login */
+        /* Login Screen */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); z-index: 10000;
@@ -49,7 +47,7 @@
             width: 100%; max-width: 400px; border: 4px solid #000;
         }
 
-        /* Conteúdo Principal */
+        /* App Layout */
         #app-content { display: none; padding-bottom: 50px; }
 
         .app-header {
@@ -75,7 +73,6 @@
         .nav-pills .nav-link:last-child { border-right: none; }
         .nav-pills .nav-link.active { background-color: var(--primary); color: #fff; }
 
-        /* Estilos de Cartões e Tabelas */
         .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; box-shadow: none; }
         .total-card { 
             padding: 1.25rem; background: var(--bg-secondary);
@@ -88,7 +85,7 @@
             background: var(--primary); color: #fff;
         }
 
-        .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.4rem; }
+        .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
         .form-control, .form-select { border-radius: var(--radius); border: 1px solid var(--border-color); padding: 0.65rem; font-size: 0.95rem; }
         
         .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; padding: 0.75rem; }
@@ -117,44 +114,51 @@
         }
         
         .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.65rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
-        
         .modal-extrato-header { background: var(--primary); color: white; padding: 2rem; }
+
+        .btn-action {
+            width: 32px; height: 32px; border-radius: var(--radius);
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border-color); background: white;
+            color: var(--primary); font-size: 0.9rem;
+        }
+        .btn-action:hover { background: var(--primary); color: #fff; }
     </style>
 </head>
 <body>
 
-    <!-- ECRÃ DE LOGIN -->
+    <!-- LOGIN -->
     <section id="login-screen">
         <div class="login-card">
             <h4 class="fw-900 mb-4 text-center">GESTOR PRO ACCESS</h4>
             <form id="login-form">
                 <div class="mb-3">
                     <label class="form-label">E-mail</label>
-                    <input type="email" id="login-email" class="form-control" required placeholder="seu@email.com" autocomplete="email">
+                    <input type="email" id="login-email" class="form-control" required placeholder="seu@email.com">
                 </div>
                 <div class="mb-4">
-                    <label class="form-label">Palavra-passe</label>
-                    <input type="password" id="login-pass" class="form-control" required placeholder="••••••••" autocomplete="current-password">
+                    <label class="form-label">Senha</label>
+                    <input type="password" id="login-pass" class="form-control" required placeholder="••••••••">
                 </div>
-                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100">Aceder ao Sistema</button>
+                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100">Entrar no Sistema</button>
             </form>
             <div id="login-error" class="alert alert-danger mt-3 fw-bold p-2 small" style="display:none; border-radius: 0; border: 2px solid #000;"></div>
         </div>
     </section>
 
-    <!-- SOBREPOSIÇÃO DE CARREGAMENTO -->
+    <!-- LOADING -->
     <div id="loading-overlay">
         <div class="spinner-border mb-3 text-primary" role="status"></div>
-        <span>A sincronizar dados...</span>
+        <span>Sincronizando Nuvem...</span>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- APP CONTENT -->
     <div id="app-content">
         <header class="app-header">
             <div class="container d-flex justify-content-between align-items-center">
                 <div>
-                    <h4 class="m-0 fw-800">GESTOR FINANCEIRO</h4>
-                    <div class="mt-1"><span class="db-badge">LIGADO À NUVEM</span></div>
+                    <h4 class="m-0 fw-800">GESTÃO FINANCEIRA</h4>
+                    <div class="mt-1"><span class="db-badge">CLOUD ATIVO</span></div>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-outline-dark btn-sm rounded-0 fw-700 px-3" onclick="window.exportarBackup()">BACKUP</button>
@@ -164,7 +168,6 @@
         </header>
 
         <div class="container">
-            <!-- Navegação por Abas -->
             <div class="mb-4">
                 <ul class="nav nav-pills" id="mainTabs" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#content-lancamentos">LANÇAMENTOS</button></li>
@@ -174,7 +177,7 @@
             </div>
 
             <div class="tab-content">
-                <!-- ABA: LANÇAMENTOS -->
+                <!-- LANÇAMENTOS -->
                 <div class="tab-pane fade show active" id="content-lancamentos">
                     <div class="card p-4">
                         <h6 class="fw-800 mb-4 text-uppercase">Nova Despesa</h6>
@@ -182,10 +185,10 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Descrição</label>
-                                    <input type="text" class="form-control" id="form-desc" required placeholder="Ex: Mercado, Aluguer...">
+                                    <input type="text" class="form-control" id="form-desc" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Data de Vencimento</label>
+                                    <label class="form-label">Vencimento</label>
                                     <input type="date" class="form-control" id="form-vencimento" required>
                                 </div>
                                 <div class="col-6 col-md-4">
@@ -197,7 +200,7 @@
                                     <input type="number" class="form-control" id="form-qtd-parcelas" value="1" min="1">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label">Pagador Original</label>
+                                    <label class="form-label">Pagante Original</label>
                                     <select id="form-pagante" class="form-select" required></select>
                                 </div>
                                 <div class="col-6">
@@ -205,20 +208,20 @@
                                     <select id="form-categoria" class="form-select" required></select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">Estado</label>
+                                    <label class="form-label">Status</label>
                                     <select id="form-status" class="form-select" required></select>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Configuração de Divisão:</label>
+                                    <label class="form-label">Divisão:</label>
                                     <div id="form-dividir-com" class="p-3 bg-light border" style="max-height: 200px; overflow-y: auto;"></div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-4">Guardar Registo Cloud</button>
+                            <button type="submit" class="btn btn-primary w-100 mt-4">Salvar no Cloud</button>
                         </form>
                     </div>
 
                     <div class="mt-4 pb-5">
-                        <h6 class="fw-800 text-muted mb-3 text-uppercase small">Últimos Movimentos</h6>
+                        <h6 class="fw-800 text-muted mb-3 text-uppercase small">Últimas Atividades</h6>
                         <div class="table-responsive">
                             <table class="table align-middle">
                                 <tbody id="log-home-body"></tbody>
@@ -227,13 +230,13 @@
                     </div>
                 </div>
 
-                <!-- ABA: RELATÓRIOS -->
+                <!-- RELATÓRIOS -->
                 <div class="tab-pane fade" id="content-relatorios">
                     <div class="card p-4 mb-4">
                         <div class="row g-2 align-items-end">
                             <div class="col-md-4"><label class="form-label">Mês</label><select id="filtro-mes" class="form-select"></select></div>
                             <div class="col-md-4"><label class="form-label">Ano</label><select id="filtro-ano" class="form-select"></select></div>
-                            <div class="col-md-4"><button class="btn btn-primary w-100" onclick="window.buscarRelatorio()">Filtrar Dados</button></div>
+                            <div class="col-md-4"><button class="btn btn-primary w-100" onclick="window.buscarRelatorio()">Filtrar</button></div>
                         </div>
                     </div>
                     <div id="area-relatorio" style="display: none;">
@@ -241,7 +244,7 @@
                         <div class="card p-4 mb-4 bg-light text-center">
                              <div class="row g-2 justify-content-center">
                                  <div class="col-sm-8"><select id="select-extrato" class="form-select"></select></div>
-                                 <div class="col-sm-3"><button class="btn btn-dark w-100 fw-700" onclick="window.abrirPopupExtrato()">Gerar Quadro</button></div>
+                                 <div class="col-sm-3"><button class="btn btn-dark w-100 fw-700" onclick="window.abrirPopupExtrato()">Ver Quadro</button></div>
                              </div>
                         </div>
                         <div class="table-responsive">
@@ -253,12 +256,12 @@
                     </div>
                 </div>
 
-                <!-- ABA: AJUSTES -->
+                <!-- AJUSTES -->
                 <div class="tab-pane fade" id="content-config">
                     <div class="row g-4">
                         <div class="col-md-4">
                             <div class="card p-4 h-100">
-                                <h6>Nomes</h6>
+                                <h6>Integrantes</h6>
                                 <div class="input-group mb-3">
                                     <input type="text" id="add-nome" class="form-control">
                                     <button class="btn btn-dark" onclick="window.salvarConfig('nomes', 'add-nome')">+</button>
@@ -288,9 +291,8 @@
                         </div>
                     </div>
                     <div class="card p-4 mt-4 text-center">
-                        <h6 class="fw-800">Restaurar Dados Antigos (JSON)</h6>
+                        <h6 class="fw-800">Restaurar Dados (JSON)</h6>
                         <input type="file" id="input-import" class="form-control mt-2" onchange="window.importarParaFirebase(this)">
-                        <p class="small text-muted mt-2">Isto irá migrar o seu ficheiro offline diretamente para o Firebase.</p>
                     </div>
                 </div>
             </div>
@@ -298,7 +300,7 @@
     </div>
 
     <!-- MODAIS -->
-    <!-- Quadro de Extrato -->
+    <!-- Extrato -->
     <div class="modal fade" id="modal-extrato" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark">
@@ -310,15 +312,11 @@
                         <h2 id="extrato-total" class="fw-900 m-0">R$ 0,00</h2>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-outline-dark fw-800 px-4" data-bs-dismiss="modal">FECHAR</button>
-                    <button type="button" class="btn btn-dark fw-800 px-4" onclick="window.print()">IMPRIMIR</button>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Editar -->
+    <!-- Editar -->
     <div class="modal fade" id="modal-editar" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark">
@@ -333,22 +331,30 @@
                         <div class="col-md-6"><label class="form-label">Vencimento</label><input type="date" class="form-control" id="edit-vencimento"></div>
                         <div class="col-md-6"><label class="form-label">Valor (BRL)</label><input type="text" class="form-control" id="edit-valor"></div>
                         <div class="col-md-6"><label class="form-label">Categoria</label><select id="edit-categoria" class="form-select"></select></div>
-                        <div class="col-md-6"><label class="form-label">Estado</label><select id="edit-status" class="form-select"></select></div>
+                        <div class="col-md-6"><label class="form-label">Status</label><select id="edit-status" class="form-select"></select></div>
                         <div class="col-12"><label class="form-label">Pagador</label><select id="edit-pagante" class="form-select"></select></div>
                         <div class="col-12"><label class="form-label">Divisão:</label><div id="edit-dividir-com" class="p-3 bg-light border"></div></div>
                     </div>
-                    <button class="btn btn-primary w-100 mt-4 py-3" onclick="window.atualizarLancamento()">Guardar Alterações</button>
+                    
+                    <div id="edit-group-notice" class="alert alert-info mt-3 p-2 small" style="display:none">
+                        <i class="bi bi-info-circle"></i> Este item pertence a um grupo de parcelas.
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn btn-primary py-3" onclick="window.atualizarLancamento(false)">Salvar Apenas Este</button>
+                        <button id="btn-update-group" class="btn btn-dark py-3" style="display:none" onclick="window.atualizarLancamento(true)">Salvar em Todo o Grupo</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Exclusão -->
+    <!-- Excluir -->
     <div class="modal fade" id="modal-excluir" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-0 border-dark p-4 text-center">
                 <h5 class="fw-900 text-uppercase mb-3">Eliminar Registo?</h5>
-                <p class="text-muted small">Este item faz parte de um grupo de parcelas.</p>
+                <p class="text-muted small">Escolha como deseja excluir este item.</p>
                 <div class="d-grid gap-2 mt-4">
                     <button class="btn btn-outline-dark fw-800" onclick="window.confirmarAcaoExcluir(false)">SÓ ESTA PARCELA</button>
                     <button class="btn btn-dark fw-800" onclick="window.confirmarAcaoExcluir(true)">TODO O GRUPO</button>
@@ -358,7 +364,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK e Lógica -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="module">
@@ -366,7 +371,6 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIGURAÇÃO DO SEU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyA_2v8Gs8D_j-QGXlCJMLit-CkLe3LWpU8",
             authDomain: "gestorfinanceiro-eb906.firebaseapp.com",
@@ -386,9 +390,8 @@
         let modalExtrato, modalEditar, modalExcluir;
         let idFilaExclusao = null;
 
-        // --- AUTENTICAÇÃO ---
-        const loginForm = document.getElementById('login-form');
-        loginForm.addEventListener('submit', async (e) => {
+        // --- AUTH ---
+        document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -397,34 +400,32 @@
 
             try {
                 btn.disabled = true;
-                btn.textContent = "A validar acesso...";
+                btn.textContent = "Verificando...";
                 errEl.style.display = 'none';
                 await signInWithEmailAndPassword(auth, email, pass);
             } catch (err) {
                 btn.disabled = false;
-                btn.textContent = "Aceder ao Sistema";
-                errEl.textContent = "Erro: " + (err.code === 'auth/invalid-credential' ? "E-mail ou senha incorretos." : err.message);
+                btn.textContent = "Entrar no Sistema";
+                errEl.textContent = "Erro: Credenciais inválidas.";
                 errEl.style.display = 'block';
             }
-        });
-
-        window.fazerLogout = () => {
-            if(confirm("Deseja encerrar a sessão atual?")) signOut(auth);
         };
+
+        window.fazerLogout = () => { if(confirm("Deseja sair?")) signOut(auth); };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-content').style.display = 'block';
-                iniciarSyncRealtime();
+                iniciarSync();
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('app-content').style.display = 'none';
             }
         });
 
-        // --- SINCRONIZAÇÃO EM TEMPO REAL ---
-        function iniciarSyncRealtime() {
+        // --- SYNC ---
+        function iniciarSync() {
             document.getElementById('loading-overlay').style.display = 'flex';
             onValue(rootRef, (snapshot) => {
                 const data = snapshot.val();
@@ -437,10 +438,11 @@
                 document.getElementById('loading-overlay').style.display = 'none';
                 refreshUI();
                 renderizarRecentes();
+                if (document.getElementById('area-relatorio').style.display === 'block') buscarRelatorio();
             });
         }
 
-        // --- LANÇAMENTOS ---
+        // --- CORE ---
         window.salvarNovoLancamento = async (e) => {
             e.preventDefault();
             const valorTotal = parseFloat(document.getElementById('form-valor').value.replace(/\./g, '').replace(',', '.'));
@@ -449,18 +451,18 @@
             const dataOrig = document.getElementById('form-vencimento').value;
             const groupId = qtd > 1 ? "G" + Date.now() : null;
 
-            if (divisao.length === 0) return alert("Erro: Identifique quem participa da divisão.");
+            if (divisao.length === 0) return alert("Erro: Selecione os integrantes.");
 
             for (let i = 0; i < qtd; i++) {
-                const dataObj = new Date(dataOrig + 'T12:00:00');
-                dataObj.setMonth(dataObj.getMonth() + i);
+                const d = new Date(dataOrig + 'T12:00:00');
+                d.setMonth(d.getMonth() + i);
                 
-                const novoRef = push(ref(dbFirebase, 'gestor_pro/lancamentos'));
-                await set(novoRef, {
-                    id: novoRef.key,
+                const itemRef = push(ref(dbFirebase, 'gestor_pro/lancamentos'));
+                await set(itemRef, {
+                    id: itemRef.key,
                     groupId: groupId,
                     desc: document.getElementById('form-desc').value.toUpperCase() + (qtd > 1 ? ` (${i+1}/${qtd})` : ""),
-                    vencimento: dataObj.toISOString().split('T')[0],
+                    vencimento: d.toISOString().split('T')[0],
                     valor: valorTotal,
                     categoria: document.getElementById('form-categoria').value,
                     pagante: document.getElementById('form-pagante').value,
@@ -470,81 +472,14 @@
             }
             e.target.reset();
             document.getElementById('form-qtd-parcelas').value = 1;
-            alert("Lançamento(s) sincronizado(s)!");
         };
 
-        // --- RELATÓRIOS ---
-        window.buscarRelatorio = () => {
-            const m = document.getElementById('filtro-mes').value;
-            const a = document.getElementById('filtro-ano').value;
-            const lista = Object.values(dbLocal.lancamentos).filter(d => {
-                const p = d.vencimento.split('-');
-                return p[1] === m && p[0] === a;
-            }).sort((x, y) => x.vencimento.localeCompare(y.vencimento));
-
-            document.getElementById('area-relatorio').style.display = 'block';
-            
-            const totais = {};
-            (dbLocal.config.nomes || []).forEach(n => totais[n] = 0);
-            
-            lista.forEach(d => {
-                const res = calcularDivisaoIndividual(d.valor, d.divisao);
-                for(let n in res) if(totais.hasOwnProperty(n)) totais[n] += res[n];
-            });
-
-            document.getElementById('container-totais').innerHTML = Object.entries(totais).map(([n,v]) => `
-                <div class="col">
-                    <div class="total-card">
-                        <div class="total-icon"><i class="bi bi-person-badge"></i></div>
-                        <div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('tabela-relatorio-body').innerHTML = lista.map(d => `
-                <tr>
-                    <td class="small fw-bold text-muted">${d.vencimento.split('-').reverse().join('/')}</td>
-                    <td class="small fw-bold">${d.desc}</td>
-                    <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                    <td class="small text-uppercase">${d.pagante}</td>
-                    <td><span class="badge-status">${d.status}</span></td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-dark fw-800" onclick="window.abrirEdicao('${d.id}')">EDITAR</button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="window.confirmarExcluir('${d.id}')"><i class="bi bi-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-
-            popularSelect('select-extrato', dbLocal.config.nomes || []);
-        };
-
-        window.abrirPopupExtrato = () => {
-            const int = document.getElementById('select-extrato').value;
-            const m = document.getElementById('filtro-mes').value, a = document.getElementById('filtro-ano').value;
-            if (!int) return alert("Selecione um nome.");
-
-            const items = Object.values(dbLocal.lancamentos).filter(d => {
-                const p = d.vencimento.split('-');
-                return p[1] === m && p[0] === a && d.divisao.some(s => s.split(':')[0] === int);
-            });
-
-            let t = 0;
-            const rows = items.map(d => {
-                const parte = calcularDivisaoIndividual(d.valor, d.divisao)[int] || 0;
-                t += parte;
-                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td class="fw-bold small">${d.desc}</td><td class="text-end fw-900">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
-            }).join('');
-
-            document.getElementById('extrato-nome-header').innerHTML = `<h2 class="m-0 text-uppercase fw-900">${int}</h2><p class="m-0 small">PERÍODO: ${m}/${a}</p>`;
-            document.getElementById('extrato-tabela-container').innerHTML = `<table class="table table-sm border"><thead><tr><th>DATA</th><th>DESCRIÇÃO</th><th class="text-end">A SUA PARTE</th></tr></thead><tbody>${rows}</tbody></table>`;
-            document.getElementById('extrato-total').textContent = "R$ " + t.toLocaleString('pt-BR',{minimumFractionDigits:2});
-            modalExtrato.show();
-        };
-
-        // --- EDIÇÃO E EXCLUSÃO ---
         window.abrirEdicao = (id) => {
             const d = dbLocal.lancamentos[id];
-            if(!d) return;
+            if(!d) {
+                console.error("Lançamento não encontrado para o ID:", id);
+                return;
+            }
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-desc').value = d.desc;
             document.getElementById('edit-vencimento').value = d.vencimento;
@@ -552,32 +487,63 @@
             document.getElementById('edit-categoria').value = d.categoria;
             document.getElementById('edit-status').value = d.status;
             document.getElementById('edit-pagante').value = d.pagante;
+            
+            const groupNotice = document.getElementById('edit-group-notice');
+            const groupBtn = document.getElementById('btn-update-group');
+            
+            if (d.groupId) {
+                groupNotice.style.display = 'block';
+                groupBtn.style.display = 'block';
+            } else {
+                groupNotice.style.display = 'none';
+                groupBtn.style.display = 'none';
+            }
+            
             carregarDivisaoParaEdicao('edit-dividir-com', d.divisao);
             modalEditar.show();
         };
 
-        window.atualizarLancamento = async () => {
+        window.atualizarLancamento = async (aplicarAoGrupo) => {
             const id = document.getElementById('edit-id').value;
-            const val = parseFloat(document.getElementById('edit-valor').value.replace(/\./g, '').replace(',', '.'));
+            const original = dbLocal.lancamentos[id];
+            const valor = parseFloat(document.getElementById('edit-valor').value.replace(/\./g, '').replace(',', '.'));
+            
             const data = {
                 desc: document.getElementById('edit-desc').value.toUpperCase(),
                 vencimento: document.getElementById('edit-vencimento').value,
-                valor: val,
+                valor: valor,
                 categoria: document.getElementById('edit-categoria').value,
                 status: document.getElementById('edit-status').value,
                 pagante: document.getElementById('edit-pagante').value,
                 divisao: capturarValoresDivisao('edit-dividir-com')
             };
-            await update(ref(dbFirebase, `gestor_pro/lancamentos/${id}`), data);
+
+            if (aplicarAoGrupo && original.groupId) {
+                // Atualiza todos do mesmo grupo (Exceto a data e descrição da parcela específica)
+                const idsGrupo = Object.keys(dbLocal.lancamentos).filter(k => dbLocal.lancamentos[k].groupId === original.groupId);
+                for(let gid of idsGrupo) {
+                    const itemGrupo = dbLocal.lancamentos[gid];
+                    await update(ref(dbFirebase, `gestor_pro/lancamentos/${gid}`), {
+                        // Não mudamos a data e o numero da parcela na descrição geral, mantemos o padrão
+                        categoria: data.categoria,
+                        status: data.status,
+                        pagante: data.pagante,
+                        divisao: data.divisao,
+                        valor: data.valor
+                    });
+                }
+            } else {
+                await update(ref(dbFirebase, `gestor_pro/lancamentos/${id}`), data);
+            }
+            
             modalEditar.hide();
-            window.buscarRelatorio();
         };
 
         window.confirmarExcluir = (id) => {
             idFilaExclusao = id;
             const item = dbLocal.lancamentos[id];
             if (item && item.groupId) modalExcluir.show();
-            else if(confirm("Deseja eliminar este registo permanentemente?")) window.confirmarAcaoExcluir(false);
+            else if(confirm("Deseja eliminar este registo?")) window.confirmarAcaoExcluir(false);
         };
 
         window.confirmarAcaoExcluir = async (todos) => {
@@ -589,58 +555,102 @@
                 await remove(ref(dbFirebase, `gestor_pro/lancamentos/${idFilaExclusao}`));
             }
             modalExcluir.hide();
-            window.buscarRelatorio();
         };
 
-        // --- AJUSTES ---
+        window.buscarRelatorio = () => {
+            const m = document.getElementById('filtro-mes').value;
+            const a = document.getElementById('filtro-ano').value;
+            const filtrados = Object.values(dbLocal.lancamentos).filter(d => {
+                const p = d.vencimento.split('-');
+                return p[1] === m && p[0] === a;
+            }).sort((x, y) => x.vencimento.localeCompare(y.vencimento));
+
+            document.getElementById('area-relatorio').style.display = 'block';
+            
+            const totais = {};
+            (dbLocal.config.nomes || []).forEach(n => totais[n] = 0);
+            filtrados.forEach(d => {
+                const res = calcularDivisaoIndividual(d.valor, d.divisao);
+                for(let n in res) if(totais.hasOwnProperty(n)) totais[n] += res[n];
+            });
+
+            document.getElementById('container-totais').innerHTML = Object.entries(totais).map(([n,v]) => `
+                <div class="col"><div class="total-card"><div class="total-icon"><i class="bi bi-hash"></i></div><div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div></div></div>
+            `).join('');
+
+            document.getElementById('tabela-relatorio-body').innerHTML = filtrados.map(d => `
+                <tr>
+                    <td class="small fw-bold text-muted">${d.vencimento.split('-').reverse().join('/')}</td>
+                    <td class="small fw-bold">${d.desc}</td>
+                    <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                    <td class="small text-uppercase">${d.pagante}</td>
+                    <td><span class="badge-status">${d.status}</span></td>
+                    <td class="text-end">
+                        <button class="btn-action" onclick="window.abrirEdicao('${d.id}')"><i class="bi bi-pencil-fill"></i></button>
+                        <button class="btn-action text-danger" onclick="window.confirmarExcluir('${d.id}')"><i class="bi bi-trash-fill"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            popularSelect('select-extrato', dbLocal.config.nomes || []);
+        };
+
+        window.abrirPopupExtrato = () => {
+            const int = document.getElementById('select-extrato').value;
+            const m = document.getElementById('filtro-mes').value, a = document.getElementById('filtro-ano').value;
+            const items = Object.values(dbLocal.lancamentos).filter(d => {
+                const p = d.vencimento.split('-');
+                return p[1] === m && p[0] === a && d.divisao.some(s => s.split(':')[0] === int);
+            });
+            let t = 0;
+            const rows = items.map(d => {
+                const parte = calcularDivisaoIndividual(d.valor, d.divisao)[int] || 0;
+                t += parte;
+                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td class="fw-bold">${d.desc}</td><td class="text-end fw-900">R$ ${parte.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
+            }).join('');
+            document.getElementById('extrato-nome-header').innerHTML = `<h2 class="m-0 text-uppercase fw-900">${int}</h2><p class="m-0 small">EXTRATO: ${m}/${a}</p>`;
+            document.getElementById('extrato-tabela-container').innerHTML = `<table class="table table-sm"><thead><tr><th>DATA</th><th>DESCRIÇÃO</th><th class="text-end">PARCELA</th></tr></thead><tbody>${rows}</tbody></table>`;
+            document.getElementById('extrato-total').textContent = "R$ " + t.toLocaleString('pt-BR',{minimumFractionDigits:2});
+            modalExtrato.show();
+        };
+
         window.salvarConfig = (path, inputId) => {
-            const val = document.getElementById(inputId).value.trim().toUpperCase();
-            if(!val) return;
+            const v = document.getElementById(inputId).value.trim().toUpperCase();
+            if(!v) return;
             const lista = dbLocal.config[path] || [];
-            if(lista.includes(val)) return;
-            update(ref(dbFirebase, 'gestor_pro/config'), { [path]: [...lista, val] });
+            update(ref(dbFirebase, 'gestor_pro/config'), { [path]: [...new Set([...lista, v])] });
             document.getElementById(inputId).value = '';
         };
 
         window.removerConfig = (path, idx) => {
-            if(!confirm("Eliminar permanentemente?")) return;
+            if(!confirm("Remover?")) return;
             const lista = [...dbLocal.config[path]];
             lista.splice(idx, 1);
             update(ref(dbFirebase, 'gestor_pro/config'), { [path]: lista });
         };
 
-        // --- BACKUP E IMPORTAÇÃO ---
-        window.importarParaFirebase = (input) => {
-            const f = input.files[0];
-            if(!f) return;
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                try {
-                    const json = JSON.parse(e.target.result);
-                    if(confirm("Deseja migrar os dados do ficheiro para a nuvem? Isto substituirá os atuais.")) {
-                        let finalL = {};
-                        if(Array.isArray(json.lancamentos)) {
-                            json.lancamentos.forEach(l => { 
-                                const k = push(ref(dbFirebase, 'temp')).key; 
-                                finalL[k] = {...l, id: k}; 
-                            });
-                        } else { finalL = json.lancamentos || {}; }
-                        await set(rootRef, { config: json.config || dbLocal.config, lancamentos: finalL });
-                        alert("Migração bem-sucedida!");
-                    }
-                } catch(e) { alert("Erro ao ler o ficheiro JSON."); }
-            };
-            reader.readAsText(f);
-        };
-
         window.exportarBackup = () => {
             const blob = new Blob([JSON.stringify(dbLocal, null, 2)], {type: 'application/json'});
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `GESTOR_SECURE_CLOUD_BK.json`;
+            a.download = `GESTOR_PRO_CLOUD_BK.json`;
             a.click();
         };
 
-        // --- HELPERS UI ---
+        window.importarParaFirebase = (input) => {
+            const f = input.files[0];
+            const r = new FileReader();
+            r.onload = async (e) => {
+                const j = JSON.parse(e.target.result);
+                if(confirm("Importar backup?")) {
+                    let finalL = {};
+                    if(Array.isArray(j.lancamentos)) j.lancamentos.forEach(l => { const k = push(ref(dbFirebase, 't')).key; finalL[k] = {...l, id: k}; });
+                    else finalL = j.lancamentos || {};
+                    await set(rootRef, { config: j.config, lancamentos: finalL });
+                }
+            };
+            r.readAsText(f);
+        };
+
+        // --- HELPERS ---
         function refreshUI() {
             const c = dbLocal.config;
             popularSelect('form-categoria', c.categorias || []);
@@ -656,12 +666,15 @@
 
         function renderizarRecentes() {
             const b = document.getElementById('log-home-body');
-            const list = Object.values(dbLocal.lancamentos).sort((x,y) => y.vencimento.localeCompare(x.vencimento)).slice(0, 10);
-            b.innerHTML = list.map(d => `
+            const lista = Object.values(dbLocal.lancamentos).sort((x,y) => y.vencimento.localeCompare(x.vencimento)).slice(0, 10);
+            b.innerHTML = lista.map(d => `
                 <tr class="bg-white">
                     <td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
                     <td><div class="fw-bold small">${d.desc}</div><small class="text-muted text-uppercase">${d.categoria}</small></td>
                     <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td class="text-end">
+                        <button class="btn-action" onclick="window.abrirEdicao('${d.id}')"><i class="bi bi-pencil-fill"></i></button>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -669,10 +682,7 @@
         function renderizarListasConfig() {
             ['nomes','categorias','status'].forEach(t => {
                 const cid = (t === 'nomes') ? 'lista-nomes' : (t === 'categorias') ? 'lista-categorias' : 'lista-status';
-                const container = document.getElementById(cid);
-                if(container) container.innerHTML = (dbLocal.config[t] || []).map((it, idx) => `
-                    <div class="config-pill"><span>${it}</span><button class="btn btn-sm text-danger p-0" onclick="window.removerConfig('${t}', ${idx})"><i class="bi bi-x-circle-fill"></i></button></div>
-                `).join('');
+                document.getElementById(cid).innerHTML = (dbLocal.config[t] || []).map((it, idx) => `<div class="config-pill"><span>${it}</span><button class="btn btn-sm text-danger p-0" onclick="window.removerConfig('${t}', ${idx})"><i class="bi bi-x-circle-fill"></i></button></div>`).join('');
             });
         }
 
@@ -683,10 +693,7 @@
                 if(p.length > 1) { const v = parseFloat(p[1])||0; res[p[0]] = total * (v/100); pSum += v; }
                 else sem.push(i);
             });
-            if(sem.length > 0) {
-                const resto = total * (Math.max(0, 100 - pSum) / 100);
-                sem.forEach(n => res[n] = resto / sem.length);
-            }
+            if(sem.length > 0) { const restoVal = total * (Math.max(0, 100 - pSum) / 100); sem.forEach(n => res[n] = restoVal / sem.length); }
             return res;
         }
 
@@ -711,9 +718,9 @@
         function popularSelect(id, lista) {
             const el = document.getElementById(id);
             if (!el) return;
-            const current = el.value;
+            const cur = el.value;
             el.innerHTML = '<option value="">- SELECIONAR -</option>' + lista.map(i => `<option value="${i}">${i}</option>`).join('');
-            el.value = current;
+            el.value = cur;
         }
 
         function gerarOpcoesDivisao(containerId, nomes) {
@@ -724,15 +731,7 @@
                 const match = sel.find(s => s.split(':')[0] === nome);
                 const isChecked = !!match;
                 const percVal = match && match.includes(':') ? match.split(':')[1] : '';
-                return `
-                <div class="divider-box">
-                    <div class="form-check m-0">
-                        <input class="form-check-input border-dark" type="checkbox" id="${containerId}-${idx}" value="${nome}" ${isChecked ? 'checked' : ''} onchange="this.closest('.divider-box').querySelector('.perc-field').disabled = !this.checked">
-                        <label class="form-check-label small fw-bold text-uppercase" for="${containerId}-${idx}">${nome}</label>
-                    </div>
-                    <div class="input-group input-group-sm" style="width: 80px;"><input type="number" class="form-control perc-field border-dark" placeholder="%" ${!isChecked ? 'disabled' : ''} value="${percVal}"></div>
-                </div>
-                `;
+                return `<div class="divider-box"><div class="form-check m-0"><input class="form-check-input border-dark" type="checkbox" id="${containerId}-${idx}" value="${nome}" ${isChecked ? 'checked' : ''} onchange="this.closest('.divider-box').querySelector('.perc-field').disabled = !this.checked"><label class="form-check-label small fw-bold text-uppercase" for="${containerId}-${idx}">${nome}</label></div><div class="input-group input-group-sm" style="width: 80px;"><input type="number" class="form-control perc-field border-dark" placeholder="%" ${!isChecked ? 'disabled' : ''} value="${percVal}"></div></div>`;
             }).join('');
         }
 
