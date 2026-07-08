@@ -112,6 +112,24 @@
         .btn-action:hover { background: var(--primary); color: #fff; }
         
         .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.6rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
+        
+        /* Cores de Status Solicitadas */
+        .badge-status-pago {
+            background-color: #22c55e !important;
+            color: #ffffff !important;
+            border-color: #16a34a !important;
+        }
+        .badge-status-pendente {
+            background-color: #eab308 !important;
+            color: #000000 !important;
+            border-color: #ca8a04 !important;
+        }
+        .badge-status-vencido {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #dc2626 !important;
+        }
+
         .modal-extrato-header { background: var(--primary); color: white; padding: 2rem; }
         .config-pill { display: flex; justify-content: space-between; align-items: center; padding: 8px; border: 1px solid #000; margin-bottom: 4px; font-size: 0.8rem; font-weight: 700; }
     </style>
@@ -163,6 +181,11 @@
                 <ul class="nav nav-pills" id="mainTabs" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#content-lancamentos">LANÇAMENTOS</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#content-relatorios">RELATÓRIOS</button></li>
+                    <li class="nav-item">
+                        <button class="nav-link d-flex align-items-center gap-1" data-bs-toggle="tab" data-bs-target="#content-vencidos">
+                            VENCIDOS <span id="badge-vencidos-count" class="badge bg-danger ms-1" style="display:none; font-size: 0.65rem;">0</span>
+                        </button>
+                    </li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#content-config">AJUSTES</button></li>
                 </ul>
             </div>
@@ -207,6 +230,31 @@
                              </div>
                         </div>
                         <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Data</th><th>Desc</th><th>Valor</th><th>Pagante</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="tabela-relatorio-body"></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- ABA VENCIDOS -->
+                <div class="tab-pane fade" id="content-vencidos">
+                    <div class="card p-4">
+                        <h6 class="fw-800 mb-4 text-uppercase text-danger">Lançamentos Vencidos</h6>
+                        <p class="small text-muted mb-4">Abaixo estão listados todos os lançamentos que não estão marcados como "PAGO" e já passaram da data de vencimento.</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Desc</th>
+                                        <th>Valor</th>
+                                        <th>Pagante</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-vencidos-body">
+                                    <!-- Conteúdo dinâmico inserido via JS -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -299,6 +347,29 @@
         let modalEditar, modalExcluir, modalExtrato;
         let idFilaExclusao = null;
 
+        // AUXILIARES DE DATA E STATUS
+        function obterDataHojeString() {
+            const hoje = new Date();
+            const yyyy = hoje.getFullYear();
+            const mm = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dd = String(hoje.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function obterStatusEClasse(d, hojeStr) {
+            const statusOriginal = (d.status || '').toUpperCase().trim();
+            const isPago = statusOriginal === 'PAGO';
+            const isVencido = !isPago && d.vencimento < hojeStr;
+
+            if (isPago) {
+                return { label: 'PAGO', classe: 'badge-status-pago' };
+            } else if (isVencido || statusOriginal === 'VENCIDO') {
+                return { label: 'VENCIDO', classe: 'badge-status-vencido' };
+            } else {
+                return { label: d.status || 'PENDENTE', classe: 'badge-status-pendente' };
+            }
+        }
+
         // AUTH
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
@@ -332,6 +403,7 @@
                 document.getElementById('loading-overlay').style.display = 'none';
                 refreshUI();
                 renderizarRecentes();
+                renderizarVencidos();
                 if(document.getElementById('area-relatorio').style.display === 'block') window.buscarRelatorio();
             });
         }
@@ -432,19 +504,23 @@
                 <div class="col"><div class="total-card"><div class="total-icon"><i class="bi bi-hash"></i></div><div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div></div></div>
             `).join('');
 
-            document.getElementById('tabela-relatorio-body').innerHTML = filtrados.map(([key, d]) => `
-                <tr>
-                    <td class="small fw-bold text-muted">${d.vencimento.split('-').reverse().join('/')}</td>
-                    <td class="small fw-bold">${d.desc}</td>
-                    <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                    <td class="small text-uppercase">${d.pagante}</td>
-                    <td><span class="badge-status">${d.status}</span></td>
-                    <td class="text-end">
-                        <button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button>
-                        <button class="btn-action text-danger" onclick="window.confirmarExcluir('${key}')"><i class="bi bi-trash-fill"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+            const hojeStr = obterDataHojeString();
+            document.getElementById('tabela-relatorio-body').innerHTML = filtrados.map(([key, d]) => {
+                const info = obterStatusEClasse(d, hojeStr);
+                return `
+                    <tr>
+                        <td class="small fw-bold text-muted">${d.vencimento.split('-').reverse().join('/')}</td>
+                        <td class="small fw-bold">${d.desc}</td>
+                        <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                        <td class="small text-uppercase">${d.pagante}</td>
+                        <td><span class="badge-status ${info.classe}">${info.label}</span></td>
+                        <td class="text-end">
+                            <button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button>
+                            <button class="btn-action text-danger" onclick="window.confirmarExcluir('${key}')"><i class="bi bi-trash-fill"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
             popularSelect('select-extrato', dbLocal.config.nomes || []);
         };
 
@@ -536,14 +612,69 @@
         function renderizarRecentes() {
             const b = document.getElementById('log-home-body');
             const entries = Object.entries(dbLocal.lancamentos).sort((x,y) => y[1].vencimento.localeCompare(x[1].vencimento)).slice(0, 10);
-            b.innerHTML = entries.map(([key, d]) => `
-                <tr class="bg-white">
-                    <td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
-                    <td><div class="fw-bold small">${d.desc}</div><small class="text-muted text-uppercase">${d.categoria}</small></td>
-                    <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td class="text-end"><button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button></td>
-                </tr>
-            `).join('');
+            const hojeStr = obterDataHojeString();
+            b.innerHTML = entries.map(([key, d]) => {
+                const info = obterStatusEClasse(d, hojeStr);
+                return `
+                    <tr class="bg-white">
+                        <td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
+                        <td>
+                            <div class="fw-bold small">${d.desc}</div>
+                            <div class="d-flex align-items-center gap-2 mt-1">
+                                <small class="text-muted text-uppercase">${d.categoria}</small>
+                                <span class="badge-status ${info.classe}" style="font-size:0.55rem; padding: 1px 5px;">${info.label}</span>
+                            </div>
+                        </td>
+                        <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                        <td class="text-end"><button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // RENDERIZAR TABELA DE VENCIDOS E ATUALIZAR CONTADOR
+        function renderizarVencidos() {
+            const hojeStr = obterDataHojeString();
+            const vencidos = Object.entries(dbLocal.lancamentos).filter(([k, d]) => {
+                const info = obterStatusEClasse(d, hojeStr);
+                return info.label === 'VENCIDO';
+            }).sort((x, y) => x[1].vencimento.localeCompare(y[1].vencimento));
+
+            // Atualiza o contador do menu
+            const badge = document.getElementById('badge-vencidos-count');
+            if (badge) {
+                if (vencidos.length > 0) {
+                    badge.textContent = vencidos.length;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            const tbody = document.getElementById('tabela-vencidos-body');
+            if (!tbody) return;
+
+            if (vencidos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">Nenhum lançamento vencido encontrado! 🎉</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = vencidos.map(([key, d]) => {
+                const info = obterStatusEClasse(d, hojeStr);
+                return `
+                    <tr>
+                        <td class="small fw-bold text-danger">${d.vencimento.split('-').reverse().join('/')}</td>
+                        <td class="small fw-bold">${d.desc}</td>
+                        <td class="fw-900 text-danger">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                        <td class="small text-uppercase">${d.pagante}</td>
+                        <td><span class="badge-status ${info.classe}">${info.label}</span></td>
+                        <td class="text-end">
+                            <button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button>
+                            <button class="btn-action text-danger" onclick="window.confirmarExcluir('${key}')"><i class="bi bi-trash-fill"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function renderizarListasConfig() {
