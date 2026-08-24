@@ -1,332 +1,908 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestor Financeiro Pro | Cloud & Secure</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0f172a">
-    
+    <title>Hub de Gestão Centralizada</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        :root { 
-            --primary: #0f172a; 
-            --primary-accent: #334155; 
-            --bg-body: #ffffff; 
-            --bg-secondary: #f8fafc;
-            --text-main: #000000;
-            --text-muted: #475569;
-            --border-color: #000000;
-            --border-soft: #e2e8f0;
-            --radius: 2px;
+        :root {
+            --ink: #0f172a;
+            --ink-2: #334155;
+            --muted: #64748b;
+            --line: #dbe3ec;
+            --surface: #ffffff;
+            --canvas: #f3f6fa;
+            --soft: #f8fafc;
+            --blue: #2563eb;
+            --cyan: #0891b2;
+            --green: #16a34a;
+            --amber: #d97706;
+            --red: #dc2626;
+            --orange: #ea580c;
+            --radius: 14px;
+            --shadow: 0 12px 35px rgba(15, 23, 42, .08);
         }
 
-        body { 
-            background-color: var(--bg-body); 
-            font-family: 'Inter', sans-serif; 
-            color: var(--text-main);
+        * { box-sizing: border-box; }
+        html { min-height: 100%; background: var(--canvas); }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--canvas);
+            color: var(--ink);
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             -webkit-font-smoothing: antialiased;
-            letter-spacing: -0.02em;
         }
+
+        button, input, select, textarea { font: inherit; }
+        button { touch-action: manipulation; }
+        .fw-800 { font-weight: 800 !important; }
+        .fw-900 { font-weight: 900 !important; }
+        .text-muted-2 { color: var(--muted) !important; }
+        .min-w-0 { min-width: 0; }
 
         /* Login */
         #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary); z-index: 10000;
-            display: flex; justify-content: center; align-items: center; padding: 20px;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(37, 99, 235, .26), transparent 32%),
+                radial-gradient(circle at 85% 85%, rgba(8, 145, 178, .22), transparent 30%),
+                var(--ink);
         }
-        .login-card {
-            background: #fff; padding: 2.5rem; border-radius: var(--radius);
-            width: 100%; max-width: 400px; border: 4px solid #000;
+        .login-shell {
+            display: grid;
+            grid-template-columns: 1.08fr .92fr;
+            width: min(920px, 100%);
+            min-height: 545px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 24px;
+            background: #fff;
+            box-shadow: 0 30px 80px rgba(0,0,0,.28);
         }
+        .login-intro {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px;
+            overflow: hidden;
+            color: #fff;
+            background: linear-gradient(145deg, #111827, #0f172a 58%, #172554);
+        }
+        .login-intro::after {
+            content: "";
+            position: absolute;
+            right: -90px;
+            bottom: -110px;
+            width: 320px;
+            height: 320px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 50%;
+            box-shadow: 0 0 0 48px rgba(255,255,255,.025), 0 0 0 96px rgba(255,255,255,.018);
+        }
+        .brand-mark {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+        .brand-symbol {
+            display: inline-grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--blue), #22d3ee);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, .32);
+        }
+        .login-copy { position: relative; z-index: 1; }
+        .login-copy h1 { max-width: 440px; margin: 0 0 16px; font-size: clamp(2rem, 4vw, 3.15rem); font-weight: 900; line-height: 1.02; letter-spacing: -.06em; }
+        .login-copy p { max-width: 420px; margin: 0; color: #cbd5e1; line-height: 1.65; }
+        .login-modules { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; }
+        .login-module { padding: 7px 10px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; color: #dbeafe; font-size: .72rem; font-weight: 700; }
+        .login-card { display: flex; flex-direction: column; justify-content: center; padding: 48px; }
+        .login-card h2 { margin: 0 0 8px; font-size: 1.7rem; font-weight: 900; letter-spacing: -.04em; }
+        .login-card .lead-copy { margin-bottom: 30px; color: var(--muted); font-size: .9rem; }
+        .login-help { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .78rem; line-height: 1.5; }
 
-        /* Main */
-        #app-content { display: none; padding-bottom: 50px; }
+        /* Global UI */
+        #app-content { display: none; min-height: 100vh; }
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(248, 250, 252, .88);
+            backdrop-filter: blur(5px);
+        }
+        .loading-card { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: var(--shadow); font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
 
         .app-header {
-            background: var(--bg-body); padding: 1.5rem 0;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 2rem; position: sticky; top: 0; z-index: 1000;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255,255,255,.94);
+            backdrop-filter: blur(16px);
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 74px; gap: 20px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; }
+        .header-brand .brand-symbol { width: 38px; height: 38px; border-radius: 10px; }
+        .header-title { margin: 0; font-size: 1rem; font-weight: 900; letter-spacing: -.035em; }
+        .header-subtitle { margin: 2px 0 0; color: var(--muted); font-size: .7rem; }
+        .connection-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; border: 1px solid #bbf7d0; border-radius: 999px; background: #f0fdf4; color: #166534; font-size: .62rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+        .connection-badge.local { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+        .connection-badge.offline { border-color: #fecaca; background: #fef2f2; color: #b91c1c; }
+        .connection-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px currentColor; opacity: .72; }
+
+        .main-nav-wrap { border-bottom: 1px solid var(--line); background: #fff; }
+        .main-nav { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+        .main-nav::-webkit-scrollbar { display: none; }
+        .main-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 0 auto;
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--muted);
+            font-size: .78rem;
+            font-weight: 750;
+        }
+        .main-nav-btn:hover { background: var(--soft); color: var(--ink); }
+        .main-nav-btn.active { background: var(--ink); color: #fff; }
+        .nav-count { min-width: 20px; padding: 2px 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: .6rem; text-align: center; }
+
+        main.container { padding-top: 28px; padding-bottom: 70px; }
+        .app-page { display: none; }
+        .app-page.active { display: block; animation: pageIn .18s ease-out; }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+        .page-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+        .page-kicker { margin-bottom: 5px; color: var(--blue); font-size: .68rem; font-weight: 850; text-transform: uppercase; letter-spacing: .12em; }
+        .page-heading h1 { margin: 0; font-size: clamp(1.65rem, 4vw, 2.25rem); font-weight: 900; letter-spacing: -.055em; }
+        .page-heading p { max-width: 680px; margin: 7px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.55; }
+
+        .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 3px 15px rgba(15,23,42,.025); }
+        .panel-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+        .panel-title { margin: 0; font-size: .88rem; font-weight: 850; letter-spacing: -.02em; }
+        .panel-subtitle { margin: 3px 0 0; color: var(--muted); font-size: .72rem; }
+        .panel-body { padding: 20px; }
+        .panel-empty { padding: 44px 18px; color: var(--muted); text-align: center; }
+        .panel-empty i { display: block; margin-bottom: 10px; font-size: 1.7rem; color: #94a3b8; }
+        .panel-empty strong { display: block; margin-bottom: 4px; color: var(--ink-2); font-size: .84rem; }
+        .panel-empty span { font-size: .76rem; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+        .stat-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+        .stat-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .stat-label { color: var(--muted); font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+        .stat-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #eff6ff; color: var(--blue); }
+        .stat-icon.red { background: #fef2f2; color: var(--red); }
+        .stat-icon.green { background: #f0fdf4; color: var(--green); }
+        .stat-icon.amber { background: #fffbeb; color: var(--amber); }
+        .stat-value { overflow: hidden; margin: 0; font-size: 1.45rem; font-weight: 900; letter-spacing: -.055em; text-overflow: ellipsis; white-space: nowrap; }
+        .stat-foot { margin-top: 5px; color: var(--muted); font-size: .68rem; }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1.35fr .9fr; gap: 18px; }
+        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .quick-action { display: flex; align-items: center; gap: 10px; min-height: 72px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); text-align: left; }
+        .quick-action:hover { border-color: #94a3b8; background: var(--soft); }
+        .quick-action i { display: grid; place-items: center; flex: 0 0 auto; width: 34px; height: 34px; border-radius: 9px; background: var(--ink); color: #fff; }
+        .quick-action strong { display: block; font-size: .75rem; }
+        .quick-action small { color: var(--muted); font-size: .62rem; }
+
+        /* Forms */
+        .form-label { margin-bottom: 6px; color: var(--ink-2); font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .045em; }
+        .form-control, .form-select {
+            min-height: 43px;
+            border-color: #cbd5e1;
+            border-radius: 10px;
+            color: var(--ink);
+            font-size: .84rem;
+            box-shadow: none !important;
+        }
+        textarea.form-control { min-height: 110px; resize: vertical; }
+        .form-control:focus, .form-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1) !important; }
+        .form-control::placeholder { color: #94a3b8; }
+        .btn { border-radius: 10px; font-size: .76rem; font-weight: 800; }
+        .btn-primary { border-color: var(--ink); background: var(--ink); }
+        .btn-primary:hover, .btn-primary:focus { border-color: #020617; background: #020617; }
+        .btn-soft { border: 1px solid var(--line); background: #fff; color: var(--ink); }
+        .btn-soft:hover { border-color: #94a3b8; background: var(--soft); }
+        .btn-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--ink-2); }
+        .btn-icon:hover { border-color: #94a3b8; background: var(--soft); color: var(--ink); }
+        .btn-icon.danger:hover { border-color: #fecaca; background: #fef2f2; color: var(--red); }
+        .toolbar { display: grid; grid-template-columns: 1.05fr .85fr .85fr 1.25fr auto; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; margin-bottom: 16px; }
+        .search-field { position: relative; }
+        .search-field i { position: absolute; top: 50%; left: 13px; color: #94a3b8; transform: translateY(-50%); }
+        .search-field .form-control { padding-left: 38px; }
+        .section-toggle { display: flex; gap: 6px; padding: 4px; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+        .section-toggle button { border: 0; border-radius: 8px; background: transparent; color: var(--muted); padding: 7px 11px; font-size: .7rem; font-weight: 800; }
+        .section-toggle button.active { background: var(--ink); color: #fff; }
+
+        .entity-badge, .status-badge, .meta-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px; border-radius: 999px; font-size: .59rem; font-weight: 850; text-transform: uppercase; white-space: nowrap; }
+        .entity-badge { border: 1px solid currentColor; background: #fff; }
+        .status-badge.pago { background: #dcfce7; color: #166534; }
+        .status-badge.pendente { background: #fef3c7; color: #92400e; }
+        .status-badge.vencido { background: #fee2e2; color: #991b1b; }
+        .status-badge.receita { background: #dbeafe; color: #1e40af; }
+        .meta-badge { border: 1px solid var(--line); background: var(--soft); color: var(--ink-2); }
+
+        .data-table { width: 100%; margin: 0; border-collapse: separate; border-spacing: 0; }
+        .data-table th { padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--soft); color: var(--muted); font-size: .62rem; font-weight: 850; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+        .data-table td { padding: 13px 14px; border-bottom: 1px solid #edf2f7; vertical-align: middle; font-size: .78rem; }
+        .data-table tbody tr:last-child td { border-bottom: 0; }
+        .data-table tbody tr:hover td { background: #fbfdff; }
+        .data-title { display: block; max-width: 360px; overflow: hidden; color: var(--ink); font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+        .data-subtitle { display: block; margin-top: 3px; color: var(--muted); font-size: .66rem; }
+        .amount { font-weight: 900; letter-spacing: -.025em; white-space: nowrap; }
+        .amount.receita { color: var(--green); }
+        .overdue-row .data-title, .overdue-row .amount { color: var(--red); }
+        .row-actions { display: flex; justify-content: flex-end; gap: 5px; }
+
+        .divider-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--soft); }
+        .divider-box + .divider-box { margin-top: 7px; }
+        .divider-box .input-group { width: 96px; }
+
+        /* Tasks */
+        .tasks-layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); gap: 18px; }
+        .task-sidebar { align-self: start; position: sticky; top: 132px; }
+        .task-filter { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 11px; border: 0; border-radius: 9px; background: transparent; color: var(--ink-2); font-size: .75rem; font-weight: 700; text-align: left; }
+        .task-filter:hover { background: var(--soft); }
+        .task-filter.active { background: var(--ink); color: #fff; }
+        .task-filter span:first-child { display: flex; align-items: center; gap: 9px; }
+        .task-filter small { opacity: .72; }
+        .task-list-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 3px; }
+        .task-list-line .task-filter { min-width: 0; }
+        .task-list-line .task-filter > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .task-list-actions { display: flex; gap: 2px; opacity: .45; transition: opacity .15s ease; }
+        .task-list-line:hover .task-list-actions { opacity: 1; }
+        .task-list-actions .btn-icon { width: 28px; height: 28px; border: 0; background: transparent; font-size: .7rem; }
+        .sidebar-label { margin: 18px 10px 8px; color: var(--muted); font-size: .61rem; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+        .list-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--list-color, var(--blue)); }
+        .task-quick-form { display: grid; grid-template-columns: minmax(180px, 1fr) 150px 145px 125px auto; gap: 9px; padding: 14px; border-bottom: 1px solid var(--line); background: var(--soft); }
+        .task-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 13px 16px; border-bottom: 1px solid #edf2f7; }
+        .task-row:last-child { border-bottom: 0; }
+        .task-row:hover { background: #fbfdff; }
+        .task-check { width: 20px; height: 20px; margin: 0; border: 2px solid #94a3b8; border-radius: 50% !important; cursor: pointer; }
+        .task-check:checked { border-color: var(--green); background-color: var(--green); }
+        .task-title { margin: 0; font-size: .8rem; font-weight: 750; }
+        .task-row.completed .task-title { color: #94a3b8; text-decoration: line-through; }
+        .task-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+        .priority-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .priority-dot.alta { background: var(--red); }
+        .priority-dot.media { background: var(--amber); }
+        .priority-dot.baixa { background: var(--green); }
+
+        /* Notes */
+        .notes-toolbar { display: grid; grid-template-columns: minmax(200px, 1fr) 220px auto; gap: 10px; margin-bottom: 16px; }
+        .notes-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .note-card { position: relative; display: flex; flex-direction: column; min-height: 220px; padding: 17px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; transition: .16s ease; }
+        .note-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .note-card.pinned { border-top: 4px solid var(--blue); padding-top: 14px; }
+        .note-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .note-title { margin: 0; font-size: .9rem; font-weight: 850; letter-spacing: -.025em; }
+        .note-content { display: -webkit-box; overflow: hidden; margin: 12px 0 18px; color: var(--ink-2); font-size: .76rem; line-height: 1.62; white-space: pre-wrap; -webkit-box-orient: vertical; -webkit-line-clamp: 6; }
+        .note-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid #edf2f7; color: var(--muted); font-size: .62rem; }
+        .pin-btn.active { border-color: #bfdbfe; background: #eff6ff; color: var(--blue); }
+
+        /* Settings and modals */
+        .settings-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+        .config-list { max-height: 310px; overflow: auto; }
+        .config-pill { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; border-bottom: 1px solid #edf2f7; color: var(--ink-2); font-size: .72rem; font-weight: 750; }
+        .config-pill:last-child { border-bottom: 0; }
+        .sheet-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .sheet-chip { padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--soft); font-size: .67rem; font-weight: 800; text-align: center; }
+        .integration-state { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
+        .integration-state i { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--ink); color: #fff; }
+
+        .modal-content { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 25px 80px rgba(15,23,42,.22); }
+        .modal-header { padding: 18px 20px; border-color: var(--line); }
+        .modal-title { font-size: 1rem; font-weight: 900; letter-spacing: -.03em; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 14px 20px; border-color: var(--line); }
+        .statement-header { padding: 26px; color: #fff; background: var(--ink); }
+
+        .toast-stack { position: fixed; right: 18px; bottom: 18px; z-index: 20000; display: grid; gap: 8px; width: min(360px, calc(100vw - 36px)); }
+        .app-toast { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 11px; background: #fff; box-shadow: var(--shadow); font-size: .76rem; font-weight: 700; animation: toastIn .18s ease-out; }
+        .app-toast.success i { color: var(--green); }
+        .app-toast.error i { color: var(--red); }
+        .app-toast.info i { color: var(--blue); }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+        @media (max-width: 991px) {
+            .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .toolbar { grid-template-columns: repeat(2, 1fr); }
+            .toolbar .search-field { grid-column: 1 / -1; }
+            .task-quick-form { grid-template-columns: minmax(180px, 1fr) 150px; }
+            .task-quick-form > :first-child { grid-column: 1 / -1; }
+            .notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .settings-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
         }
 
-        .db-badge {
-            background: #22c55e; color: #fff; padding: 4px 10px;
-            border-radius: var(--radius); font-size: 0.65rem;
-            font-weight: 700; text-transform: uppercase;
+        @media (max-width: 767px) {
+            .login-shell { grid-template-columns: 1fr; min-height: auto; }
+            .login-intro { display: none; }
+            .login-card { padding: 34px 25px; }
+            .header-inner { min-height: 66px; }
+            .header-subtitle, .header-date, .header-backup-label { display: none; }
+            .connection-badge { max-width: 118px; overflow: hidden; text-overflow: ellipsis; }
+            main.container { padding-top: 20px; }
+            .page-heading { align-items: stretch; flex-direction: column; margin-bottom: 18px; }
+            .page-heading .d-flex { width: 100%; }
+            .page-heading .btn { flex: 1; }
+            .stat-grid { gap: 10px; }
+            .stat-card { padding: 14px; }
+            .stat-value { font-size: 1.18rem; }
+            .quick-actions { grid-template-columns: 1fr; }
+            .toolbar { grid-template-columns: 1fr; }
+            .toolbar .search-field { grid-column: auto; }
+            .tasks-layout { grid-template-columns: 1fr; }
+            .task-sidebar { position: static; }
+            .task-sidebar .panel-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+            .task-sidebar .sidebar-label, .task-sidebar .input-group, #task-custom-lists { grid-column: 1 / -1; }
+            .task-quick-form { grid-template-columns: 1fr; }
+            .task-quick-form > :first-child { grid-column: auto; }
+            .notes-toolbar { grid-template-columns: 1fr; }
+            .notes-grid { grid-template-columns: 1fr; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .sheet-map { grid-template-columns: repeat(2, 1fr); }
+            .table-responsive { border-radius: 0 0 var(--radius) var(--radius); }
+            .data-table th:nth-child(3), .data-table td:nth-child(3), .data-table th:nth-child(5), .data-table td:nth-child(5) { display: none; }
+            .data-title { max-width: 180px; }
         }
 
-        .nav-pills {
-            background: #fff; border: 1px solid var(--border-color);
-            padding: 0; border-radius: var(--radius); display: inline-flex;
+        @media (max-width: 420px) {
+            .stat-grid { grid-template-columns: 1fr; }
+            .header-brand .brand-symbol { width: 34px; height: 34px; }
+            .header-title { font-size: .86rem; }
+            .main-nav-btn { padding: 9px 12px; }
+            .data-table td { padding: 11px 9px; }
+            .data-title { max-width: 140px; }
         }
-        .nav-pills .nav-link {
-            color: var(--text-muted); font-weight: 600; font-size: 0.85rem;
-            border-radius: 0; padding: 10px 25px; border-right: 1px solid var(--border-color);
-        }
-        .nav-pills .nav-link.active { background-color: var(--primary); color: #fff; }
-
-        .card { border: 1px solid var(--border-color); border-radius: var(--radius); margin-bottom: 1.5rem; box-shadow: none; }
-        .total-card { 
-            padding: 1.25rem; background: var(--bg-secondary);
-            border-radius: var(--radius); display: flex; align-items: center;
-            gap: 1rem; border: 1px solid var(--border-color);
-        }
-        .total-icon {
-            width: 40px; height: 40px; border-radius: var(--radius);
-            display: flex; align-items: center; justify-content: center;
-            background: var(--primary); color: #fff;
-        }
-
-        .form-label { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
-        .form-control, .form-select { border-radius: var(--radius); border: 1px solid var(--border-color); padding: 0.65rem; font-size: 0.95rem; }
-        .btn-primary { background-color: var(--primary); border: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; padding: 0.75rem; }
-
-        .table thead th { background: var(--primary); color: #fff; font-size: 0.7rem; text-transform: uppercase; border: 1px solid var(--border-color); padding: 0.8rem; }
-        
-        .divider-box {
-            background: var(--bg-secondary); padding: 8px 12px;
-            border: 1px solid var(--border-soft); margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 9999;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            font-weight: 800; text-transform: uppercase;
-        }
-
-        .btn-action {
-            width: 32px; height: 32px; border-radius: var(--radius);
-            display: inline-flex; align-items: center; justify-content: center;
-            border: 1px solid var(--border-color); background: white;
-            color: var(--primary); font-size: 0.8rem; margin-left: 4px;
-        }
-        .btn-action:hover { background: var(--primary); color: #fff; }
-        
-        .badge-status { padding: 3px 8px; border-radius: var(--radius); font-size: 0.6rem; font-weight: 800; border: 1px solid var(--border-color); background: #fff; }
-        
-        /* Cores de Status Solicitadas */
-        .badge-status-pago {
-            background-color: #22c55e !important;
-            color: #ffffff !important;
-            border-color: #16a34a !important;
-        }
-        .badge-status-pendente {
-            background-color: #eab308 !important;
-            color: #000000 !important;
-            border-color: #ca8a04 !important;
-        }
-        .badge-status-vencido {
-            background-color: #ef4444 !important;
-            color: #ffffff !important;
-            border-color: #dc2626 !important;
-        }
-
-        .modal-extrato-header { background: var(--primary); color: white; padding: 2rem; }
-        .config-pill { display: flex; justify-content: space-between; align-items: center; padding: 8px; border: 1px solid #000; margin-bottom: 4px; font-size: 0.8rem; font-weight: 700; }
     </style>
 </head>
 <body>
-
-    <!-- LOGIN -->
-    <section id="login-screen">
-        <div class="login-card">
-            <h4 class="fw-900 mb-4 text-center">GESTOR PRO ACCESS</h4>
-            <form id="login-form">
-                <div class="mb-3">
-                    <label class="form-label">E-mail</label>
-                    <input type="email" id="login-email" class="form-control" required>
+    <section id="login-screen" aria-label="Acesso ao sistema">
+        <div class="login-shell">
+            <div class="login-intro">
+                <div class="brand-mark">
+                    <span class="brand-symbol"><i class="bi bi-grid-1x2-fill"></i></span>
+                    HUB DE GESTÃO
                 </div>
-                <div class="mb-4">
-                    <label class="form-label">Senha</label>
-                    <input type="password" id="login-pass" class="form-control" required>
+                <div class="login-copy">
+                    <h1>Tudo o que importa, em um só painel.</h1>
+                    <p>Finanças pessoais e empresariais, tarefas e notas rápidas organizadas no mesmo ambiente.</p>
                 </div>
-                <button type="submit" id="btn-login-submit" class="btn btn-primary w-100">Entrar</button>
-            </form>
-            <div id="login-error" class="alert alert-danger mt-3 fw-bold p-2 small" style="display:none"></div>
+                <div class="login-modules">
+                    <span class="login-module"><i class="bi bi-wallet2 me-1"></i> FINANCEIRO PF/PJ</span>
+                    <span class="login-module"><i class="bi bi-check2-square me-1"></i> TAREFAS</span>
+                    <span class="login-module"><i class="bi bi-journal-text me-1"></i> NOTAS</span>
+                </div>
+            </div>
+            <div class="login-card">
+                <div class="d-flex align-items-center gap-2 mb-4 d-md-none">
+                    <span class="brand-symbol"><i class="bi bi-grid-1x2-fill"></i></span>
+                    <strong class="fw-900">HUB DE GESTÃO</strong>
+                </div>
+                <h2>Bem-vindo de volta</h2>
+                <p class="lead-copy">Use o mesmo acesso do seu gestor financeiro atual.</p>
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="login-email" class="form-label">E-mail</label>
+                        <input type="email" id="login-email" class="form-control" autocomplete="username" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="login-pass" class="form-label">Senha</label>
+                        <input type="password" id="login-pass" class="form-control" autocomplete="current-password" placeholder="Sua senha" required>
+                    </div>
+                    <div id="login-error" class="alert alert-danger py-2 small fw-bold" style="display:none"></div>
+                    <button type="submit" id="btn-login-submit" class="btn btn-primary w-100 py-3">
+                        <span class="login-btn-text">ENTRAR NO PAINEL</span>
+                    </button>
+                </form>
+                <button type="button" id="btn-demo" class="btn btn-soft w-100 mt-2 py-2">
+                    <i class="bi bi-eye me-1"></i> TESTAR PROTÓTIPO LOCAL
+                </button>
+                <div class="login-help">
+                    <i class="bi bi-shield-check me-1"></i> O modo local serve para avaliar o novo painel sem alterar os dados que já estão na nuvem.
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- LOADING -->
     <div id="loading-overlay">
-        <div class="spinner-border mb-3 text-primary"></div>
-        <span>Sincronizando...</span>
+        <div class="loading-card">
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <span id="loading-text">Sincronizando dados...</span>
+        </div>
     </div>
 
-    <!-- APP -->
     <div id="app-content">
         <header class="app-header">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="m-0 fw-800">GESTÃO FINANCEIRA</h4>
-                    <div class="mt-1"><span class="db-badge">CLOUD ATIVO</span></div>
+            <div class="container header-inner">
+                <div class="header-brand min-w-0">
+                    <span class="brand-symbol"><i class="bi bi-grid-1x2-fill"></i></span>
+                    <div class="min-w-0">
+                        <h1 class="header-title">HUB DE GESTÃO</h1>
+                        <p class="header-subtitle">Central de controle pessoal e empresarial</p>
+                    </div>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-dark btn-sm rounded-0 fw-700 px-3" onclick="window.exportarBackup()">BACKUP</button>
-                    <button class="btn btn-outline-danger btn-sm rounded-0 fw-700 px-3" onclick="window.fazerLogout()">SAIR</button>
+                <div class="d-flex align-items-center gap-2">
+                    <span id="connection-badge" class="connection-badge">
+                        <span class="connection-dot"></span><span id="connection-text">CLOUD ATIVO</span>
+                    </span>
+                    <span id="header-date" class="header-date small text-muted-2 fw-bold"></span>
+                    <button class="btn btn-soft btn-sm" id="btn-backup-header" title="Exportar backup">
+                        <i class="bi bi-download"></i><span class="header-backup-label ms-1">BACKUP</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" id="btn-logout" title="Sair">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
                 </div>
             </div>
         </header>
 
-        <div class="container">
-            <div class="mb-4">
-                <ul class="nav nav-pills" id="mainTabs" role="tablist">
-                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#content-lancamentos">LANÇAMENTOS</button></li>
-                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#content-relatorios">RELATÓRIOS</button></li>
-                    <li class="nav-item">
-                        <button class="nav-link d-flex align-items-center gap-1" data-bs-toggle="tab" data-bs-target="#content-vencidos">
-                            VENCIDOS <span id="badge-vencidos-count" class="badge bg-danger ms-1" style="display:none; font-size: 0.65rem;">0</span>
-                        </button>
-                    </li>
-                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#content-config">AJUSTES</button></li>
-                </ul>
+        <nav class="main-nav-wrap" aria-label="Módulos principais">
+            <div class="container main-nav">
+                <button class="main-nav-btn active" data-page-target="dashboard"><i class="bi bi-grid"></i> VISÃO GERAL</button>
+                <button class="main-nav-btn" data-page-target="financeiro"><i class="bi bi-wallet2"></i> FINANCEIRO <span id="nav-overdue-count" class="nav-count" style="display:none">0</span></button>
+                <button class="main-nav-btn" data-page-target="tarefas"><i class="bi bi-check2-square"></i> TAREFAS <span id="nav-task-count" class="nav-count" style="display:none">0</span></button>
+                <button class="main-nav-btn" data-page-target="notas"><i class="bi bi-journal-text"></i> NOTAS</button>
+                <button class="main-nav-btn" data-page-target="ajustes"><i class="bi bi-sliders"></i> AJUSTES</button>
             </div>
+        </nav>
 
-            <div class="tab-content">
-                <!-- ABA LANÇAMENTOS -->
-                <div class="tab-pane fade show active" id="content-lancamentos">
-                    <div class="card p-4">
-                        <h6 class="fw-800 mb-4 text-uppercase">Nova Despesa</h6>
-                        <form id="form-nova-despesa">
-                            <div class="row g-3">
-                                <div class="col-md-8"><label class="form-label">Descrição</label><input type="text" class="form-control" id="form-desc" required></div>
-                                <div class="col-md-4"><label class="form-label">Data</label><input type="date" class="form-control" id="form-vencimento" required></div>
-                                <div class="col-6 col-md-4"><label class="form-label">Valor</label><input type="text" class="form-control" id="form-valor" placeholder="0,00" required></div>
-                                <div class="col-6 col-md-2"><label class="form-label">Parcelas</label><input type="number" class="form-control" id="form-qtd-parcelas" value="1" min="1"></div>
-                                <div class="col-12 col-md-6"><label class="form-label">Pagante</label><select id="form-pagante" class="form-select" required></select></div>
-                                <div class="col-6"><label class="form-label">Categoria</label><select id="form-categoria" class="form-select" required></select></div>
-                                <div class="col-6"><label class="form-label">Status</label><select id="form-status" class="form-select" required></select></div>
-                                <div class="col-12"><label class="form-label">Divisão:</label><div id="form-dividir-com" class="p-3 bg-light border"></div></div>
+        <main class="container">
+            <!-- VISÃO GERAL -->
+            <section class="app-page active" id="page-dashboard">
+                <div class="page-heading">
+                    <div>
+                        <div class="page-kicker" id="greeting-kicker">BOM DIA</div>
+                        <h1>Seu dia em uma visão.</h1>
+                        <p id="dashboard-summary">Acompanhe contas, pendências e tarefas prioritárias.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-soft" data-go-page="tarefas"><i class="bi bi-plus-lg me-1"></i> TAREFA</button>
+                        <button class="btn btn-primary" data-go-page="financeiro" data-open-finance-form="1"><i class="bi bi-plus-lg me-1"></i> LANÇAMENTO</button>
+                    </div>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">A vencer hoje</span><span class="stat-icon amber"><i class="bi bi-calendar2-day"></i></span></div>
+                        <h2 class="stat-value" id="stat-due-today">R$ 0,00</h2>
+                        <div class="stat-foot" id="stat-due-today-foot">Nenhuma conta para hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Total pendente</span><span class="stat-icon"><i class="bi bi-hourglass-split"></i></span></div>
+                        <h2 class="stat-value" id="stat-pending-total">R$ 0,00</h2>
+                        <div class="stat-foot" id="stat-pending-foot">0 lançamentos em aberto</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Contas vencidas</span><span class="stat-icon red"><i class="bi bi-exclamation-triangle"></i></span></div>
+                        <h2 class="stat-value" id="stat-overdue-count">0</h2>
+                        <div class="stat-foot" id="stat-overdue-foot">Tudo em dia</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Tarefas abertas</span><span class="stat-icon green"><i class="bi bi-check2-square"></i></span></div>
+                        <h2 class="stat-value" id="stat-open-tasks">0</h2>
+                        <div class="stat-foot" id="stat-open-tasks-foot">Nenhuma tarefa atrasada</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div><h2 class="panel-title">PRÓXIMAS CONTAS</h2><p class="panel-subtitle">Pendências dos próximos 7 dias</p></div>
+                            <button class="btn btn-soft btn-sm" data-go-page="financeiro">VER TODAS</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead><tr><th>Data</th><th>Descrição</th><th>Entidade</th><th>Valor</th><th>Status</th></tr></thead>
+                                <tbody id="dashboard-finance-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-3">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div><h2 class="panel-title">TAREFAS PRIORITÁRIAS</h2><p class="panel-subtitle">O que merece atenção agora</p></div>
+                                <button class="btn btn-soft btn-sm" data-go-page="tarefas">ABRIR</button>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-4">Salvar</button>
+                            <div id="dashboard-task-list"></div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header"><div><h2 class="panel-title">ATALHOS RÁPIDOS</h2><p class="panel-subtitle">Acesse as ações mais usadas</p></div></div>
+                            <div class="panel-body quick-actions">
+                                <button class="quick-action" data-go-page="financeiro" data-open-finance-form="1"><i class="bi bi-receipt"></i><span><strong>NOVA CONTA</strong><small>Cadastrar despesa</small></span></button>
+                                <button class="quick-action" data-go-page="tarefas"><i class="bi bi-check-lg"></i><span><strong>NOVA TAREFA</strong><small>Organizar afazer</small></span></button>
+                                <button class="quick-action" data-go-page="notas" data-focus-note="1"><i class="bi bi-pencil"></i><span><strong>NOVA NOTA</strong><small>Registrar ideia</small></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FINANCEIRO -->
+            <section class="app-page" id="page-financeiro">
+                <div class="page-heading">
+                    <div>
+                        <div class="page-kicker">MÓDULO FINANCEIRO</div>
+                        <h1>Contas PF e PJ.</h1>
+                        <p>Separe despesas pessoais, Delivery e DNL Media, com filtros por dia, empresa e situação.</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <div class="section-toggle" aria-label="Visão financeira">
+                            <button class="active" data-finance-view="contas">CONTAS</button>
+                            <button data-finance-view="relatorio">RELATÓRIO</button>
+                        </div>
+                        <button class="btn btn-primary" id="btn-toggle-finance-form"><i class="bi bi-plus-lg me-1"></i> NOVO LANÇAMENTO</button>
+                    </div>
+                </div>
+
+                <div class="panel mb-3" id="finance-form-panel" style="display:none">
+                    <div class="panel-header">
+                        <div><h2 class="panel-title">NOVO LANÇAMENTO</h2><p class="panel-subtitle">Cadastre uma conta ou entrada financeira</p></div>
+                        <button class="btn-icon" type="button" id="btn-close-finance-form"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                    <div class="panel-body">
+                        <form id="form-novo-lancamento">
+                            <div class="row g-3">
+                                <div class="col-md-2"><label class="form-label" for="form-natureza">Movimento</label><select id="form-natureza" class="form-select"><option value="despesa">DESPESA</option><option value="receita">RECEITA</option></select></div>
+                                <div class="col-md-4"><label class="form-label" for="form-entidade">Entidade</label><select id="form-entidade" class="form-select" required></select></div>
+                                <div class="col-md-6"><label class="form-label" for="form-desc">Descrição</label><input id="form-desc" class="form-control" placeholder="Ex.: Conta de energia" required></div>
+                                <div class="col-6 col-md-3"><label class="form-label" for="form-vencimento">Vencimento</label><input type="date" id="form-vencimento" class="form-control" required></div>
+                                <div class="col-6 col-md-3"><label class="form-label" for="form-valor">Valor por parcela</label><input id="form-valor" class="form-control currency-input" inputmode="decimal" placeholder="0,00" required></div>
+                                <div class="col-6 col-md-2"><label class="form-label" for="form-qtd-parcelas">Parcelas</label><input type="number" id="form-qtd-parcelas" class="form-control" value="1" min="1" max="120"></div>
+                                <div class="col-6 col-md-4"><label class="form-label" for="form-categoria">Categoria</label><select id="form-categoria" class="form-select" required></select></div>
+                                <div class="col-6 col-md-4"><label class="form-label" for="form-pagante">Responsável / pagante</label><select id="form-pagante" class="form-select" required></select></div>
+                                <div class="col-6 col-md-3"><label class="form-label" for="form-status">Status</label><select id="form-status" class="form-select" required></select></div>
+                                <div class="col-md-5"><label class="form-label" for="form-observacoes">Observação</label><input id="form-observacoes" class="form-control" placeholder="Opcional"></div>
+                                <div class="col-12">
+                                    <details>
+                                        <summary class="small fw-800 text-muted-2" style="cursor:pointer">DIVIDIR DESPESA ENTRE RESPONSÁVEIS (OPCIONAL)</summary>
+                                        <div id="form-dividir-com" class="mt-2"></div>
+                                    </details>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-4"><button class="btn btn-primary px-4 py-2" type="submit"><i class="bi bi-cloud-arrow-up me-1"></i> SALVAR LANÇAMENTO</button></div>
                         </form>
                     </div>
-                    <div class="mt-4"><h6 class="fw-800 text-muted mb-3 text-uppercase small">Recentemente</h6><div class="table-responsive"><table class="table align-middle"><tbody id="log-home-body"></tbody></table></div></div>
                 </div>
 
-                <!-- ABA RELATÓRIOS -->
-                <div class="tab-pane fade" id="content-relatorios">
-                    <div class="card p-4 mb-4">
-                        <div class="row g-2 align-items-end">
-                            <div class="col-md-4"><label class="form-label">Mês</label><select id="filtro-mes" class="form-select"></select></div>
-                            <div class="col-md-4"><label class="form-label">Ano</label><select id="filtro-ano" class="form-select"></select></div>
-                            <div class="col-md-4"><button class="btn btn-primary w-100" onclick="window.buscarRelatorio()">Filtrar</button></div>
-                        </div>
+                <div id="finance-view-contas">
+                    <div class="stat-grid">
+                        <div class="stat-card"><div class="stat-card-top"><span class="stat-label">Resultado filtrado</span><span class="stat-icon"><i class="bi bi-funnel"></i></span></div><h2 id="finance-filter-total" class="stat-value">R$ 0,00</h2><div id="finance-filter-foot" class="stat-foot">0 lançamentos</div></div>
+                        <div class="stat-card"><div class="stat-card-top"><span class="stat-label">Pendente</span><span class="stat-icon amber"><i class="bi bi-hourglass"></i></span></div><h2 id="finance-pending-total" class="stat-value">R$ 0,00</h2><div class="stat-foot">Contas ainda não pagas</div></div>
+                        <div class="stat-card"><div class="stat-card-top"><span class="stat-label">Pago</span><span class="stat-icon green"><i class="bi bi-check-circle"></i></span></div><h2 id="finance-paid-total" class="stat-value">R$ 0,00</h2><div class="stat-foot">Lançamentos quitados</div></div>
+                        <div class="stat-card"><div class="stat-card-top"><span class="stat-label">Vencido</span><span class="stat-icon red"><i class="bi bi-exclamation-octagon"></i></span></div><h2 id="finance-overdue-total" class="stat-value">R$ 0,00</h2><div id="finance-overdue-foot" class="stat-foot">0 contas vencidas</div></div>
                     </div>
-                    <div id="area-relatorio" style="display: none;">
-                        <div id="container-totais" class="row row-cols-1 row-cols-md-3 g-3 mb-5"></div>
-                        <div class="card p-4 mb-4 bg-light text-center">
-                             <div class="row g-2 justify-content-center">
-                                 <div class="col-sm-8"><select id="select-extrato" class="form-select"></select></div>
-                                 <div class="col-sm-3"><button class="btn btn-dark w-100 fw-700" onclick="window.abrirPopupExtrato()">Extrato</button></div>
-                             </div>
-                        </div>
-                        <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Data</th><th>Desc</th><th>Valor</th><th>Pagante</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="tabela-relatorio-body"></tbody></table></div>
-                    </div>
-                </div>
 
-                <!-- ABA VENCIDOS -->
-                <div class="tab-pane fade" id="content-vencidos">
-                    <div class="card p-4">
-                        <h6 class="fw-800 mb-4 text-uppercase text-danger">Lançamentos Vencidos</h6>
-                        <p class="small text-muted mb-4">Abaixo estão listados todos os lançamentos que não estão marcados como "PAGO" e já passaram da data de vencimento.</p>
+                    <div class="toolbar">
+                        <select id="filter-finance-entity" class="form-select" aria-label="Filtrar por entidade"></select>
+                        <select id="filter-finance-status" class="form-select" aria-label="Filtrar por status">
+                            <option value="all">TODOS OS STATUS</option><option value="PENDENTE">PENDENTES</option><option value="PAGO">PAGOS</option><option value="VENCIDO">VENCIDOS</option>
+                        </select>
+                        <select id="filter-finance-period" class="form-select" aria-label="Filtrar por período">
+                            <option value="month">MÊS ATUAL</option><option value="today">HOJE</option><option value="tomorrow">AMANHÃ</option><option value="week">PRÓXIMOS 7 DIAS</option><option value="overdue">VENCIDOS</option><option value="custom">DIA ESPECÍFICO</option><option value="all">TODAS AS DATAS</option>
+                        </select>
+                        <div class="search-field"><i class="bi bi-search"></i><input id="filter-finance-search" class="form-control" placeholder="Buscar descrição ou categoria"></div>
+                        <input type="date" id="filter-finance-date" class="form-control" aria-label="Data específica" style="display:none">
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div><h2 class="panel-title">LANÇAMENTOS</h2><p class="panel-subtitle" id="finance-list-caption">Contas do mês atual</p></div>
+                            <button class="btn btn-soft btn-sm" id="btn-clear-finance-filters"><i class="bi bi-arrow-counterclockwise me-1"></i> LIMPAR</button>
+                        </div>
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Desc</th>
-                                        <th>Valor</th>
-                                        <th>Pagante</th>
-                                        <th>Status</th>
-                                        <th class="text-end">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabela-vencidos-body">
-                                    <!-- Conteúdo dinâmico inserido via JS -->
-                                </tbody>
+                            <table class="data-table">
+                                <thead><tr><th>Data</th><th>Descrição</th><th>Entidade</th><th>Valor</th><th>Responsável</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                                <tbody id="finance-table-body"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- ABA AJUSTES -->
-                <div class="tab-pane fade" id="content-config">
-                    <div class="row g-4">
-                        <div class="col-md-4"><div class="card p-4 h-100"><h6>Nomes</h6><div class="input-group mb-3"><input type="text" id="add-nome" class="form-control"><button class="btn btn-dark" onclick="window.salvarConfig('nomes', 'add-nome')">+</button></div><div id="lista-nomes"></div></div></div>
-                        <div class="col-md-4"><div class="card p-4 h-100"><h6>Categorias</h6><div class="input-group mb-3"><input type="text" id="add-cat" class="form-control"><button class="btn btn-dark" onclick="window.salvarConfig('categorias', 'add-cat')">+</button></div><div id="lista-categorias"></div></div></div>
-                        <div class="col-md-4"><div class="card p-4 h-100"><h6>Status</h6><div class="input-group mb-3"><input type="text" id="add-status" class="form-control"><button class="btn btn-dark" onclick="window.salvarConfig('status', 'add-status')">+</button></div><div id="lista-status"></div></div></div>
+                <div id="finance-view-relatorio" style="display:none">
+                    <div class="panel mb-3">
+                        <div class="panel-body">
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-3"><label class="form-label" for="report-month">Mês</label><select id="report-month" class="form-select"></select></div>
+                                <div class="col-md-3"><label class="form-label" for="report-year">Ano</label><select id="report-year" class="form-select"></select></div>
+                                <div class="col-md-3"><label class="form-label" for="report-entity">Entidade</label><select id="report-entity" class="form-select"></select></div>
+                                <div class="col-md-3"><button class="btn btn-primary w-100 py-2" id="btn-run-report">ATUALIZAR RELATÓRIO</button></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card p-4 mt-4 text-center"><h6>Restaurar Backup</h6><input type="file" id="input-import" class="form-control mt-2" onchange="window.importarParaFirebase(this)"></div>
+                    <div id="report-summary-grid" class="stat-grid"></div>
+                    <div class="panel mb-3">
+                        <div class="panel-body">
+                            <div class="row g-2 align-items-end justify-content-center">
+                                <div class="col-md-7"><label class="form-label" for="report-payer">Extrato por responsável</label><select id="report-payer" class="form-select"></select></div>
+                                <div class="col-md-3"><button class="btn btn-soft w-100 py-2" id="btn-open-statement"><i class="bi bi-receipt me-1"></i> ABRIR EXTRATO</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><div><h2 class="panel-title">MOVIMENTOS DO PERÍODO</h2><p id="report-caption" class="panel-subtitle"></p></div></div>
+                        <div class="table-responsive"><table class="data-table"><thead><tr><th>Data</th><th>Descrição</th><th>Entidade</th><th>Valor</th><th>Responsável</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="report-table-body"></tbody></table></div>
+                    </div>
                 </div>
+            </section>
+
+            <!-- TAREFAS -->
+            <section class="app-page" id="page-tarefas">
+                <div class="page-heading">
+                    <div><div class="page-kicker">MÓDULO DE TAREFAS</div><h1>Organize o que precisa ser feito.</h1><p>Listas inspiradas no Microsoft To Do, com prazo, prioridade e conclusão rápida.</p></div>
+                    <button class="btn btn-primary" id="btn-focus-task"><i class="bi bi-plus-lg me-1"></i> NOVA TAREFA</button>
+                </div>
+                <div class="tasks-layout">
+                    <aside class="panel task-sidebar">
+                        <div class="panel-body p-2">
+                            <button class="task-filter active" data-task-view="all"><span><i class="bi bi-list-task"></i> Todas</span><small id="task-count-all">0</small></button>
+                            <button class="task-filter" data-task-view="today"><span><i class="bi bi-sun"></i> Meu dia</span><small id="task-count-today">0</small></button>
+                            <button class="task-filter" data-task-view="upcoming"><span><i class="bi bi-calendar3"></i> Próximas</span><small id="task-count-upcoming">0</small></button>
+                            <button class="task-filter" data-task-view="overdue"><span><i class="bi bi-exclamation-circle"></i> Atrasadas</span><small id="task-count-overdue">0</small></button>
+                            <button class="task-filter" data-task-view="completed"><span><i class="bi bi-check2-circle"></i> Concluídas</span><small id="task-count-completed">0</small></button>
+                            <div class="sidebar-label">MINHAS LISTAS</div>
+                            <div id="task-custom-lists"></div>
+                            <div class="input-group input-group-sm mt-2 px-1 pb-1">
+                                <input id="new-list-name" class="form-control" placeholder="Nova lista">
+                                <button class="btn btn-dark" id="btn-add-list" title="Criar lista"><i class="bi bi-plus-lg"></i></button>
+                            </div>
+                        </div>
+                    </aside>
+                    <div class="panel min-w-0">
+                        <div class="panel-header">
+                            <div><h2 class="panel-title" id="task-panel-title">TODAS AS TAREFAS</h2><p class="panel-subtitle" id="task-panel-subtitle">Pendências e tarefas concluídas</p></div>
+                            <select id="task-entity-filter" class="form-select form-select-sm" style="width:min(220px,45vw)"></select>
+                        </div>
+                        <form id="form-nova-tarefa" class="task-quick-form">
+                            <input id="task-title" class="form-control" placeholder="Adicionar uma tarefa" required>
+                            <select id="task-list" class="form-select" required></select>
+                            <input type="date" id="task-due" class="form-control">
+                            <select id="task-priority" class="form-select"><option value="media">PRIORIDADE MÉDIA</option><option value="alta">PRIORIDADE ALTA</option><option value="baixa">PRIORIDADE BAIXA</option></select>
+                            <button class="btn btn-primary px-3" type="submit"><i class="bi bi-plus-lg"></i></button>
+                        </form>
+                        <div id="task-list-container"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOTAS -->
+            <section class="app-page" id="page-notas">
+                <div class="page-heading">
+                    <div><div class="page-kicker">NOTAS E AGENDA</div><h1>Registre antes de esquecer.</h1><p>Anotações rápidas, rascunhos e lembretes vinculados a uma data ou empresa.</p></div>
+                    <button class="btn btn-primary" id="btn-focus-note"><i class="bi bi-plus-lg me-1"></i> NOVA NOTA</button>
+                </div>
+                <div class="panel mb-3">
+                    <div class="panel-header"><div><h2 class="panel-title">NOVA ANOTAÇÃO</h2><p class="panel-subtitle">Use a data para transformar a nota em item de agenda</p></div></div>
+                    <div class="panel-body">
+                        <form id="form-nova-nota">
+                            <div class="row g-3">
+                                <div class="col-md-5"><label class="form-label" for="note-title">Título</label><input id="note-title" class="form-control" placeholder="Título da anotação" required></div>
+                                <div class="col-md-3"><label class="form-label" for="note-date">Data / agenda</label><input type="date" id="note-date" class="form-control"></div>
+                                <div class="col-md-4"><label class="form-label" for="note-entity">Entidade</label><select id="note-entity" class="form-select"></select></div>
+                                <div class="col-12"><label class="form-label" for="note-content">Conteúdo</label><textarea id="note-content" class="form-control" placeholder="Digite livremente..." required></textarea></div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-3"><button class="btn btn-primary px-4" type="submit"><i class="bi bi-journal-plus me-1"></i> SALVAR NOTA</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div class="notes-toolbar">
+                    <div class="search-field"><i class="bi bi-search"></i><input id="note-search" class="form-control" placeholder="Buscar nas notas"></div>
+                    <select id="note-entity-filter" class="form-select"></select>
+                    <select id="note-period-filter" class="form-select"><option value="all">TODAS AS DATAS</option><option value="today">AGENDA DE HOJE</option><option value="future">PRÓXIMAS NOTAS</option><option value="undated">SEM DATA</option></select>
+                </div>
+                <div id="notes-grid" class="notes-grid"></div>
+            </section>
+
+            <!-- AJUSTES -->
+            <section class="app-page" id="page-ajustes">
+                <div class="page-heading">
+                    <div><div class="page-kicker">CONFIGURAÇÕES</div><h1>Ajustes do seu Hub.</h1><p>Gerencie responsáveis, categorias, status, backup e a futura conexão com o Google Sheets.</p></div>
+                </div>
+                <div class="settings-grid mb-3">
+                    <div class="panel">
+                        <div class="panel-header"><div><h2 class="panel-title">RESPONSÁVEIS</h2><p class="panel-subtitle">Pagantes e pessoas da divisão</p></div></div>
+                        <div class="panel-body pb-2"><div class="input-group"><input id="add-name" class="form-control" placeholder="Novo nome"><button class="btn btn-dark" data-add-config="nomes" data-input="add-name"><i class="bi bi-plus-lg"></i></button></div></div>
+                        <div id="settings-names" class="config-list"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><div><h2 class="panel-title">CATEGORIAS</h2><p class="panel-subtitle">Classificação dos lançamentos</p></div></div>
+                        <div class="panel-body pb-2"><div class="input-group"><input id="add-category" class="form-control" placeholder="Nova categoria"><button class="btn btn-dark" data-add-config="categorias" data-input="add-category"><i class="bi bi-plus-lg"></i></button></div></div>
+                        <div id="settings-categories" class="config-list"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><div><h2 class="panel-title">STATUS</h2><p class="panel-subtitle">Situações disponíveis</p></div></div>
+                        <div class="panel-body pb-2"><div class="input-group"><input id="add-status" class="form-control" placeholder="Novo status"><button class="btn btn-dark" data-add-config="status" data-input="add-status"><i class="bi bi-plus-lg"></i></button></div></div>
+                        <div id="settings-status" class="config-list"></div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="panel h-100">
+                            <div class="panel-header"><div><h2 class="panel-title">BANCO DE DADOS</h2><p class="panel-subtitle">Camada preparada para a migração</p></div></div>
+                            <div class="panel-body">
+                                <div class="integration-state mb-3">
+                                    <i class="bi bi-database-check"></i>
+                                    <div><strong id="settings-provider-title" class="d-block small">FIREBASE ATUAL</strong><span id="settings-provider-copy" class="text-muted-2" style="font-size:.7rem">Mantém os lançamentos existentes funcionando.</span></div>
+                                </div>
+                                <p class="small text-muted-2 mb-2">Abas planejadas para o Google Sheets:</p>
+                                <div class="sheet-map">
+                                    <div class="sheet-chip">USUARIOS</div><div class="sheet-chip">LANCAMENTOS</div><div class="sheet-chip">TAREFAS</div><div class="sheet-chip">LISTAS</div><div class="sheet-chip">NOTAS</div><div class="sheet-chip">CONFIGURACOES</div>
+                                </div>
+                                <div class="alert alert-info small mt-3 mb-0"><i class="bi bi-info-circle me-1"></i> A troca para o Apps Script será feita no serviço de dados, sem redesenhar as telas.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel h-100">
+                            <div class="panel-header"><div><h2 class="panel-title">BACKUP E RESTAURAÇÃO</h2><p class="panel-subtitle">Proteja ou migre todos os módulos</p></div></div>
+                            <div class="panel-body">
+                                <button class="btn btn-primary w-100 py-2 mb-2" id="btn-export-backup"><i class="bi bi-download me-1"></i> EXPORTAR BACKUP COMPLETO</button>
+                                <label class="btn btn-soft w-100 py-2 mb-0" for="input-import"><i class="bi bi-upload me-1"></i> IMPORTAR ARQUIVO JSON</label>
+                                <input type="file" id="input-import" accept="application/json,.json" hidden>
+                                <p class="small text-muted-2 mt-3 mb-0">O backup inclui lançamentos, tarefas, listas, notas e configurações.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: LANÇAMENTO -->
+    <div class="modal fade" id="modal-finance-edit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header"><h2 class="modal-title">EDITAR LANÇAMENTO</h2><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <form id="form-edit-finance">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-finance-id">
+                        <div class="row g-3">
+                            <div class="col-md-3"><label class="form-label" for="edit-finance-nature">Movimento</label><select id="edit-finance-nature" class="form-select"><option value="despesa">DESPESA</option><option value="receita">RECEITA</option></select></div>
+                            <div class="col-md-4"><label class="form-label" for="edit-finance-entity">Entidade</label><select id="edit-finance-entity" class="form-select" required></select></div>
+                            <div class="col-md-5"><label class="form-label" for="edit-finance-desc">Descrição</label><input id="edit-finance-desc" class="form-control" required></div>
+                            <div class="col-md-3"><label class="form-label" for="edit-finance-date">Vencimento</label><input type="date" id="edit-finance-date" class="form-control" required></div>
+                            <div class="col-md-3"><label class="form-label" for="edit-finance-value">Valor</label><input id="edit-finance-value" class="form-control currency-input" required></div>
+                            <div class="col-md-3"><label class="form-label" for="edit-finance-category">Categoria</label><select id="edit-finance-category" class="form-select" required></select></div>
+                            <div class="col-md-3"><label class="form-label" for="edit-finance-status">Status</label><select id="edit-finance-status" class="form-select" required></select></div>
+                            <div class="col-md-5"><label class="form-label" for="edit-finance-payer">Responsável</label><select id="edit-finance-payer" class="form-select" required></select></div>
+                            <div class="col-md-7"><label class="form-label" for="edit-finance-notes">Observação</label><input id="edit-finance-notes" class="form-control"></div>
+                            <div class="col-12"><label class="form-label">Divisão</label><div id="edit-finance-split"></div></div>
+                            <div class="col-12" id="edit-group-box" style="display:none"><div class="form-check p-3 border rounded-3 bg-light"><input class="form-check-input ms-0 me-2" type="checkbox" id="edit-finance-group"><label class="form-check-label small fw-bold" for="edit-finance-group">Aplicar valores, categoria, entidade e status em todas as parcelas deste grupo</label></div></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-soft" data-bs-dismiss="modal">CANCELAR</button><button type="submit" class="btn btn-primary px-4">SALVAR ALTERAÇÕES</button></div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- MODAL EDITAR -->
-    <div class="modal fade" id="modal-editar" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-0 border-dark">
-                <div class="modal-header border-0 px-4 pt-4"><h5 class="fw-900 m-0 text-uppercase">Editar Lançamento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body p-4">
-                    <input type="hidden" id="edit-id">
-                    <div class="row g-3">
-                        <div class="col-12"><label class="form-label">Descrição</label><input type="text" class="form-control" id="edit-desc"></div>
-                        <div class="col-md-6"><label class="form-label">Data</label><input type="date" class="form-control" id="edit-vencimento"></div>
-                        <div class="col-md-6"><label class="form-label">Valor</label><input type="text" class="form-control" id="edit-valor"></div>
-                        <div class="col-md-6"><label class="form-label">Categoria</label><select id="edit-categoria" class="form-select"></select></div>
-                        <div class="col-md-6"><label class="form-label">Status</label><select id="edit-status" class="form-select"></select></div>
-                        <div class="col-12"><label class="form-label">Pagante</label><select id="edit-pagante" class="form-select"></select></div>
-                        <div class="col-12"><label class="form-label">Divisão:</label><div id="edit-dividir-com" class="p-3 bg-light border"></div></div>
-                    </div>
-                    <div id="edit-group-notice" class="alert alert-info mt-3 p-2 small fw-bold" style="display:none"><i class="bi bi-info-circle"></i> Este item faz parte de um grupo parcelado.</div>
-                    <div class="d-grid gap-2 mt-4">
-                        <button class="btn btn-primary py-3" onclick="window.atualizarLancamento(false)">SALVAR ESTA PARCELA</button>
-                        <button id="btn-update-group" class="btn btn-dark py-3" style="display:none" onclick="window.atualizarLancamento(true)">SALVAR EM TODAS AS PARCELAS</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL EXCLUIR -->
-    <div class="modal fade" id="modal-excluir" tabindex="-1">
+    <!-- MODAL: TAREFA -->
+    <div class="modal fade" id="modal-task-edit" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-0 border-dark p-4 text-center">
-                <h5 class="fw-900 text-uppercase mb-3">Excluir?</h5>
-                <div class="d-grid gap-2 mt-4">
-                    <button class="btn btn-outline-dark fw-800" onclick="window.confirmarAcaoExcluir(false)">SÓ ESTA PARCELA</button>
-                    <button class="btn btn-dark fw-800" onclick="window.confirmarAcaoExcluir(true)">GRUPO COMPLETO</button>
-                    <button class="btn btn-light" data-bs-dismiss="modal">CANCELAR</button>
+            <div class="modal-content">
+                <div class="modal-header"><h2 class="modal-title">EDITAR TAREFA</h2><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <form id="form-edit-task">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-task-id">
+                        <div class="row g-3">
+                            <div class="col-12"><label class="form-label" for="edit-task-title">Tarefa</label><input id="edit-task-title" class="form-control" required></div>
+                            <div class="col-md-6"><label class="form-label" for="edit-task-list">Lista</label><select id="edit-task-list" class="form-select" required></select></div>
+                            <div class="col-md-6"><label class="form-label" for="edit-task-due">Prazo</label><input type="date" id="edit-task-due" class="form-control"></div>
+                            <div class="col-md-6"><label class="form-label" for="edit-task-priority">Prioridade</label><select id="edit-task-priority" class="form-select"><option value="alta">ALTA</option><option value="media">MÉDIA</option><option value="baixa">BAIXA</option></select></div>
+                            <div class="col-md-6"><label class="form-label" for="edit-task-entity">Entidade</label><select id="edit-task-entity" class="form-select"></select></div>
+                            <div class="col-12"><label class="form-label" for="edit-task-notes">Detalhes</label><textarea id="edit-task-notes" class="form-control" rows="3"></textarea></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-soft" data-bs-dismiss="modal">CANCELAR</button><button type="submit" class="btn btn-primary px-4">SALVAR</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NOTA -->
+    <div class="modal fade" id="modal-note-edit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h2 class="modal-title">EDITAR NOTA</h2><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <form id="form-edit-note">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-note-id">
+                        <div class="row g-3">
+                            <div class="col-md-5"><label class="form-label" for="edit-note-title">Título</label><input id="edit-note-title" class="form-control" required></div>
+                            <div class="col-md-3"><label class="form-label" for="edit-note-date">Data</label><input type="date" id="edit-note-date" class="form-control"></div>
+                            <div class="col-md-4"><label class="form-label" for="edit-note-entity">Entidade</label><select id="edit-note-entity" class="form-select"></select></div>
+                            <div class="col-12"><label class="form-label" for="edit-note-content">Conteúdo</label><textarea id="edit-note-content" class="form-control" style="min-height:240px" required></textarea></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-soft" data-bs-dismiss="modal">CANCELAR</button><button type="submit" class="btn btn-primary px-4">SALVAR</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EXCLUIR -->
+    <div class="modal fade" id="modal-delete" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <span class="stat-icon red mx-auto mb-3" style="width:48px;height:48px"><i class="bi bi-trash3"></i></span>
+                    <h2 class="modal-title mb-2">EXCLUIR ITEM?</h2>
+                    <p id="delete-message" class="small text-muted-2 mb-0">Esta ação não poderá ser desfeita.</p>
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn btn-danger py-2" id="btn-delete-one">EXCLUIR ESTE ITEM</button>
+                        <button class="btn btn-dark py-2" id="btn-delete-group" style="display:none">EXCLUIR TODAS AS PARCELAS</button>
+                        <button class="btn btn-soft" data-bs-dismiss="modal">CANCELAR</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL EXTRATO -->
-    <div class="modal fade" id="modal-extrato" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-0 border-dark">
-                <div class="modal-extrato-header" id="extrato-nome-header"></div>
-                <div class="modal-body p-4"><div id="extrato-tabela-container" class="table-responsive"></div><div class="mt-4 p-4 border border-dark d-flex justify-content-between"><span>TOTAL</span><h2 id="extrato-total" class="fw-900 m-0">R$ 0,00</h2></div></div>
+    <!-- MODAL: EXTRATO -->
+    <div class="modal fade" id="modal-statement" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="statement-header" id="statement-header"></div>
+                <div class="modal-body"><div class="table-responsive" id="statement-table"></div><div class="d-flex align-items-center justify-content-between gap-3 mt-3 p-3 border rounded-3"><strong class="small">TOTAL</strong><h2 id="statement-total" class="m-0 fw-900">R$ 0,00</h2></div></div>
             </div>
         </div>
     </div>
+
+    <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        /*
+         * CONFIGURAÇÃO DA VERSÃO 1
+         * firebase: preserva o banco e o login do HTML original.
+         * gas: ativa o adaptador do Google Apps Script após informarmos a URL.
+         * local: guarda dados somente neste navegador (modo de protótipo).
+         */
+        const APP_CONFIG = {
+            dataProvider: "firebase",
+            firebaseRoot: "gestor_pro",
+            gasWebAppUrl: "",
+            gasPollingMs: 15000,
+            localStorageKey: "hub_gestao_centralizada_v1"
+        };
 
         const firebaseConfig = {
             apiKey: "AIzaSyA_2v8Gs8D_j-QGXlCJMLit-CkLe3LWpU8",
@@ -338,416 +914,1397 @@
             appId: "1:826391364712:web:d54276eb18e805128227dd"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const dbFirebase = getDatabase(app);
-        const rootRef = ref(dbFirebase, 'gestor_pro');
+        const firebaseApp = initializeApp(firebaseConfig);
+        const firebaseAuth = getAuth(firebaseApp);
+        const firebaseDb = getDatabase(firebaseApp);
+        const firebaseRootRef = ref(firebaseDb, APP_CONFIG.firebaseRoot);
 
-        let dbLocal = { lancamentos: {}, config: { nomes: [], categorias: [], status: [] } };
-        let modalEditar, modalExcluir, modalExtrato;
-        let idFilaExclusao = null;
+        const DEFAULT_ENTITIES = [
+            { id: "pf", nome: "PESSOAL", tipo: "PF", cor: "#2563eb" },
+            { id: "delivery", nome: "ESPETINHOS DELIVERY", tipo: "PJ", cor: "#ea580c" },
+            { id: "dnl", nome: "DNL MEDIA", tipo: "PJ", cor: "#0891b2" }
+        ];
 
-        // AUXILIARES DE DATA E STATUS
-        function obterDataHojeString() {
-            const hoje = new Date();
-            const yyyy = hoje.getFullYear();
-            const mm = String(hoje.getMonth() + 1).padStart(2, '0');
-            const dd = String(hoje.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+        const DEFAULT_LISTS = {
+            inbox: { id: "inbox", nome: "MINHAS TAREFAS", cor: "#0f172a", createdAt: "2026-01-01T00:00:00.000Z" },
+            trabalho: { id: "trabalho", nome: "TRABALHO", cor: "#2563eb", createdAt: "2026-01-01T00:00:01.000Z" },
+            pessoal: { id: "pessoal", nome: "PESSOAL", cor: "#16a34a", createdAt: "2026-01-01T00:00:02.000Z" }
+        };
+
+        const DEFAULT_DATA = {
+            lancamentos: {},
+            tarefas: {},
+            notas: {},
+            listas: DEFAULT_LISTS,
+            config: {
+                nomes: ["KEVIN"],
+                categorias: ["MORADIA", "ALIMENTAÇÃO", "TRANSPORTE", "DELIVERY", "MARKETING", "FORNECEDORES", "IMPOSTOS", "SAÚDE", "LAZER", "OUTROS"],
+                status: ["PENDENTE", "PAGO"],
+                statusPendente: "PENDENTE",
+                statusPago: "PAGO",
+                listasVersion: 2,
+                entidades: DEFAULT_ENTITIES
+            }
+        };
+
+        let runtimeProvider = APP_CONFIG.dataProvider;
+        let demoActive = false;
+        let gasTimer = null;
+        let localRawData = null;
+        let dbLocal = normalizeData(DEFAULT_DATA);
+        let financeView = "contas";
+        let currentTaskView = "all";
+        let currentTaskListId = "all";
+        let deleteContext = null;
+        let modalFinanceEdit, modalTaskEdit, modalNoteEdit, modalDelete, modalStatement;
+
+        const financeFilters = { entity: "all", status: "all", period: "month", date: "", search: "" };
+        const noteFilters = { entity: "all", period: "all", search: "" };
+
+        const DataService = {
+            async start() {
+                showLoading(true, "Sincronizando dados...");
+                if (runtimeProvider === "firebase") {
+                    onValue(firebaseRootRef, snapshot => {
+                        dbLocal = normalizeData(snapshot.val() || DEFAULT_DATA);
+                        setConnectionState("cloud");
+                        renderAll();
+                        showLoading(false);
+                    }, error => {
+                        console.error(error);
+                        setConnectionState("offline");
+                        showLoading(false);
+                        showToast("Não foi possível sincronizar com o banco atual.", "error");
+                    });
+                    return;
+                }
+
+                if (runtimeProvider === "local") {
+                    localRawData = loadLocalData();
+                    dbLocal = normalizeData(localRawData);
+                    setConnectionState("local");
+                    renderAll();
+                    showLoading(false);
+                    return;
+                }
+
+                if (runtimeProvider === "gas") {
+                    await this.syncGas();
+                    clearInterval(gasTimer);
+                    gasTimer = setInterval(() => this.syncGas(false), APP_CONFIG.gasPollingMs);
+                }
+            },
+
+            async syncGas(withLoader = true) {
+                try {
+                    if (withLoader) showLoading(true, "Consultando Google Sheets...");
+                    const result = await gasRequest("getAll");
+                    dbLocal = normalizeData(result.data || result);
+                    setConnectionState("cloud", "GOOGLE SHEETS");
+                    renderAll();
+                } catch (error) {
+                    console.error(error);
+                    setConnectionState("offline");
+                    showToast(error.message || "Falha ao consultar o Google Sheets.", "error");
+                } finally {
+                    if (withLoader) showLoading(false);
+                }
+            },
+
+            async create(collection, value) {
+                if (runtimeProvider === "firebase") {
+                    const itemRef = push(ref(firebaseDb, `${APP_CONFIG.firebaseRoot}/${collection}`));
+                    const record = { ...value, id: itemRef.key };
+                    await set(itemRef, record);
+                    return itemRef.key;
+                }
+                if (runtimeProvider === "gas") {
+                    const result = await gasRequest("create", { collection, value });
+                    await this.syncGas(false);
+                    return result.id;
+                }
+                const id = createId(collection);
+                localRawData[collection] = localRawData[collection] || {};
+                localRawData[collection][id] = { ...value, id };
+                persistLocalAndRender();
+                return id;
+            },
+
+            async update(collection, id, value) {
+                if (runtimeProvider === "firebase") {
+                    await update(ref(firebaseDb, `${APP_CONFIG.firebaseRoot}/${collection}/${id}`), value);
+                    return;
+                }
+                if (runtimeProvider === "gas") {
+                    await gasRequest("update", { collection, id, value });
+                    await this.syncGas(false);
+                    return;
+                }
+                localRawData[collection] = localRawData[collection] || {};
+                localRawData[collection][id] = { ...(localRawData[collection][id] || {}), ...value, id };
+                persistLocalAndRender();
+            },
+
+            async batchUpdate(updatesMap) {
+                if (runtimeProvider === "firebase") {
+                    await update(ref(firebaseDb), updatesMap);
+                    return;
+                }
+                if (runtimeProvider === "gas") {
+                    await gasRequest("batchUpdate", { updates: updatesMap });
+                    await this.syncGas(false);
+                    return;
+                }
+                Object.entries(updatesMap).forEach(([path, value]) => {
+                    const parts = path.split("/").filter(Boolean);
+                    const collection = parts[parts.length - 2];
+                    const id = parts[parts.length - 1];
+                    if (!localRawData[collection]) localRawData[collection] = {};
+                    if (value === null) delete localRawData[collection][id];
+                    else localRawData[collection][id] = { ...(localRawData[collection][id] || {}), ...value, id };
+                });
+                persistLocalAndRender();
+            },
+
+            async remove(collection, id) {
+                if (runtimeProvider === "firebase") {
+                    await remove(ref(firebaseDb, `${APP_CONFIG.firebaseRoot}/${collection}/${id}`));
+                    return;
+                }
+                if (runtimeProvider === "gas") {
+                    await gasRequest("delete", { collection, id });
+                    await this.syncGas(false);
+                    return;
+                }
+                if (localRawData[collection]) delete localRawData[collection][id];
+                persistLocalAndRender();
+            },
+
+            async setConfig(key, value) {
+                if (runtimeProvider === "firebase") {
+                    await update(ref(firebaseDb, `${APP_CONFIG.firebaseRoot}/config`), { [key]: value });
+                    return;
+                }
+                if (runtimeProvider === "gas") {
+                    await gasRequest("setConfig", { key, value });
+                    await this.syncGas(false);
+                    return;
+                }
+                localRawData.config = localRawData.config || {};
+                localRawData.config[key] = value;
+                persistLocalAndRender();
+            },
+
+            async replaceAll(data) {
+                if (runtimeProvider === "firebase") {
+                    await set(firebaseRootRef, data);
+                    return;
+                }
+                if (runtimeProvider === "gas") {
+                    await gasRequest("replaceAll", { data });
+                    await this.syncGas(false);
+                    return;
+                }
+                localRawData = normalizeData(data);
+                persistLocalAndRender();
+            }
+        };
+
+        function normalizeData(raw = {}) {
+            const config = raw.config || {};
+            const normalizedLists = recordsWithIds(raw.listas);
+            const hasStoredLists = Object.keys(normalizedLists).length > 0;
+            const listsAreManaged = Number(config.listasVersion || 0) >= 2;
+            const entities = arrayFrom(config.entidades);
+            return {
+                lancamentos: recordsWithIds(raw.lancamentos),
+                tarefas: recordsWithIds(raw.tarefas),
+                notas: recordsWithIds(raw.notas),
+                listas: listsAreManaged && hasStoredLists ? normalizedLists : { ...structuredCloneSafe(DEFAULT_LISTS), ...normalizedLists },
+                listasVirtuais: !listsAreManaged,
+                config: {
+                    nomes: arrayFrom(config.nomes).length ? arrayFrom(config.nomes) : [...DEFAULT_DATA.config.nomes],
+                    categorias: arrayFrom(config.categorias).length ? arrayFrom(config.categorias) : [...DEFAULT_DATA.config.categorias],
+                    status: arrayFrom(config.status).length ? arrayFrom(config.status) : [...DEFAULT_DATA.config.status],
+                    statusPendente: String(config.statusPendente || "PENDENTE").toUpperCase(),
+                    statusPago: String(config.statusPago || "PAGO").toUpperCase(),
+                    listasVersion: Number(config.listasVersion || 0),
+                    entidades: entities.length ? entities : structuredCloneSafe(DEFAULT_ENTITIES)
+                }
+            };
         }
 
-        function obterStatusEClasse(d, hojeStr) {
-            const statusOriginal = (d.status || '').toUpperCase().trim();
-            const isPago = statusOriginal === 'PAGO';
-            const isVencido = !isPago && d.vencimento < hojeStr;
+        function arrayFrom(value) {
+            if (Array.isArray(value)) return value.filter(item => item !== null && item !== undefined);
+            if (value && typeof value === "object") return Object.values(value).filter(item => item !== null && item !== undefined);
+            return [];
+        }
 
-            if (isPago) {
-                return { label: 'PAGO', classe: 'badge-status-pago' };
-            } else if (isVencido || statusOriginal === 'VENCIDO') {
-                return { label: 'VENCIDO', classe: 'badge-status-vencido' };
-            } else {
-                return { label: d.status || 'PENDENTE', classe: 'badge-status-pendente' };
+        function objectFrom(value) {
+            if (!value) return {};
+            if (Array.isArray(value)) {
+                return value.reduce((acc, item, index) => {
+                    // Em nós que chegam como array, o índice é a chave real do banco.
+                    if (item) acc[String(index)] = item;
+                    return acc;
+                }, {});
+            }
+            return typeof value === "object" ? value : {};
+        }
+
+        function recordsWithIds(value) {
+            return Object.entries(objectFrom(value)).reduce((result, [key, record]) => {
+                // A chave do nó é a identificação canônica. Alguns backups antigos
+                // carregavam um campo "id" divergente, bloqueando editar/excluir.
+                if (record && typeof record === "object") result[key] = { ...record, id: key };
+                return result;
+            }, {});
+        }
+
+        function structuredCloneSafe(value) {
+            return JSON.parse(JSON.stringify(value));
+        }
+
+        function loadLocalData() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(APP_CONFIG.localStorageKey));
+                return saved || structuredCloneSafe(DEFAULT_DATA);
+            } catch {
+                return structuredCloneSafe(DEFAULT_DATA);
             }
         }
 
-        // AUTH
-        document.getElementById('login-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            try { await signInWithEmailAndPassword(auth, email, pass); } 
-            catch (err) { document.getElementById('login-error').textContent = "Erro no acesso."; document.getElementById('login-error').style.display = 'block'; }
-        };
+        function persistLocalAndRender() {
+            localStorage.setItem(APP_CONFIG.localStorageKey, JSON.stringify(localRawData));
+            dbLocal = normalizeData(localRawData);
+            renderAll();
+        }
 
-        window.fazerLogout = () => { if(confirm("Sair?")) signOut(auth); };
+        function createId(prefix = "item") {
+            if (window.crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
+            return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        }
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
-                iniciarSync();
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-content').style.display = 'none';
+        async function gasRequest(action, payload = {}) {
+            if (!APP_CONFIG.gasWebAppUrl) throw new Error("A URL do Google Apps Script ainda não foi configurada.");
+            const response = await fetch(APP_CONFIG.gasWebAppUrl, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action, payload, token: sessionStorage.getItem("hub_gas_token") || "" })
+            });
+            if (!response.ok) throw new Error(`Erro de conexão (${response.status}).`);
+            const result = await response.json();
+            if (result.ok === false) throw new Error(result.message || "Operação não autorizada.");
+            return result;
+        }
+
+        /* AUTENTICAÇÃO */
+        document.getElementById("login-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-pass").value;
+            const errorBox = document.getElementById("login-error");
+            errorBox.style.display = "none";
+            setLoginBusy(true);
+            try {
+                if (runtimeProvider === "firebase") {
+                    await signInWithEmailAndPassword(firebaseAuth, email, password);
+                } else if (runtimeProvider === "gas") {
+                    const result = await gasRequest("login", { usuario: email, senha: password });
+                    sessionStorage.setItem("hub_gas_token", result.token || "");
+                    showApp();
+                    await DataService.start();
+                }
+            } catch (error) {
+                console.error(error);
+                errorBox.textContent = humanizeAuthError(error);
+                errorBox.style.display = "block";
+            } finally {
+                setLoginBusy(false);
             }
         });
 
-        function iniciarSync() {
-            document.getElementById('loading-overlay').style.display = 'flex';
-            onValue(rootRef, (snapshot) => {
-                const data = snapshot.val();
-                dbLocal = {
-                    lancamentos: data?.lancamentos || {},
-                    config: data?.config || { nomes: [], categorias: [], status: [] }
-                };
-                document.getElementById('loading-overlay').style.display = 'none';
-                refreshUI();
-                renderizarRecentes();
-                renderizarVencidos();
-                if(document.getElementById('area-relatorio').style.display === 'block') window.buscarRelatorio();
+        document.getElementById("btn-demo").addEventListener("click", async () => {
+            demoActive = true;
+            runtimeProvider = "local";
+            showApp();
+            await DataService.start();
+            showToast("Modo local ativado. Os dados atuais não serão alterados.", "info");
+        });
+
+        onAuthStateChanged(firebaseAuth, async user => {
+            if (demoActive || runtimeProvider !== "firebase") return;
+            if (user) {
+                showApp();
+                await DataService.start();
+            } else {
+                showLogin();
+            }
+        });
+
+        document.getElementById("btn-logout").addEventListener("click", async () => {
+            if (!confirm("Deseja sair do Hub de Gestão?")) return;
+            clearInterval(gasTimer);
+            if (runtimeProvider === "firebase") await signOut(firebaseAuth);
+            else {
+                sessionStorage.removeItem("hub_gas_token");
+                location.reload();
+            }
+        });
+
+        function showApp() {
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("app-content").style.display = "block";
+        }
+
+        function showLogin() {
+            document.getElementById("login-screen").style.display = "flex";
+            document.getElementById("app-content").style.display = "none";
+        }
+
+        function setLoginBusy(busy) {
+            const button = document.getElementById("btn-login-submit");
+            button.disabled = busy;
+            button.innerHTML = busy ? '<span class="spinner-border spinner-border-sm me-2"></span>ENTRANDO...' : '<span class="login-btn-text">ENTRAR NO PAINEL</span>';
+        }
+
+        function humanizeAuthError(error) {
+            const code = String(error?.code || "");
+            if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "E-mail ou senha incorretos.";
+            if (code.includes("too-many-requests")) return "Muitas tentativas. Aguarde alguns minutos.";
+            if (code.includes("network")) return "Sem conexão com a internet.";
+            return "Não foi possível entrar. Confira seus dados.";
+        }
+
+        /* NAVEGAÇÃO */
+        document.querySelectorAll("[data-page-target]").forEach(button => {
+            button.addEventListener("click", () => activatePage(button.dataset.pageTarget));
+        });
+        document.addEventListener("click", event => {
+            const goButton = event.target.closest("[data-go-page]");
+            if (!goButton) return;
+            activatePage(goButton.dataset.goPage);
+            if (goButton.dataset.openFinanceForm) openFinanceForm();
+            if (goButton.dataset.focusNote) setTimeout(() => document.getElementById("note-title").focus(), 100);
+        });
+
+        function activatePage(page) {
+            document.querySelectorAll(".app-page").forEach(section => section.classList.toggle("active", section.id === `page-${page}`));
+            document.querySelectorAll("[data-page-target]").forEach(button => button.classList.toggle("active", button.dataset.pageTarget === page));
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        /* FUNÇÕES DE DATA, TEXTO E VALORES */
+        function todayString() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        }
+
+        function addDays(dateString, amount) {
+            const date = parseDate(dateString);
+            date.setDate(date.getDate() + amount);
+            return dateToString(date);
+        }
+
+        function addMonthsClamped(dateString, amount) {
+            const date = parseDate(dateString);
+            const originalDay = date.getDate();
+            date.setDate(1);
+            date.setMonth(date.getMonth() + amount);
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            date.setDate(Math.min(originalDay, lastDay));
+            return dateToString(date);
+        }
+
+        function parseDate(value) {
+            if (!value) return new Date();
+            const [year, month, day] = value.split("-").map(Number);
+            return new Date(year, month - 1, day, 12, 0, 0);
+        }
+
+        function dateToString(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        }
+
+        function formatDate(value, short = false) {
+            if (!value) return "SEM DATA";
+            return parseDate(value).toLocaleDateString("pt-BR", short ? { day: "2-digit", month: "2-digit" } : { day: "2-digit", month: "2-digit", year: "numeric" });
+        }
+
+        function formatCurrency(value) {
+            return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        }
+
+        function parseCurrency(value) {
+            if (typeof value === "number") return value;
+            const normalized = String(value || "").replace(/\s/g, "").replace(/R\$/gi, "").replace(/\./g, "").replace(",", ".");
+            const parsed = Number.parseFloat(normalized);
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
+        }
+
+        function normalizeText(value) {
+            return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        }
+
+        function getEntity(id) {
+            return dbLocal.config.entidades.find(entity => entity.id === id) || dbLocal.config.entidades[0] || DEFAULT_ENTITIES[0];
+        }
+
+        function getFinanceStatus(item) {
+            const paidLabel = dbLocal.config.statusPago || "PAGO";
+            const pendingLabel = dbLocal.config.statusPendente || "PENDENTE";
+            const original = String(item.status || pendingLabel).toUpperCase().trim();
+            if (original === paidLabel || original === "PAGO") return { label: paidLabel, semantic: "PAGO", className: "pago" };
+            if ((item.vencimento || "") < todayString() || original === "VENCIDO") return { label: "VENCIDO", semantic: "VENCIDO", className: "vencido" };
+            return { label: original || pendingLabel, semantic: "PENDENTE", className: "pendente" };
+        }
+
+        function financeDescription(item) { return item.desc || item.descricao || "SEM DESCRIÇÃO"; }
+        function financeEntityId(item) { return item.entidadeId || item.entidade || "pf"; }
+        function financeNature(item) { return item.natureza || "despesa"; }
+        function financeValue(item) { return Number(item.valor || 0); }
+
+        function showLoading(show, message = "Sincronizando dados...") {
+            document.getElementById("loading-text").textContent = message;
+            document.getElementById("loading-overlay").style.display = show ? "flex" : "none";
+        }
+
+        function setConnectionState(state, customText = "") {
+            const badge = document.getElementById("connection-badge");
+            badge.className = `connection-badge ${state === "local" ? "local" : state === "offline" ? "offline" : ""}`;
+            document.getElementById("connection-text").textContent = customText || (state === "local" ? "LOCAL DE TESTE" : state === "offline" ? "SEM CONEXÃO" : "CLOUD ATIVO");
+        }
+
+        function showToast(message, type = "success") {
+            const stack = document.getElementById("toast-stack");
+            const toast = document.createElement("div");
+            toast.className = `app-toast ${type}`;
+            const icon = type === "error" ? "exclamation-circle-fill" : type === "info" ? "info-circle-fill" : "check-circle-fill";
+            toast.innerHTML = `<i class="bi bi-${icon}"></i><span>${escapeHTML(message)}</span>`;
+            stack.appendChild(toast);
+            setTimeout(() => toast.remove(), 3600);
+        }
+
+        function fillSelect(id, options, placeholder = "- SELECIONAR -", preserve = true) {
+            const select = document.getElementById(id);
+            if (!select) return;
+            const current = preserve ? select.value : "";
+            select.innerHTML = (placeholder !== null ? `<option value="">${escapeHTML(placeholder)}</option>` : "") + options.map(option => `<option value="${escapeHTML(option.value)}">${escapeHTML(option.label)}</option>`).join("");
+            if ([...select.options].some(option => option.value === current)) select.value = current;
+        }
+
+        function entityOptions(includeAll = false, includeEmpty = false) {
+            const options = dbLocal.config.entidades.map(entity => ({ value: entity.id, label: `${entity.nome} (${entity.tipo})` }));
+            if (includeAll) options.unshift({ value: "all", label: "TODAS AS ENTIDADES" });
+            if (includeEmpty) options.unshift({ value: "", label: "SEM VÍNCULO" });
+            return options;
+        }
+
+        function listOptions() {
+            return Object.values(dbLocal.listas).sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || ""))).map(list => ({ value: list.id, label: list.nome }));
+        }
+
+        function applyCurrencyMask(element) {
+            element.addEventListener("input", event => {
+                const digits = event.target.value.replace(/\D/g, "");
+                event.target.value = digits ? (Number(digits) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
             });
         }
 
-        // FUNÇÕES GLOBAIS
-        window.abrirEdicao = (key) => {
-            const d = dbLocal.lancamentos[key];
-            if(!d) return;
+        /* RENDERIZAÇÃO GLOBAL */
+        function renderAll() {
+            populateSelects();
+            renderDashboard();
+            renderFinance();
+            renderFinanceReport();
+            renderTasks();
+            renderNotes();
+            renderSettings();
+            updateNavigationCounts();
+        }
 
-            document.getElementById('edit-id').value = key;
-            document.getElementById('edit-desc').value = d.desc;
-            document.getElementById('edit-vencimento').value = d.vencimento;
-            document.getElementById('edit-valor').value = d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2});
-            document.getElementById('edit-categoria').value = d.categoria;
-            document.getElementById('edit-status').value = d.status;
-            document.getElementById('edit-pagante').value = d.pagante;
-            
-            document.getElementById('edit-group-notice').style.display = d.groupId ? 'block' : 'none';
-            document.getElementById('btn-update-group').style.display = d.groupId ? 'block' : 'none';
-            
-            carregarDivisaoParaEdicao('edit-dividir-com', d.divisao);
-            modalEditar.show();
-        };
+        function populateSelects() {
+            const entities = entityOptions();
+            ["form-entidade", "edit-finance-entity"].forEach(id => fillSelect(id, entities));
+            ["task-entity-filter", "note-entity-filter", "report-entity"].forEach(id => fillSelect(id, entityOptions(true), null));
+            ["note-entity", "edit-task-entity", "edit-note-entity"].forEach(id => fillSelect(id, entityOptions(false, true), null));
 
-        window.atualizarLancamento = async (aplicarAoGrupo) => {
-            const key = document.getElementById('edit-id').value;
-            const original = dbLocal.lancamentos[key];
-            const valor = parseFloat(document.getElementById('edit-valor').value.replace(/\./g, '').replace(',', '.'));
-            
-            const baseData = {
-                desc: document.getElementById('edit-desc').value.toUpperCase(),
-                vencimento: document.getElementById('edit-vencimento').value,
-                valor: valor,
-                categoria: document.getElementById('edit-categoria').value,
-                status: document.getElementById('edit-status').value,
-                pagante: document.getElementById('edit-pagante').value,
-                divisao: capturarValoresDivisao('edit-dividir-com')
-            };
+            const categories = dbLocal.config.categorias.map(value => ({ value, label: value }));
+            ["form-categoria", "edit-finance-category"].forEach(id => fillSelect(id, categories));
+            const payers = dbLocal.config.nomes.map(value => ({ value, label: value }));
+            ["form-pagante", "edit-finance-payer", "report-payer"].forEach(id => fillSelect(id, payers));
+            const statuses = dbLocal.config.status.map(value => ({ value, label: value }));
+            ["form-status", "edit-finance-status"].forEach(id => fillSelect(id, statuses));
+            const lists = listOptions();
+            ["task-list", "edit-task-list"].forEach(id => fillSelect(id, lists));
 
-            if (aplicarAoGrupo && original.groupId) {
-                const updates = {};
-                Object.entries(dbLocal.lancamentos).forEach(([k, item]) => {
-                    if (item.groupId === original.groupId) {
-                        updates[`gestor_pro/lancamentos/${k}`] = {
-                            ...item,
-                            valor: baseData.valor,
-                            categoria: baseData.categoria,
-                            status: baseData.status,
-                            pagante: baseData.pagante,
-                            divisao: baseData.divisao
-                        };
-                    }
-                });
-                await update(ref(dbFirebase), updates);
-            } else {
-                await update(ref(dbFirebase, `gestor_pro/lancamentos/${key}`), baseData);
-            }
-            modalEditar.hide();
-        };
+            fillSelect("filter-finance-entity", entityOptions(true), null);
+            document.getElementById("filter-finance-entity").value = financeFilters.entity;
+            document.getElementById("task-entity-filter").value ||= "all";
+            document.getElementById("note-entity-filter").value = noteFilters.entity;
+            document.getElementById("report-entity").value ||= "all";
+            document.getElementById("form-entidade").value ||= dbLocal.config.entidades[0]?.id || "";
+            document.getElementById("form-pagante").value ||= dbLocal.config.nomes[0] || "";
+            document.getElementById("form-status").value ||= dbLocal.config.status.includes(dbLocal.config.statusPendente) ? dbLocal.config.statusPendente : (dbLocal.config.status[0] || "");
+            document.getElementById("task-list").value ||= getDefaultTaskListId();
+            renderSplitOptions("form-dividir-com", dbLocal.config.nomes);
+            renderSplitOptions("edit-finance-split", dbLocal.config.nomes);
+        }
 
-        window.confirmarExcluir = (key) => {
-            idFilaExclusao = key;
-            if (dbLocal.lancamentos[key]?.groupId) modalExcluir.show();
-            else if(confirm("Excluir?")) window.confirmarAcaoExcluir(false);
-        };
+        /* DASHBOARD */
+        function renderDashboard() {
+            const today = todayString();
+            const hour = new Date().getHours();
+            document.getElementById("greeting-kicker").textContent = hour < 12 ? "BOM DIA" : hour < 18 ? "BOA TARDE" : "BOA NOITE";
+            document.getElementById("header-date").textContent = new Date().toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short" }).toUpperCase();
 
-        window.confirmarAcaoExcluir = async (todos) => {
-            const item = dbLocal.lancamentos[idFilaExclusao];
-            if (todos && item.groupId) {
-                const updates = {};
-                Object.keys(dbLocal.lancamentos).forEach(k => {
-                    if(dbLocal.lancamentos[k].groupId === item.groupId) updates[`gestor_pro/lancamentos/${k}`] = null;
-                });
-                await update(ref(dbFirebase), updates);
-            } else {
-                await remove(ref(dbFirebase, `gestor_pro/lancamentos/${idFilaExclusao}`));
-            }
-            modalExcluir.hide();
-        };
+            const items = Object.values(dbLocal.lancamentos);
+            const pending = items.filter(item => getFinanceStatus(item).semantic !== "PAGO" && financeNature(item) === "despesa");
+            const dueToday = pending.filter(item => item.vencimento === today);
+            const overdue = pending.filter(item => getFinanceStatus(item).semantic === "VENCIDO");
+            const tasks = Object.values(dbLocal.tarefas);
+            const openTasks = tasks.filter(task => !task.concluida);
+            const overdueTasks = openTasks.filter(task => task.prazo && task.prazo < today);
 
-        window.buscarRelatorio = () => {
-            const m = document.getElementById('filtro-mes').value;
-            const a = document.getElementById('filtro-ano').value;
-            const filtrados = Object.entries(dbLocal.lancamentos).filter(([k, d]) => {
-                const p = d.vencimento.split('-');
-                return p[1] === m && p[0] === a;
-            }).sort((x, y) => x[1].vencimento.localeCompare(y[1].vencimento));
+            setText("stat-due-today", formatCurrency(sumValues(dueToday)));
+            setText("stat-due-today-foot", dueToday.length ? `${dueToday.length} ${dueToday.length === 1 ? "conta" : "contas"} para hoje` : "Nenhuma conta para hoje");
+            setText("stat-pending-total", formatCurrency(sumValues(pending)));
+            setText("stat-pending-foot", `${pending.length} ${pending.length === 1 ? "lançamento em aberto" : "lançamentos em aberto"}`);
+            setText("stat-overdue-count", overdue.length);
+            setText("stat-overdue-foot", overdue.length ? `${formatCurrency(sumValues(overdue))} aguardando pagamento` : "Tudo em dia");
+            setText("stat-open-tasks", openTasks.length);
+            setText("stat-open-tasks-foot", overdueTasks.length ? `${overdueTasks.length} ${overdueTasks.length === 1 ? "tarefa atrasada" : "tarefas atrasadas"}` : "Nenhuma tarefa atrasada");
+            setText("dashboard-summary", overdue.length || overdueTasks.length ? `Você tem ${overdue.length} conta(s) vencida(s) e ${overdueTasks.length} tarefa(s) atrasada(s).` : "Sem urgências vencidas. Continue acompanhando as próximas atividades.");
 
-            document.getElementById('area-relatorio').style.display = 'block';
-            const totais = {};
-            (dbLocal.config.nomes || []).forEach(n => totais[n] = 0);
-            filtrados.forEach(([k, d]) => {
-                const res = calcularDivisaoIndividual(d.valor, d.divisao);
-                for(let n in res) if(totais.hasOwnProperty(n)) totais[n] += res[n];
+            const nextWeek = addDays(today, 7);
+            const upcoming = pending.filter(item => item.vencimento >= today && item.vencimento <= nextWeek).sort(sortFinanceAsc).slice(0, 7);
+            const financeBody = document.getElementById("dashboard-finance-body");
+            financeBody.innerHTML = upcoming.length ? upcoming.map(item => {
+                const entity = getEntity(financeEntityId(item));
+                const status = getFinanceStatus(item);
+                return `<tr><td class="fw-bold text-muted-2">${formatDate(item.vencimento, true)}</td><td><span class="data-title">${escapeHTML(financeDescription(item))}</span><span class="data-subtitle">${escapeHTML(item.categoria || "SEM CATEGORIA")}</span></td><td><span class="entity-badge" style="color:${escapeHTML(entity.cor)}">${escapeHTML(entity.nome)}</span></td><td class="amount">${formatCurrency(financeValue(item))}</td><td><span class="status-badge ${status.className}">${escapeHTML(status.label)}</span></td></tr>`;
+            }).join("") : emptyTableRow(5, "Nenhuma conta prevista nos próximos 7 dias.");
+
+            const priorityOrder = { alta: 0, media: 1, baixa: 2 };
+            const priorityTasks = openTasks.sort((a, b) => (priorityOrder[a.prioridade || "media"] - priorityOrder[b.prioridade || "media"]) || String(a.prazo || "9999").localeCompare(String(b.prazo || "9999"))).slice(0, 5);
+            const taskContainer = document.getElementById("dashboard-task-list");
+            taskContainer.innerHTML = priorityTasks.length ? priorityTasks.map(task => dashboardTaskHTML(task)).join("") : emptyPanel("check2-circle", "Nenhuma tarefa aberta", "Crie sua primeira tarefa para organizar o dia.");
+        }
+
+        function dashboardTaskHTML(task) {
+            const list = dbLocal.listas[task.listaId] || DEFAULT_LISTS.inbox;
+            const overdue = task.prazo && task.prazo < todayString();
+            return `<div class="task-row"><input class="form-check-input task-check" type="checkbox" aria-label="Concluir tarefa" onchange="window.toggleTask('${escapeHTML(task.id)}')"><div class="min-w-0"><p class="task-title text-truncate">${escapeHTML(task.titulo)}</p><div class="task-meta"><span class="meta-badge"><span class="list-dot" style="--list-color:${escapeHTML(list.cor || "#2563eb")}"></span>${escapeHTML(list.nome)}</span>${task.prazo ? `<span class="meta-badge" style="${overdue ? "color:#dc2626;border-color:#fecaca;background:#fef2f2" : ""}"><i class="bi bi-calendar3"></i>${formatDate(task.prazo, true)}</span>` : ""}</div></div><span class="priority-dot ${escapeHTML(task.prioridade || "media")}" title="Prioridade ${escapeHTML(task.prioridade || "média")}"></span></div>`;
+        }
+
+        function sumValues(items) { return items.reduce((sum, item) => sum + financeValue(item), 0); }
+        function setText(id, value) { const element = document.getElementById(id); if (element) element.textContent = value; }
+
+        /* FINANCEIRO */
+        document.getElementById("btn-toggle-finance-form").addEventListener("click", openFinanceForm);
+        document.getElementById("btn-close-finance-form").addEventListener("click", closeFinanceForm);
+        document.querySelectorAll("[data-finance-view]").forEach(button => button.addEventListener("click", () => setFinanceView(button.dataset.financeView)));
+
+        function openFinanceForm() {
+            const panel = document.getElementById("finance-form-panel");
+            panel.style.display = "block";
+            document.getElementById("form-desc").focus();
+            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        function closeFinanceForm() { document.getElementById("finance-form-panel").style.display = "none"; }
+
+        function setFinanceView(view) {
+            financeView = view;
+            document.getElementById("finance-view-contas").style.display = view === "contas" ? "block" : "none";
+            document.getElementById("finance-view-relatorio").style.display = view === "relatorio" ? "block" : "none";
+            document.querySelectorAll("[data-finance-view]").forEach(button => button.classList.toggle("active", button.dataset.financeView === view));
+            if (view === "relatorio") renderFinanceReport();
+        }
+
+        ["filter-finance-entity", "filter-finance-status", "filter-finance-period", "filter-finance-date"].forEach(id => {
+            document.getElementById(id).addEventListener("change", () => {
+                financeFilters.entity = document.getElementById("filter-finance-entity").value;
+                financeFilters.status = document.getElementById("filter-finance-status").value;
+                financeFilters.period = document.getElementById("filter-finance-period").value;
+                financeFilters.date = document.getElementById("filter-finance-date").value;
+                document.getElementById("filter-finance-date").style.display = financeFilters.period === "custom" ? "block" : "none";
+                renderFinance();
             });
+        });
+        document.getElementById("filter-finance-search").addEventListener("input", event => { financeFilters.search = event.target.value; renderFinance(); });
+        document.getElementById("btn-clear-finance-filters").addEventListener("click", () => {
+            Object.assign(financeFilters, { entity: "all", status: "all", period: "month", date: "", search: "" });
+            document.getElementById("filter-finance-entity").value = "all";
+            document.getElementById("filter-finance-status").value = "all";
+            document.getElementById("filter-finance-period").value = "month";
+            document.getElementById("filter-finance-date").value = "";
+            document.getElementById("filter-finance-date").style.display = "none";
+            document.getElementById("filter-finance-search").value = "";
+            renderFinance();
+        });
 
-            document.getElementById('container-totais').innerHTML = Object.entries(totais).map(([n,v]) => `
-                <div class="col"><div class="total-card"><div class="total-icon"><i class="bi bi-hash"></i></div><div><h6>${n}</h6><h4>R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2})}</h4></div></div></div>
-            `).join('');
-
-            const hojeStr = obterDataHojeString();
-            document.getElementById('tabela-relatorio-body').innerHTML = filtrados.map(([key, d]) => {
-                const info = obterStatusEClasse(d, hojeStr);
-                return `
-                    <tr>
-                        <td class="small fw-bold text-muted">${d.vencimento.split('-').reverse().join('/')}</td>
-                        <td class="small fw-bold">${d.desc}</td>
-                        <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                        <td class="small text-uppercase">${d.pagante}</td>
-                        <td><span class="badge-status ${info.classe}">${info.label}</span></td>
-                        <td class="text-end">
-                            <button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button>
-                            <button class="btn-action text-danger" onclick="window.confirmarExcluir('${key}')"><i class="bi bi-trash-fill"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            popularSelect('select-extrato', dbLocal.config.nomes || []);
-        };
-
-        window.salvarNovoLancamento = async (e) => {
-            e.preventDefault();
-            const valor = parseFloat(document.getElementById('form-valor').value.replace(/\./g, '').replace(',', '.'));
-            const qtd = parseInt(document.getElementById('form-qtd-parcelas').value) || 1;
-            const div = capturarValoresDivisao('form-dividir-com');
-            const dataOrig = document.getElementById('form-vencimento').value;
-            const gId = qtd > 1 ? "G" + Date.now() : null;
-
-            for (let i = 0; i < qtd; i++) {
-                const d = new Date(dataOrig + 'T12:00:00'); d.setMonth(d.getMonth() + i);
-                const itemRef = push(ref(dbFirebase, 'gestor_pro/lancamentos'));
-                await set(itemRef, {
-                    id: itemRef.key, groupId: gId, 
-                    desc: document.getElementById('form-desc').value.toUpperCase() + (qtd > 1 ? ` (${i+1}/${qtd})` : ""),
-                    vencimento: d.toISOString().split('T')[0], valor: valor, 
-                    categoria: document.getElementById('form-categoria').value,
-                    pagante: document.getElementById('form-pagante').value, status: document.getElementById('form-status').value, divisao: div
-                });
-            }
-            e.target.reset(); document.getElementById('form-qtd-parcelas').value = 1;
-        };
-
-        window.salvarConfig = (path, inputId) => {
-            const v = document.getElementById(inputId).value.trim().toUpperCase();
-            if(!v) return;
-            const lista = dbLocal.config[path] || [];
-            update(ref(dbFirebase, 'gestor_pro/config'), { [path]: [...new Set([...lista, v])] });
-            document.getElementById(inputId).value = '';
-        };
-
-        window.removerConfig = (path, idx) => {
-            if(!confirm("Remover?")) return;
-            const lista = [...dbLocal.config[path]]; lista.splice(idx, 1);
-            update(ref(dbFirebase, 'gestor_pro/config'), { [path]: lista });
-        };
-
-        window.importarParaFirebase = (input) => {
-            const f = input.files[0]; const r = new FileReader();
-            r.onload = async (e) => {
-                const j = JSON.parse(e.target.result);
-                if(confirm("Importar?")) {
-                    let fl = {};
-                    if(Array.isArray(j.lancamentos)) j.lancamentos.forEach(l => { const k = push(ref(dbFirebase, 't')).key; fl[k] = {...l, id: k}; });
-                    else fl = j.lancamentos || {};
-                    await set(rootRef, { config: j.config, lancamentos: fl });
+        document.getElementById("form-novo-lancamento").addEventListener("submit", async event => {
+            event.preventDefault();
+            const value = parseCurrency(document.getElementById("form-valor").value);
+            const installments = Math.max(1, Number.parseInt(document.getElementById("form-qtd-parcelas").value, 10) || 1);
+            if (value <= 0) return showToast("Informe um valor maior que zero.", "error");
+            const firstDate = document.getElementById("form-vencimento").value;
+            const groupId = installments > 1 ? createId("grupo") : null;
+            const baseDescription = document.getElementById("form-desc").value.trim().toUpperCase();
+            const split = captureSplit("form-dividir-com");
+            showLoading(true, "Salvando lançamento...");
+            try {
+                for (let index = 0; index < installments; index++) {
+                    await DataService.create("lancamentos", {
+                        groupId,
+                        desc: `${baseDescription}${installments > 1 ? ` (${index + 1}/${installments})` : ""}`,
+                        vencimento: addMonthsClamped(firstDate, index),
+                        valor: value,
+                        categoria: document.getElementById("form-categoria").value,
+                        pagante: document.getElementById("form-pagante").value,
+                        status: document.getElementById("form-status").value,
+                        entidadeId: document.getElementById("form-entidade").value,
+                        natureza: document.getElementById("form-natureza").value,
+                        observacoes: document.getElementById("form-observacoes").value.trim(),
+                        divisao: split,
+                        criadoEm: new Date().toISOString()
+                    });
                 }
+                event.target.reset();
+                document.getElementById("form-qtd-parcelas").value = "1";
+                document.getElementById("form-vencimento").value = todayString();
+                renderSplitOptions("form-dividir-com", dbLocal.config.nomes);
+                closeFinanceForm();
+                showToast(installments > 1 ? `${installments} parcelas cadastradas.` : "Lançamento cadastrado.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível salvar o lançamento.", "error");
+            } finally { showLoading(false); }
+        });
+
+        function getFilteredFinance() {
+            const today = todayString();
+            const tomorrow = addDays(today, 1);
+            const week = addDays(today, 7);
+            const now = parseDate(today);
+            const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+            const query = normalizeText(financeFilters.search);
+            return Object.values(dbLocal.lancamentos).filter(item => {
+                const entityId = financeEntityId(item);
+                const status = getFinanceStatus(item).semantic;
+                if (financeFilters.entity !== "all" && entityId !== financeFilters.entity) return false;
+                if (financeFilters.status !== "all" && status !== financeFilters.status) return false;
+                if (financeFilters.period === "month" && !String(item.vencimento || "").startsWith(monthPrefix)) return false;
+                if (financeFilters.period === "today" && item.vencimento !== today) return false;
+                if (financeFilters.period === "tomorrow" && item.vencimento !== tomorrow) return false;
+                if (financeFilters.period === "week" && !(item.vencimento >= today && item.vencimento <= week)) return false;
+                if (financeFilters.period === "overdue" && status !== "VENCIDO") return false;
+                if (financeFilters.period === "custom" && financeFilters.date && item.vencimento !== financeFilters.date) return false;
+                if (query) {
+                    const haystack = normalizeText(`${financeDescription(item)} ${item.categoria || ""} ${item.pagante || ""} ${getEntity(entityId).nome}`);
+                    if (!haystack.includes(query)) return false;
+                }
+                return true;
+            }).sort(sortFinanceAsc);
+        }
+
+        function sortFinanceAsc(a, b) {
+            return String(a.vencimento || "9999").localeCompare(String(b.vencimento || "9999")) || financeDescription(a).localeCompare(financeDescription(b), "pt-BR");
+        }
+
+        function renderFinance() {
+            const items = getFilteredFinance();
+            const expenses = items.filter(item => financeNature(item) === "despesa");
+            const revenues = items.filter(item => financeNature(item) === "receita");
+            const pending = expenses.filter(item => getFinanceStatus(item).semantic !== "PAGO");
+            const paid = expenses.filter(item => getFinanceStatus(item).semantic === "PAGO");
+            const overdue = expenses.filter(item => getFinanceStatus(item).semantic === "VENCIDO");
+            const result = sumValues(revenues) - sumValues(expenses);
+            setText("finance-filter-total", formatCurrency(result));
+            setText("finance-filter-foot", `${items.length} ${items.length === 1 ? "lançamento" : "lançamentos"} • entradas - saídas`);
+            setText("finance-pending-total", formatCurrency(sumValues(pending)));
+            setText("finance-paid-total", formatCurrency(sumValues(paid)));
+            setText("finance-overdue-total", formatCurrency(sumValues(overdue)));
+            setText("finance-overdue-foot", `${overdue.length} ${overdue.length === 1 ? "conta vencida" : "contas vencidas"}`);
+            setText("finance-list-caption", financePeriodCaption(financeFilters.period, items.length));
+
+            const body = document.getElementById("finance-table-body");
+            body.innerHTML = items.length ? items.map(item => financeRowHTML(item)).join("") : emptyTableRow(7, "Nenhum lançamento encontrado com estes filtros.");
+        }
+
+        function financePeriodCaption(period, count) {
+            const labels = { month: "do mês atual", today: "com vencimento hoje", tomorrow: "com vencimento amanhã", week: "dos próximos 7 dias", overdue: "vencidos", custom: "da data escolhida", all: "de todas as datas" };
+            return `${count} ${count === 1 ? "lançamento" : "lançamentos"} ${labels[period] || ""}`;
+        }
+
+        function financeRowHTML(item) {
+            const entity = getEntity(financeEntityId(item));
+            const status = getFinanceStatus(item);
+            const nature = financeNature(item);
+            return `<tr class="${status.semantic === "VENCIDO" ? "overdue-row" : ""}"><td class="fw-bold text-muted-2">${formatDate(item.vencimento)}</td><td><span class="data-title">${escapeHTML(financeDescription(item))}</span><span class="data-subtitle">${escapeHTML(item.categoria || "SEM CATEGORIA")}${nature === "receita" ? " • RECEITA" : ""}</span></td><td><span class="entity-badge" style="color:${escapeHTML(entity.cor)}">${escapeHTML(entity.nome)}</span></td><td class="amount ${nature === "receita" ? "receita" : ""}">${nature === "receita" ? "+ " : ""}${formatCurrency(financeValue(item))}</td><td>${escapeHTML(item.pagante || "-")}</td><td><span class="status-badge ${nature === "receita" ? "receita" : status.className}">${nature === "receita" ? "RECEITA" : escapeHTML(status.label)}</span></td><td><div class="row-actions"><button class="btn-icon" title="${status.semantic === "PAGO" ? "Marcar como pendente" : "Marcar como pago"}" onclick="window.toggleFinancePaid('${escapeHTML(item.id)}')"><i class="bi ${status.semantic === "PAGO" ? "bi-arrow-counterclockwise" : "bi-check-lg"}"></i></button><button class="btn-icon" title="Editar" onclick="window.openFinanceEdit('${escapeHTML(item.id)}')"><i class="bi bi-pencil"></i></button><button class="btn-icon danger" title="Excluir" onclick="window.askDelete('lancamentos','${escapeHTML(item.id)}')"><i class="bi bi-trash3"></i></button></div></td></tr>`;
+        }
+
+        window.toggleFinancePaid = async id => {
+            const item = dbLocal.lancamentos[id];
+            if (!item) return;
+            const paid = getFinanceStatus(item).semantic === "PAGO";
+            try {
+                await DataService.update("lancamentos", id, { status: paid ? dbLocal.config.statusPendente : dbLocal.config.statusPago, dataPagamento: paid ? null : todayString() });
+                showToast(paid ? "Lançamento reaberto." : "Lançamento marcado como pago.");
+            } catch { showToast("Não foi possível atualizar o status.", "error"); }
+        };
+
+        window.openFinanceEdit = id => {
+            const item = dbLocal.lancamentos[id];
+            if (!item) return;
+            setValue("edit-finance-id", id);
+            setValue("edit-finance-nature", financeNature(item));
+            setValue("edit-finance-entity", financeEntityId(item));
+            setValue("edit-finance-desc", financeDescription(item).replace(/\s\(\d+\/\d+\)$/u, ""));
+            setValue("edit-finance-date", item.vencimento || "");
+            setValue("edit-finance-value", Number(financeValue(item)).toLocaleString("pt-BR", { minimumFractionDigits: 2 }));
+            setValue("edit-finance-category", item.categoria || "");
+            setValue("edit-finance-status", item.status || dbLocal.config.statusPendente);
+            setValue("edit-finance-payer", item.pagante || "");
+            setValue("edit-finance-notes", item.observacoes || "");
+            renderSplitOptions("edit-finance-split", dbLocal.config.nomes, item.divisao || []);
+            document.getElementById("edit-group-box").style.display = item.groupId ? "block" : "none";
+            document.getElementById("edit-finance-group").checked = false;
+            modalFinanceEdit.show();
+        };
+
+        document.getElementById("form-edit-finance").addEventListener("submit", async event => {
+            event.preventDefault();
+            const id = document.getElementById("edit-finance-id").value;
+            const original = dbLocal.lancamentos[id];
+            if (!original) return;
+            const value = parseCurrency(document.getElementById("edit-finance-value").value);
+            if (value <= 0) return showToast("Informe um valor maior que zero.", "error");
+            const baseDescription = document.getElementById("edit-finance-desc").value.trim().toUpperCase();
+            const common = {
+                valor: value,
+                categoria: document.getElementById("edit-finance-category").value,
+                pagante: document.getElementById("edit-finance-payer").value,
+                status: document.getElementById("edit-finance-status").value,
+                entidadeId: document.getElementById("edit-finance-entity").value,
+                natureza: document.getElementById("edit-finance-nature").value,
+                observacoes: document.getElementById("edit-finance-notes").value.trim(),
+                divisao: captureSplit("edit-finance-split"),
+                atualizadoEm: new Date().toISOString()
             };
-            r.readAsText(f);
-        };
-
-        window.exportarBackup = () => {
-            const blob = new Blob([JSON.stringify(dbLocal, null, 2)], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `GESTOR_BK.json`; a.click();
-        };
-
-        window.abrirPopupExtrato = () => {
-            const n = document.getElementById('select-extrato').value;
-            const m = document.getElementById('filtro-mes').value, a = document.getElementById('filtro-ano').value;
-            const items = Object.values(dbLocal.lancamentos).filter(d => d.vencimento.includes(`${a}-${m}`) && d.divisao.some(s => s.split(':')[0] === n));
-            let t = 0;
-            const rows = items.map(d => {
-                const p = calcularDivisaoIndividual(d.valor, d.divisao)[n] || 0; t += p;
-                return `<tr><td>${d.vencimento.split('-').reverse().join('/')}</td><td>${d.desc}</td><td class="text-end fw-900">R$ ${p.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`;
-            }).join('');
-            document.getElementById('extrato-nome-header').innerHTML = `<h2 class="m-0 fw-900 uppercase">${n}</h2><p class="m-0 small">${m}/${a}</p>`;
-            document.getElementById('extrato-tabela-container').innerHTML = `<table class="table table-sm"><thead><tr><th>DATA</th><th>DESC</th><th class="text-end">VALOR</th></tr></thead><tbody>${rows}</tbody></table>`;
-            document.getElementById('extrato-total').textContent = "R$ " + t.toLocaleString('pt-BR',{minimumFractionDigits:2});
-            modalExtrato.show();
-        };
-
-        // UI HELPERS
-        function refreshUI() {
-            const c = dbLocal.config;
-            popularSelect('form-categoria', c.categorias || []);
-            popularSelect('edit-categoria', c.categorias || []);
-            popularSelect('form-status', c.status || []);
-            popularSelect('edit-status', c.status || []);
-            popularSelect('form-pagante', c.nomes || []);
-            popularSelect('edit-pagante', c.nomes || []);
-            gerarOpcoesDivisao('form-dividir-com', c.nomes || []);
-            gerarOpcoesDivisao('edit-dividir-com', c.nomes || []);
-            renderizarListasConfig();
-        }
-
-        function renderizarRecentes() {
-            const b = document.getElementById('log-home-body');
-            const entries = Object.entries(dbLocal.lancamentos).sort((x,y) => y[1].vencimento.localeCompare(x[1].vencimento)).slice(0, 10);
-            const hojeStr = obterDataHojeString();
-            b.innerHTML = entries.map(([key, d]) => {
-                const info = obterStatusEClasse(d, hojeStr);
-                return `
-                    <tr class="bg-white">
-                        <td width="90" class="fw-bold text-muted small">${d.vencimento.split('-').reverse().slice(0,2).join('/')}</td>
-                        <td>
-                            <div class="fw-bold small">${d.desc}</div>
-                            <div class="d-flex align-items-center gap-2 mt-1">
-                                <small class="text-muted text-uppercase">${d.categoria}</small>
-                                <span class="badge-status ${info.classe}" style="font-size:0.55rem; padding: 1px 5px;">${info.label}</span>
-                            </div>
-                        </td>
-                        <td class="fw-900">R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                        <td class="text-end"><button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button></td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // RENDERIZAR TABELA DE VENCIDOS E ATUALIZAR CONTADOR
-        function renderizarVencidos() {
-            const hojeStr = obterDataHojeString();
-            const vencidos = Object.entries(dbLocal.lancamentos).filter(([k, d]) => {
-                const info = obterStatusEClasse(d, hojeStr);
-                return info.label === 'VENCIDO';
-            }).sort((x, y) => x[1].vencimento.localeCompare(y[1].vencimento));
-
-            // Atualiza o contador do menu
-            const badge = document.getElementById('badge-vencidos-count');
-            if (badge) {
-                if (vencidos.length > 0) {
-                    badge.textContent = vencidos.length;
-                    badge.style.display = 'inline-block';
+            showLoading(true, "Atualizando lançamento...");
+            try {
+                if (original.groupId && document.getElementById("edit-finance-group").checked) {
+                    const updatesMap = {};
+                    Object.entries(dbLocal.lancamentos).forEach(([key, item]) => {
+                        if (item.groupId !== original.groupId) return;
+                        const suffix = financeDescription(item).match(/\s\(\d+\/\d+\)$/u)?.[0] || "";
+                        updatesMap[`${APP_CONFIG.firebaseRoot}/lancamentos/${key}`] = { ...item, ...common, id: key, desc: `${baseDescription}${suffix}` };
+                    });
+                    await DataService.batchUpdate(updatesMap);
                 } else {
-                    badge.style.display = 'none';
+                    const suffix = financeDescription(original).match(/\s\(\d+\/\d+\)$/u)?.[0] || "";
+                    await DataService.update("lancamentos", id, { ...common, desc: `${baseDescription}${suffix}`, vencimento: document.getElementById("edit-finance-date").value });
                 }
+                modalFinanceEdit.hide();
+                showToast("Lançamento atualizado.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível atualizar.", "error");
+            } finally { showLoading(false); }
+        });
+
+        function renderSplitOptions(containerId, names, selectedValues = null) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const current = selectedValues === null ? captureSplit(containerId) : selectedValues;
+            container.innerHTML = names.map((name, index) => {
+                const match = (current || []).find(value => String(value).split(":")[0] === name);
+                const percentage = match && String(match).includes(":") ? String(match).split(":")[1] : "";
+                return `<div class="divider-box"><div class="form-check m-0"><input class="form-check-input split-check" type="checkbox" id="${containerId}-${index}" value="${escapeHTML(name)}" ${match ? "checked" : ""}><label class="form-check-label small fw-bold ms-1" for="${containerId}-${index}">${escapeHTML(name)}</label></div><div class="input-group input-group-sm"><input type="number" min="0" max="100" class="form-control split-percent" placeholder="%" value="${escapeHTML(percentage)}" ${match ? "" : "disabled"}><span class="input-group-text">%</span></div></div>`;
+            }).join("");
+            container.querySelectorAll(".split-check").forEach(check => check.addEventListener("change", () => { check.closest(".divider-box").querySelector(".split-percent").disabled = !check.checked; }));
+        }
+
+        function captureSplit(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return [];
+            return [...container.querySelectorAll(".divider-box")].reduce((result, row) => {
+                const check = row.querySelector(".split-check");
+                const percent = row.querySelector(".split-percent").value;
+                if (check.checked) result.push(percent ? `${check.value}:${percent}` : check.value);
+                return result;
+            }, []);
+        }
+
+        /* RELATÓRIO */
+        document.getElementById("btn-run-report").addEventListener("click", renderFinanceReport);
+        document.getElementById("btn-open-statement").addEventListener("click", openStatement);
+
+        function initializeReportDates() {
+            const monthSelect = document.getElementById("report-month");
+            const yearSelect = document.getElementById("report-year");
+            if (monthSelect.options.length) return;
+            const now = new Date();
+            const months = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+            months.forEach((name, index) => monthSelect.add(new Option(name, String(index + 1).padStart(2, "0"), false, index === now.getMonth())));
+            for (let year = now.getFullYear() + 1; year >= now.getFullYear() - 4; year--) yearSelect.add(new Option(String(year), String(year), false, year === now.getFullYear()));
+        }
+
+        function reportItems() {
+            const month = document.getElementById("report-month").value;
+            const year = document.getElementById("report-year").value;
+            const entity = document.getElementById("report-entity").value || "all";
+            return Object.values(dbLocal.lancamentos).filter(item => String(item.vencimento || "").startsWith(`${year}-${month}`) && (entity === "all" || financeEntityId(item) === entity)).sort(sortFinanceAsc);
+        }
+
+        function renderFinanceReport() {
+            initializeReportDates();
+            if (!document.getElementById("report-entity").value) document.getElementById("report-entity").value = "all";
+            const items = reportItems();
+            const expenses = items.filter(item => financeNature(item) === "despesa");
+            const revenues = items.filter(item => financeNature(item) === "receita");
+            const paid = expenses.filter(item => getFinanceStatus(item).semantic === "PAGO");
+            const open = expenses.filter(item => getFinanceStatus(item).semantic !== "PAGO");
+            document.getElementById("report-summary-grid").innerHTML = [
+                ["DESPESAS", sumValues(expenses), "receipt", "red"],
+                ["RECEITAS", sumValues(revenues), "graph-up-arrow", "green"],
+                [dbLocal.config.statusPago, sumValues(paid), "check-circle", "green"],
+                ["EM ABERTO", sumValues(open), "hourglass-split", "amber"]
+            ].map(([label, value, icon, color]) => `<div class="stat-card"><div class="stat-card-top"><span class="stat-label">${label}</span><span class="stat-icon ${color}"><i class="bi bi-${icon}"></i></span></div><h2 class="stat-value">${formatCurrency(value)}</h2><div class="stat-foot">${items.length} movimento(s) no período</div></div>`).join("");
+            document.getElementById("report-table-body").innerHTML = items.length ? items.map(item => financeRowHTML(item)).join("") : emptyTableRow(7, "Nenhum movimento neste período.");
+            const monthName = document.getElementById("report-month").selectedOptions[0]?.textContent || "";
+            setText("report-caption", `${monthName} / ${document.getElementById("report-year").value} • ${items.length} movimento(s)`);
+        }
+
+        function calculateSplit(total, split, payer) {
+            const result = {};
+            const source = Array.isArray(split) ? split : arrayFrom(split);
+            if (!source.length) {
+                if (payer) result[payer] = total;
+                return result;
             }
-
-            const tbody = document.getElementById('tabela-vencidos-body');
-            if (!tbody) return;
-
-            if (vencidos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">Nenhum lançamento vencido encontrado! 🎉</td></tr>`;
-                return;
+            let percentageSum = 0;
+            const withoutPercent = [];
+            source.forEach(entry => {
+                const [name, percent] = String(entry).split(":");
+                if (percent !== undefined && percent !== "") {
+                    const numericPercent = Number(percent) || 0;
+                    result[name] = total * (numericPercent / 100);
+                    percentageSum += numericPercent;
+                } else withoutPercent.push(name);
+            });
+            if (withoutPercent.length) {
+                const remainder = total * (Math.max(0, 100 - percentageSum) / 100);
+                withoutPercent.forEach(name => result[name] = remainder / withoutPercent.length);
             }
-
-            tbody.innerHTML = vencidos.map(([key, d]) => {
-                const info = obterStatusEClasse(d, hojeStr);
-                return `
-                    <tr>
-                        <td class="small fw-bold text-danger">${d.vencimento.split('-').reverse().join('/')}</td>
-                        <td class="small fw-bold">${d.desc}</td>
-                        <td class="fw-900 text-danger">R$ ${d.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                        <td class="small text-uppercase">${d.pagante}</td>
-                        <td><span class="badge-status ${info.classe}">${info.label}</span></td>
-                        <td class="text-end">
-                            <button class="btn-action" onclick="window.abrirEdicao('${key}')"><i class="bi bi-pencil-fill"></i></button>
-                            <button class="btn-action text-danger" onclick="window.confirmarExcluir('${key}')"><i class="bi bi-trash-fill"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            return result;
         }
 
-        function renderizarListasConfig() {
-            ['nomes','categorias','status'].forEach(t => {
-                const cid = (t === 'nomes') ? 'lista-nomes' : (t === 'categorias') ? 'lista-categorias' : 'lista-status';
-                document.getElementById(cid).innerHTML = (dbLocal.config[t] || []).map((it, idx) => `<div class="config-pill"><span>${it}</span><button class="btn btn-sm text-danger p-0" onclick="window.removerConfig('${t}', ${idx})"><i class="bi bi-trash"></i></button></div>`).join('');
+        function openStatement() {
+            const payer = document.getElementById("report-payer").value;
+            if (!payer) return showToast("Selecione um responsável.", "info");
+            let total = 0;
+            const rows = reportItems().filter(item => financeNature(item) === "despesa").map(item => {
+                const share = calculateSplit(financeValue(item), item.divisao, item.pagante)[payer] || 0;
+                if (!share) return "";
+                total += share;
+                return `<tr><td>${formatDate(item.vencimento)}</td><td>${escapeHTML(financeDescription(item))}</td><td>${escapeHTML(getEntity(financeEntityId(item)).nome)}</td><td class="text-end fw-900">${formatCurrency(share)}</td></tr>`;
+            }).filter(Boolean).join("");
+            const month = document.getElementById("report-month").selectedOptions[0]?.textContent || "";
+            const year = document.getElementById("report-year").value;
+            document.getElementById("statement-header").innerHTML = `<h2 class="m-0 fw-900">${escapeHTML(payer)}</h2><p class="m-0 mt-1 small text-white-50">EXTRATO • ${escapeHTML(month)} / ${escapeHTML(year)}</p>`;
+            document.getElementById("statement-table").innerHTML = `<table class="data-table"><thead><tr><th>Data</th><th>Descrição</th><th>Entidade</th><th class="text-end">Valor</th></tr></thead><tbody>${rows || emptyTableRow(4, "Nenhum valor atribuído a este responsável.")}</tbody></table>`;
+            setText("statement-total", formatCurrency(total));
+            modalStatement.show();
+        }
+
+        /* TAREFAS */
+        document.querySelectorAll("[data-task-view]").forEach(button => button.addEventListener("click", () => {
+            currentTaskView = button.dataset.taskView;
+            currentTaskListId = "all";
+            renderTasks();
+        }));
+        document.getElementById("task-entity-filter").addEventListener("change", renderTasks);
+        document.getElementById("btn-focus-task").addEventListener("click", () => document.getElementById("task-title").focus());
+        document.getElementById("btn-add-list").addEventListener("click", addTaskList);
+        document.getElementById("new-list-name").addEventListener("keydown", event => { if (event.key === "Enter") { event.preventDefault(); addTaskList(); } });
+
+        document.getElementById("form-nova-tarefa").addEventListener("submit", async event => {
+            event.preventDefault();
+            const title = document.getElementById("task-title").value.trim();
+            if (!title) return;
+            try {
+                await DataService.create("tarefas", {
+                    titulo: title,
+                    listaId: document.getElementById("task-list").value || getDefaultTaskListId(),
+                    prazo: document.getElementById("task-due").value,
+                    prioridade: document.getElementById("task-priority").value,
+                    entidadeId: document.getElementById("task-entity-filter").value === "all" ? "" : document.getElementById("task-entity-filter").value,
+                    detalhes: "",
+                    concluida: false,
+                    criadoEm: new Date().toISOString()
+                });
+                event.target.reset();
+                document.getElementById("task-priority").value = "media";
+                document.getElementById("task-list").value = getDefaultTaskListId();
+                document.getElementById("task-due").value = todayString();
+                showToast("Tarefa adicionada.");
+            } catch { showToast("Não foi possível criar a tarefa.", "error"); }
+        });
+
+        async function addTaskList() {
+            const input = document.getElementById("new-list-name");
+            const name = input.value.trim().toUpperCase();
+            if (!name) return;
+            if (Object.values(dbLocal.listas).some(list => normalizeText(list.nome) === normalizeText(name))) return showToast("Essa lista já existe.", "info");
+            const colors = ["#7c3aed", "#0891b2", "#ea580c", "#db2777", "#16a34a"];
+            try {
+                await ensureTaskListsPersisted();
+                await DataService.create("listas", { nome: name, cor: colors[Object.keys(dbLocal.listas).length % colors.length], createdAt: new Date().toISOString() });
+                input.value = "";
+                showToast("Lista criada.");
+            } catch { showToast("Não foi possível criar a lista.", "error"); }
+        }
+
+        function getDefaultTaskListId() {
+            if (currentTaskListId !== "all" && dbLocal.listas[currentTaskListId]) return currentTaskListId;
+            if (dbLocal.listas.inbox) return "inbox";
+            return Object.keys(dbLocal.listas)[0] || "";
+        }
+
+        async function ensureTaskListsPersisted() {
+            if (!dbLocal.listasVirtuais) return;
+            const updatesMap = {};
+            Object.entries(dbLocal.listas).forEach(([id, list]) => {
+                updatesMap[`${APP_CONFIG.firebaseRoot}/listas/${id}`] = { ...list, id };
             });
+            await DataService.batchUpdate(updatesMap);
+            await DataService.setConfig("listasVersion", 2);
+            dbLocal.listasVirtuais = false;
         }
 
-        function calcularDivisaoIndividual(total, array) {
-            const res = {}; let pSum = 0; let sem = [];
-            (array || []).forEach(i => {
-                const p = i.split(':');
-                if(p.length > 1) { const v = parseFloat(p[1])||0; res[p[0]] = total * (v/100); pSum += v; }
-                else sem.push(i);
+        function filteredTasks() {
+            const today = todayString();
+            const entity = document.getElementById("task-entity-filter").value || "all";
+            return Object.values(dbLocal.tarefas).filter(task => {
+                if (currentTaskListId !== "all" && task.listaId !== currentTaskListId) return false;
+                if (entity !== "all" && task.entidadeId !== entity) return false;
+                if (currentTaskView === "today" && (task.concluida || task.prazo !== today)) return false;
+                if (currentTaskView === "upcoming" && (task.concluida || !task.prazo || task.prazo <= today)) return false;
+                if (currentTaskView === "overdue" && (task.concluida || !task.prazo || task.prazo >= today)) return false;
+                if (currentTaskView === "completed" && !task.concluida) return false;
+                if (currentTaskView === "all" && task.concluida) return false;
+                return true;
+            }).sort((a, b) => Number(a.concluida) - Number(b.concluida) || String(a.prazo || "9999").localeCompare(String(b.prazo || "9999")) || String(a.criadoEm || "").localeCompare(String(b.criadoEm || "")));
+        }
+
+        function renderTasks() {
+            const tasks = Object.values(dbLocal.tarefas);
+            const today = todayString();
+            setText("task-count-all", tasks.filter(task => !task.concluida).length);
+            setText("task-count-today", tasks.filter(task => !task.concluida && task.prazo === today).length);
+            setText("task-count-upcoming", tasks.filter(task => !task.concluida && task.prazo > today).length);
+            setText("task-count-overdue", tasks.filter(task => !task.concluida && task.prazo && task.prazo < today).length);
+            setText("task-count-completed", tasks.filter(task => task.concluida).length);
+
+            document.querySelectorAll("[data-task-view]").forEach(button => button.classList.toggle("active", currentTaskListId === "all" && button.dataset.taskView === currentTaskView));
+            document.getElementById("task-custom-lists").innerHTML = Object.values(dbLocal.listas).sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || ""))).map(list => {
+                const count = tasks.filter(task => !task.concluida && task.listaId === list.id).length;
+                return `<div class="task-list-line"><button class="task-filter ${currentTaskListId === list.id ? "active" : ""}" onclick="window.selectTaskList('${escapeHTML(list.id)}')"><span><span class="list-dot" style="--list-color:${escapeHTML(list.cor || "#2563eb")}"></span>${escapeHTML(list.nome)}</span><small>${count}</small></button><span class="task-list-actions"><button class="btn-icon" title="Editar lista" onclick="window.editTaskList('${escapeHTML(list.id)}')"><i class="bi bi-pencil"></i></button><button class="btn-icon danger" title="Excluir lista" onclick="window.deleteTaskList('${escapeHTML(list.id)}')"><i class="bi bi-trash3"></i></button></span></div>`;
+            }).join("");
+
+            const titles = { all: ["TODAS AS TAREFAS", "Pendências organizadas por prazo"], today: ["MEU DIA", "Tarefas programadas para hoje"], upcoming: ["PRÓXIMAS", "Tarefas futuras"], overdue: ["ATRASADAS", "Tarefas que ultrapassaram o prazo"], completed: ["CONCLUÍDAS", "Histórico do que já foi feito"] };
+            const selectedList = dbLocal.listas[currentTaskListId];
+            const [title, subtitle] = selectedList ? [selectedList.nome, "Tarefas desta lista"] : titles[currentTaskView];
+            setText("task-panel-title", title);
+            setText("task-panel-subtitle", subtitle);
+
+            const items = filteredTasks();
+            document.getElementById("task-list-container").innerHTML = items.length ? items.map(task => taskRowHTML(task)).join("") : emptyPanel("check2-square", "Nenhuma tarefa aqui", "Adicione uma tarefa usando o campo acima.");
+        }
+
+        function taskRowHTML(task) {
+            const list = dbLocal.listas[task.listaId] || DEFAULT_LISTS.inbox;
+            const entity = task.entidadeId ? getEntity(task.entidadeId) : null;
+            const overdue = !task.concluida && task.prazo && task.prazo < todayString();
+            return `<div class="task-row ${task.concluida ? "completed" : ""}"><input class="form-check-input task-check" type="checkbox" ${task.concluida ? "checked" : ""} onchange="window.toggleTask('${escapeHTML(task.id)}')"><div class="min-w-0"><p class="task-title">${escapeHTML(task.titulo)}</p><div class="task-meta"><span class="meta-badge"><span class="list-dot" style="--list-color:${escapeHTML(list.cor || "#2563eb")}"></span>${escapeHTML(list.nome)}</span>${task.prazo ? `<span class="meta-badge" style="${overdue ? "color:#dc2626;border-color:#fecaca;background:#fef2f2" : ""}"><i class="bi bi-calendar3"></i>${formatDate(task.prazo)}</span>` : ""}${entity ? `<span class="entity-badge" style="color:${escapeHTML(entity.cor)}">${escapeHTML(entity.nome)}</span>` : ""}<span class="meta-badge"><span class="priority-dot ${escapeHTML(task.prioridade || "media")}"></span>${escapeHTML((task.prioridade || "media").toUpperCase())}</span></div></div><div class="row-actions"><button class="btn-icon" onclick="window.openTaskEdit('${escapeHTML(task.id)}')"><i class="bi bi-pencil"></i></button><button class="btn-icon danger" onclick="window.askDelete('tarefas','${escapeHTML(task.id)}')"><i class="bi bi-trash3"></i></button></div></div>`;
+        }
+
+        window.selectTaskList = id => { currentTaskListId = id; currentTaskView = "all"; renderTasks(); };
+
+        window.editTaskList = async id => {
+            const list = dbLocal.listas[id];
+            if (!list) return;
+            const newName = prompt("Novo nome da lista:", list.nome);
+            if (newName === null) return;
+            const normalizedName = newName.trim().toUpperCase();
+            if (!normalizedName || normalizedName === list.nome) return;
+            if (Object.values(dbLocal.listas).some(item => item.id !== id && normalizeText(item.nome) === normalizeText(normalizedName))) return showToast("Já existe uma lista com esse nome.", "info");
+            showLoading(true, "Atualizando lista...");
+            try {
+                await ensureTaskListsPersisted();
+                await DataService.update("listas", id, { nome: normalizedName, atualizadoEm: new Date().toISOString() });
+                showToast("Lista atualizada.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível editar a lista.", "error");
+            } finally { showLoading(false); }
+        };
+
+        window.deleteTaskList = async id => {
+            const list = dbLocal.listas[id];
+            if (!list) return;
+            const availableLists = Object.values(dbLocal.listas).filter(item => item.id !== id);
+            if (!availableLists.length) return showToast("É necessário manter pelo menos uma lista de tarefas.", "info");
+            const linkedTasks = Object.values(dbLocal.tarefas).filter(task => task.listaId === id);
+            const fallback = availableLists.find(item => item.id === "inbox") || availableLists[0];
+            const warning = linkedTasks.length
+                ? `Excluir a lista \"${list.nome}\"? As ${linkedTasks.length} tarefa(s) serão movidas para \"${fallback.nome}\".`
+                : `Excluir a lista \"${list.nome}\"?`;
+            if (!confirm(warning)) return;
+            showLoading(true, "Excluindo lista...");
+            try {
+                await ensureTaskListsPersisted();
+                const updatesMap = { [`${APP_CONFIG.firebaseRoot}/listas/${id}`]: null };
+                linkedTasks.forEach(task => {
+                    updatesMap[`${APP_CONFIG.firebaseRoot}/tarefas/${task.id}`] = { ...task, id: task.id, listaId: fallback.id, atualizadoEm: new Date().toISOString() };
+                });
+                await DataService.batchUpdate(updatesMap);
+                if (currentTaskListId === id) currentTaskListId = fallback.id;
+                document.getElementById("task-list").value = fallback.id;
+                renderTasks();
+                showToast(linkedTasks.length ? `Lista excluída e tarefas movidas para ${fallback.nome}.` : "Lista excluída.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível excluir a lista.", "error");
+            } finally { showLoading(false); }
+        };
+
+        window.toggleTask = async id => {
+            const task = dbLocal.tarefas[id];
+            if (!task) return;
+            try {
+                await DataService.update("tarefas", id, { concluida: !task.concluida, concluidaEm: !task.concluida ? new Date().toISOString() : null, atualizadoEm: new Date().toISOString() });
+            } catch { showToast("Não foi possível atualizar a tarefa.", "error"); }
+        };
+
+        window.openTaskEdit = id => {
+            const task = dbLocal.tarefas[id];
+            if (!task) return;
+            setValue("edit-task-id", id);
+            setValue("edit-task-title", task.titulo || "");
+            setValue("edit-task-list", task.listaId || "inbox");
+            setValue("edit-task-due", task.prazo || "");
+            setValue("edit-task-priority", task.prioridade || "media");
+            setValue("edit-task-entity", task.entidadeId || "");
+            setValue("edit-task-notes", task.detalhes || "");
+            modalTaskEdit.show();
+        };
+
+        document.getElementById("form-edit-task").addEventListener("submit", async event => {
+            event.preventDefault();
+            const id = document.getElementById("edit-task-id").value;
+            try {
+                await DataService.update("tarefas", id, {
+                    titulo: document.getElementById("edit-task-title").value.trim(),
+                    listaId: document.getElementById("edit-task-list").value,
+                    prazo: document.getElementById("edit-task-due").value,
+                    prioridade: document.getElementById("edit-task-priority").value,
+                    entidadeId: document.getElementById("edit-task-entity").value,
+                    detalhes: document.getElementById("edit-task-notes").value.trim(),
+                    atualizadoEm: new Date().toISOString()
+                });
+                modalTaskEdit.hide();
+                showToast("Tarefa atualizada.");
+            } catch { showToast("Não foi possível atualizar a tarefa.", "error"); }
+        });
+
+        /* NOTAS */
+        document.getElementById("btn-focus-note").addEventListener("click", () => document.getElementById("note-title").focus());
+        document.getElementById("note-search").addEventListener("input", event => { noteFilters.search = event.target.value; renderNotes(); });
+        document.getElementById("note-entity-filter").addEventListener("change", event => { noteFilters.entity = event.target.value; renderNotes(); });
+        document.getElementById("note-period-filter").addEventListener("change", event => { noteFilters.period = event.target.value; renderNotes(); });
+
+        document.getElementById("form-nova-nota").addEventListener("submit", async event => {
+            event.preventDefault();
+            try {
+                await DataService.create("notas", {
+                    titulo: document.getElementById("note-title").value.trim(),
+                    conteudo: document.getElementById("note-content").value.trim(),
+                    data: document.getElementById("note-date").value,
+                    entidadeId: document.getElementById("note-entity").value,
+                    fixada: false,
+                    criadoEm: new Date().toISOString(),
+                    atualizadoEm: new Date().toISOString()
+                });
+                event.target.reset();
+                document.getElementById("note-date").value = todayString();
+                showToast("Nota salva.");
+            } catch { showToast("Não foi possível salvar a nota.", "error"); }
+        });
+
+        function filteredNotes() {
+            const today = todayString();
+            const query = normalizeText(noteFilters.search);
+            return Object.values(dbLocal.notas).filter(note => {
+                if (noteFilters.entity !== "all" && note.entidadeId !== noteFilters.entity) return false;
+                if (noteFilters.period === "today" && note.data !== today) return false;
+                if (noteFilters.period === "future" && (!note.data || note.data < today)) return false;
+                if (noteFilters.period === "undated" && note.data) return false;
+                if (query && !normalizeText(`${note.titulo} ${note.conteudo}`).includes(query)) return false;
+                return true;
+            }).sort((a, b) => Number(b.fixada) - Number(a.fixada) || String(b.atualizadoEm || b.criadoEm || "").localeCompare(String(a.atualizadoEm || a.criadoEm || "")));
+        }
+
+        function renderNotes() {
+            const notes = filteredNotes();
+            const grid = document.getElementById("notes-grid");
+            grid.innerHTML = notes.length ? notes.map(note => noteCardHTML(note)).join("") : `<div class="panel" style="grid-column:1/-1">${emptyPanel("journal-text", "Nenhuma nota encontrada", "Registre uma ideia ou altere os filtros.")}</div>`;
+        }
+
+        function noteCardHTML(note) {
+            const entity = note.entidadeId ? getEntity(note.entidadeId) : null;
+            return `<article class="note-card ${note.fixada ? "pinned" : ""}"><div class="note-card-head"><div class="min-w-0"><h2 class="note-title text-truncate">${escapeHTML(note.titulo)}</h2>${entity ? `<span class="entity-badge mt-2" style="color:${escapeHTML(entity.cor)}">${escapeHTML(entity.nome)}</span>` : ""}</div><button class="btn-icon pin-btn ${note.fixada ? "active" : ""}" title="${note.fixada ? "Desafixar" : "Fixar"}" onclick="window.toggleNotePin('${escapeHTML(note.id)}')"><i class="bi bi-pin-angle${note.fixada ? "-fill" : ""}"></i></button></div><div class="note-content">${escapeHTML(note.conteudo)}</div><div class="note-footer"><span><i class="bi bi-calendar3 me-1"></i>${note.data ? formatDate(note.data) : "SEM DATA"}</span><span class="row-actions"><button class="btn-icon" onclick="window.openNoteEdit('${escapeHTML(note.id)}')"><i class="bi bi-pencil"></i></button><button class="btn-icon danger" onclick="window.askDelete('notas','${escapeHTML(note.id)}')"><i class="bi bi-trash3"></i></button></span></div></article>`;
+        }
+
+        window.toggleNotePin = async id => {
+            const note = dbLocal.notas[id];
+            if (!note) return;
+            try { await DataService.update("notas", id, { fixada: !note.fixada, atualizadoEm: new Date().toISOString() }); }
+            catch { showToast("Não foi possível fixar a nota.", "error"); }
+        };
+
+        window.openNoteEdit = id => {
+            const note = dbLocal.notas[id];
+            if (!note) return;
+            setValue("edit-note-id", id);
+            setValue("edit-note-title", note.titulo || "");
+            setValue("edit-note-date", note.data || "");
+            setValue("edit-note-entity", note.entidadeId || "");
+            setValue("edit-note-content", note.conteudo || "");
+            modalNoteEdit.show();
+        };
+
+        document.getElementById("form-edit-note").addEventListener("submit", async event => {
+            event.preventDefault();
+            const id = document.getElementById("edit-note-id").value;
+            try {
+                await DataService.update("notas", id, {
+                    titulo: document.getElementById("edit-note-title").value.trim(),
+                    data: document.getElementById("edit-note-date").value,
+                    entidadeId: document.getElementById("edit-note-entity").value,
+                    conteudo: document.getElementById("edit-note-content").value.trim(),
+                    atualizadoEm: new Date().toISOString()
+                });
+                modalNoteEdit.hide();
+                showToast("Nota atualizada.");
+            } catch { showToast("Não foi possível atualizar a nota.", "error"); }
+        });
+
+        /* CONFIGURAÇÕES */
+        document.querySelectorAll("[data-add-config]").forEach(button => button.addEventListener("click", () => addConfigItem(button.dataset.addConfig, button.dataset.input)));
+
+        async function addConfigItem(key, inputId) {
+            const input = document.getElementById(inputId);
+            const value = input.value.trim().toUpperCase();
+            if (!value) return;
+            const current = dbLocal.config[key] || [];
+            if (current.some(item => normalizeText(item) === normalizeText(value))) return showToast("Esse item já existe.", "info");
+            try {
+                await DataService.setConfig(key, [...current, value]);
+                input.value = "";
+                showToast("Configuração adicionada.");
+            } catch { showToast("Não foi possível salvar a configuração.", "error"); }
+        }
+
+        function configCascadeUpdates(key, oldValue, newValue) {
+            const updatesMap = {};
+            Object.entries(dbLocal.lancamentos).forEach(([id, item]) => {
+                const changes = {};
+                if (key === "nomes") {
+                    if (normalizeText(item.pagante) === normalizeText(oldValue)) changes.pagante = newValue;
+                    const currentSplit = arrayFrom(item.divisao);
+                    const updatedSplit = currentSplit.map(entry => {
+                        const [name, ...rest] = String(entry).split(":");
+                        if (normalizeText(name) !== normalizeText(oldValue)) return entry;
+                        return rest.length ? `${newValue}:${rest.join(":")}` : newValue;
+                    });
+                    if (updatedSplit.some((entry, index) => entry !== currentSplit[index])) changes.divisao = updatedSplit;
+                }
+                if (key === "categorias" && normalizeText(item.categoria) === normalizeText(oldValue)) changes.categoria = newValue;
+                if (key === "status" && normalizeText(item.status) === normalizeText(oldValue)) changes.status = newValue;
+                if (Object.keys(changes).length) {
+                    updatesMap[`${APP_CONFIG.firebaseRoot}/lancamentos/${id}`] = { ...item, ...changes, id, atualizadoEm: new Date().toISOString() };
+                }
             });
-            if(sem.length > 0) { const restoVal = total * (Math.max(0, 100 - pSum) / 100); sem.forEach(n => res[n] = restoVal / sem.length); }
-            return res;
+            return updatesMap;
         }
 
-        function capturarValoresDivisao(containerId) {
-            const res = [];
-            document.getElementById(containerId).querySelectorAll('.divider-box').forEach(row => {
-                const cb = row.querySelector('.form-check-input'), pf = row.querySelector('.perc-field');
-                if(cb.checked) res.push(pf.value ? `${cb.value}:${pf.value}` : cb.value);
-            });
-            return res;
+        window.editConfigItem = async (key, index) => {
+            const current = [...(dbLocal.config[key] || [])];
+            const oldValue = current[index];
+            if (oldValue === undefined) return;
+            const response = prompt(`Editar ${key === "nomes" ? "responsável" : key === "categorias" ? "categoria" : "status"}:`, oldValue);
+            if (response === null) return;
+            const newValue = response.trim().toUpperCase();
+            if (!newValue || newValue === oldValue) return;
+            if (current.some((item, itemIndex) => itemIndex !== index && normalizeText(item) === normalizeText(newValue))) return showToast("Já existe um item com esse nome.", "info");
+
+            const wasPaidStatus = key === "status" && normalizeText(oldValue) === normalizeText(dbLocal.config.statusPago);
+            const wasPendingStatus = key === "status" && normalizeText(oldValue) === normalizeText(dbLocal.config.statusPendente);
+            const cascade = configCascadeUpdates(key, oldValue, newValue);
+            current[index] = newValue;
+            showLoading(true, "Atualizando configurações...");
+            try {
+                await DataService.setConfig(key, current);
+                if (wasPaidStatus) await DataService.setConfig("statusPago", newValue);
+                if (wasPendingStatus) await DataService.setConfig("statusPendente", newValue);
+                if (Object.keys(cascade).length) await DataService.batchUpdate(cascade);
+                showToast("Item atualizado em todos os lançamentos relacionados.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível editar este item.", "error");
+            } finally { showLoading(false); }
+        };
+
+        window.removeConfigItem = async (key, index) => {
+            const current = [...(dbLocal.config[key] || [])];
+            const value = current[index];
+            if (value === undefined) return;
+            if (current.length <= 1) return showToast("É necessário manter pelo menos um item nesta configuração.", "info");
+            if (key === "status" && [dbLocal.config.statusPago, dbLocal.config.statusPendente].some(core => normalizeText(core) === normalizeText(value))) {
+                return showToast("Este é um status principal do sistema. Você pode editá-lo, mas não excluí-lo.", "info");
+            }
+            if (!confirm(`Remover \"${value}\" das configurações?`)) return;
+            current.splice(index, 1);
+            try { await DataService.setConfig(key, current); }
+            catch { showToast("Não foi possível remover.", "error"); }
+        };
+
+        function renderSettings() {
+            renderConfigList("settings-names", "nomes");
+            renderConfigList("settings-categories", "categorias");
+            renderConfigList("settings-status", "status");
+            const titles = { firebase: ["FIREBASE ATUAL", "Mantém os lançamentos existentes funcionando."], gas: ["GOOGLE SHEETS", "Dados sincronizados pelo Google Apps Script."], local: ["MODO LOCAL DE TESTE", "Informações salvas somente neste navegador."] };
+            setText("settings-provider-title", titles[runtimeProvider][0]);
+            setText("settings-provider-copy", titles[runtimeProvider][1]);
         }
 
-        function carregarDivisaoParaEdicao(containerId, valores) {
-            document.getElementById(containerId).querySelectorAll('.divider-box').forEach(row => {
-                const cb = row.querySelector('.form-check-input'), pf = row.querySelector('.perc-field');
-                const match = (valores || []).find(v => v.split(':')[0] === cb.value);
-                cb.checked = !!match; pf.disabled = !match;
-                pf.value = match && match.includes(':') ? match.split(':')[1] : '';
-            });
+        function renderConfigList(containerId, key) {
+            const container = document.getElementById(containerId);
+            const values = dbLocal.config[key] || [];
+            container.innerHTML = values.length ? values.map((value, index) => `<div class="config-pill"><span>${escapeHTML(value)}</span><span class="row-actions"><button class="btn-icon" title="Editar" onclick="window.editConfigItem('${escapeHTML(key)}',${index})"><i class="bi bi-pencil"></i></button><button class="btn-icon danger" title="Excluir" onclick="window.removeConfigItem('${escapeHTML(key)}',${index})"><i class="bi bi-trash3"></i></button></span></div>`).join("") : emptyPanel("inbox", "Lista vazia", "Adicione um item acima.");
         }
 
-        function popularSelect(id, lista) {
-            const el = document.getElementById(id); if (!el) return;
-            const cur = el.value;
-            el.innerHTML = '<option value="">- SELECIONAR -</option>' + lista.map(i => `<option value="${i}">${i}</option>`).join('');
-            el.value = cur;
+        /* EXCLUSÃO */
+        window.askDelete = (collection, id) => {
+            const item = dbLocal[collection]?.[id];
+            if (!item) return;
+            deleteContext = { collection, id, groupId: collection === "lancamentos" ? item.groupId : null };
+            document.getElementById("btn-delete-group").style.display = deleteContext.groupId ? "block" : "none";
+            setText("delete-message", deleteContext.groupId ? "Este lançamento faz parte de um parcelamento. Escolha o que deseja excluir." : "Esta ação não poderá ser desfeita.");
+            modalDelete.show();
+        };
+
+        document.getElementById("btn-delete-one").addEventListener("click", () => executeDelete(false));
+        document.getElementById("btn-delete-group").addEventListener("click", () => executeDelete(true));
+
+        async function executeDelete(group) {
+            if (!deleteContext) return;
+            showLoading(true, "Excluindo item...");
+            try {
+                if (group && deleteContext.groupId) {
+                    const updatesMap = {};
+                    Object.entries(dbLocal.lancamentos).forEach(([id, item]) => {
+                        if (item.groupId === deleteContext.groupId) updatesMap[`${APP_CONFIG.firebaseRoot}/lancamentos/${id}`] = null;
+                    });
+                    await DataService.batchUpdate(updatesMap);
+                } else await DataService.remove(deleteContext.collection, deleteContext.id);
+                modalDelete.hide();
+                showToast("Item excluído.");
+            } catch { showToast("Não foi possível excluir.", "error"); }
+            finally { deleteContext = null; showLoading(false); }
         }
 
-        function gerarOpcoesDivisao(containerId, nomes) {
-            const container = document.getElementById(containerId); if (!container) return;
-            const sel = capturarValoresDivisao(containerId);
-            container.innerHTML = nomes.map((nome, idx) => {
-                const match = sel.find(s => s.split(':')[0] === nome);
-                return `<div class="divider-box"><div class="form-check m-0"><input class="form-check-input border-dark" type="checkbox" id="${containerId}-${idx}" value="${nome}" ${!!match ? 'checked' : ''} onchange="this.closest('.divider-box').querySelector('.perc-field').disabled = !this.checked"><label class="form-check-label small fw-bold text-uppercase" for="${containerId}-${idx}">${nome}</label></div><div class="input-group input-group-sm" style="width: 80px;"><input type="number" class="form-control perc-field border-dark" placeholder="%" ${!match ? 'disabled' : ''} value="${match && match.includes(':') ? match.split(':')[1] : ''}"></div></div>`;
-            }).join('');
+        /* BACKUP */
+        document.getElementById("btn-backup-header").addEventListener("click", exportBackup);
+        document.getElementById("btn-export-backup").addEventListener("click", exportBackup);
+        document.getElementById("input-import").addEventListener("change", importBackup);
+
+        function exportBackup() {
+            const payload = { ...dbLocal, meta: { app: "Hub de Gestão Centralizada", versao: 1, exportadoEm: new Date().toISOString(), provider: runtimeProvider } };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `HUB_GESTAO_BACKUP_${todayString()}.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(link.href);
+            showToast("Backup exportado.");
         }
 
-        function aplicarMascaraMoeda(el) {
-            el.addEventListener('input', e => {
-                let v = e.target.value.replace(/\D/g, ''); if (!v) { e.target.value = ''; return; }
-                v = (parseInt(v, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-                e.target.value = v;
-            });
+        function importBackup(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async loadEvent => {
+                try {
+                    const data = JSON.parse(loadEvent.target.result);
+                    if (!confirm("Importar este backup substituirá todos os dados atuais deste banco. Continuar?")) return;
+                    showLoading(true, "Restaurando backup...");
+                    await DataService.replaceAll(normalizeData(data));
+                    showToast("Backup restaurado com sucesso.");
+                } catch (error) {
+                    console.error(error);
+                    showToast("Arquivo de backup inválido.", "error");
+                } finally {
+                    showLoading(false);
+                    event.target.value = "";
+                }
+            };
+            reader.readAsText(file);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            modalEditar = new bootstrap.Modal(document.getElementById('modal-editar'));
-            modalExcluir = new bootstrap.Modal(document.getElementById('modal-excluir'));
-            modalExtrato = new bootstrap.Modal(document.getElementById('modal-extrato'));
-            aplicarMascaraMoeda(document.getElementById('form-valor'));
-            aplicarMascaraMoeda(document.getElementById('edit-valor'));
-            const mF = document.getElementById('filtro-mes'), aF = document.getElementById('filtro-ano'), h = new Date();
-            const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-            meses.forEach((n, i) => mF.add(new Option(n.toUpperCase(), ('0'+(i+1)).slice(-2), false, i === h.getMonth())));
-            for(let i = h.getFullYear(); i >= h.getFullYear()-2; i--) aF.add(new Option(i, i));
-            document.getElementById('form-nova-despesa').onsubmit = window.salvarNovoLancamento;
+        /* HELPERS DE MARCAÇÃO */
+        function updateNavigationCounts() {
+            const overdue = Object.values(dbLocal.lancamentos).filter(item => financeNature(item) === "despesa" && getFinanceStatus(item).semantic === "VENCIDO").length;
+            const openTasks = Object.values(dbLocal.tarefas).filter(task => !task.concluida).length;
+            const financeBadge = document.getElementById("nav-overdue-count");
+            const taskBadge = document.getElementById("nav-task-count");
+            financeBadge.textContent = overdue;
+            financeBadge.style.display = overdue ? "inline-block" : "none";
+            taskBadge.textContent = openTasks;
+            taskBadge.style.display = openTasks ? "inline-block" : "none";
+        }
+
+        function setValue(id, value) { const element = document.getElementById(id); if (element) element.value = value ?? ""; }
+        function emptyTableRow(columns, message) { return `<tr><td colspan="${columns}">${emptyPanel("inbox", "Nada por aqui", message)}</td></tr>`; }
+        function emptyPanel(icon, title, copy) { return `<div class="panel-empty"><i class="bi bi-${icon}"></i><strong>${escapeHTML(title)}</strong><span>${escapeHTML(copy)}</span></div>`; }
+
+        /* INICIALIZAÇÃO DA INTERFACE */
+        document.addEventListener("DOMContentLoaded", () => {
+            modalFinanceEdit = new bootstrap.Modal(document.getElementById("modal-finance-edit"));
+            modalTaskEdit = new bootstrap.Modal(document.getElementById("modal-task-edit"));
+            modalNoteEdit = new bootstrap.Modal(document.getElementById("modal-note-edit"));
+            modalDelete = new bootstrap.Modal(document.getElementById("modal-delete"));
+            modalStatement = new bootstrap.Modal(document.getElementById("modal-statement"));
+            document.querySelectorAll(".currency-input").forEach(applyCurrencyMask);
+            document.getElementById("form-vencimento").value = todayString();
+            document.getElementById("task-due").value = todayString();
+            document.getElementById("note-date").value = todayString();
+            initializeReportDates();
+            populateSelects();
+            renderAll();
+            document.getElementById("form-entidade").value = "pf";
+            document.getElementById("form-status").value = dbLocal.config.status.includes(dbLocal.config.statusPendente) ? dbLocal.config.statusPendente : (dbLocal.config.status[0] || "");
+            document.getElementById("form-pagante").value = dbLocal.config.nomes[0] || "";
+            document.getElementById("task-list").value = "inbox";
         });
     </script>
 </body>
