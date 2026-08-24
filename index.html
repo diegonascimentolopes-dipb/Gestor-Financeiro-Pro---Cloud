@@ -729,8 +729,34 @@
             <!-- AJUSTES -->
             <section class="app-page" id="page-ajustes">
                 <div class="page-heading">
-                    <div><div class="page-kicker">CONFIGURAÇÕES</div><h1>Ajustes do seu Hub.</h1><p>Gerencie responsáveis, categorias, status, backup e a futura conexão com o Google Sheets.</p></div>
+                    <div><div class="page-kicker">CONFIGURAÇÕES</div><h1>Ajustes do seu Hub.</h1><p>Gerencie entidades PF/PJ, responsáveis, categorias, status, backup e a futura conexão com o Google Sheets.</p></div>
                 </div>
+
+                <div class="panel mb-3">
+                    <div class="panel-header">
+                        <div><h2 class="panel-title">ENTIDADES PF / PJ</h2><p class="panel-subtitle">Cadastre pessoas físicas e empresas para usar em lançamentos, tarefas, notas e relatórios</p></div>
+                    </div>
+                    <div class="panel-body pb-2">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-6">
+                                <label class="form-label" for="add-entity-name">Nome da entidade</label>
+                                <input id="add-entity-name" class="form-control" placeholder="Ex.: JOÃO SILVA ou MINHA EMPRESA">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="add-entity-type">Tipo</label>
+                                <select id="add-entity-type" class="form-select">
+                                    <option value="PF">PF - PESSOA FÍSICA</option>
+                                    <option value="PJ">PJ - PESSOA JURÍDICA</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-dark w-100 py-2" type="button" id="btn-add-entity"><i class="bi bi-plus-lg me-1"></i> ADICIONAR ENTIDADE</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="settings-entities" class="config-list"></div>
+                </div>
+
                 <div class="settings-grid mb-3">
                     <div class="panel">
                         <div class="panel-header"><div><h2 class="panel-title">RESPONSÁVEIS</h2><p class="panel-subtitle">Pagantes e pessoas da divisão</p></div></div>
@@ -1115,7 +1141,7 @@
             const normalizedLists = recordsWithIds(raw.listas);
             const hasStoredLists = Object.keys(normalizedLists).length > 0;
             const listsAreManaged = Number(config.listasVersion || 0) >= 2;
-            const entities = arrayFrom(config.entidades);
+            const entities = normalizeEntities(config.entidades);
             return {
                 lancamentos: recordsWithIds(raw.lancamentos),
                 tarefas: recordsWithIds(raw.tarefas),
@@ -1132,6 +1158,27 @@
                     entidades: entities.length ? entities : structuredCloneSafe(DEFAULT_ENTITIES)
                 }
             };
+        }
+
+        function normalizeEntities(value) {
+            const palette = ["#2563eb", "#0891b2", "#16a34a", "#d97706", "#ea580c", "#7c3aed", "#db2777", "#475569"];
+            const usedIds = new Set();
+            return arrayFrom(value).map((entity, index) => {
+                const source = entity && typeof entity === "object" ? entity : { nome: String(entity || "") };
+                const nome = String(source.nome || source.name || "").trim().toUpperCase();
+                if (!nome) return null;
+                const tipo = String(source.tipo || source.type || "PJ").trim().toUpperCase() === "PF" ? "PF" : "PJ";
+                const baseId = String(source.id || `ent_${slugifyEntityId(nome) || index + 1}`).trim();
+                let id = baseId;
+                let suffix = 2;
+                while (usedIds.has(id)) id = `${baseId}_${suffix++}`;
+                usedIds.add(id);
+                return { id, nome, tipo, cor: String(source.cor || source.color || palette[index % palette.length]) };
+            }).filter(Boolean);
+        }
+
+        function slugifyEntityId(value) {
+            return normalizeText(value).replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
         }
 
         function arrayFrom(value) {
@@ -2107,6 +2154,99 @@
         });
 
         /* CONFIGURAÇÕES */
+        document.getElementById("btn-add-entity").addEventListener("click", addEntity);
+        document.getElementById("add-entity-name").addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                addEntity();
+            }
+        });
+
+        async function addEntity() {
+            const nameInput = document.getElementById("add-entity-name");
+            const typeInput = document.getElementById("add-entity-type");
+            const nome = nameInput.value.trim().toUpperCase();
+            const tipo = typeInput.value === "PF" ? "PF" : "PJ";
+            if (!nome) return showToast("Informe o nome da entidade.", "info");
+
+            const current = [...dbLocal.config.entidades];
+            if (current.some(entity => normalizeText(entity.nome) === normalizeText(nome))) {
+                return showToast("Já existe uma entidade com esse nome.", "info");
+            }
+
+            const base = `ent_${slugifyEntityId(nome) || "nova"}`;
+            let id = base;
+            let suffix = 2;
+            while (current.some(entity => entity.id === id)) id = `${base}_${suffix++}`;
+            const palette = ["#2563eb", "#0891b2", "#16a34a", "#d97706", "#ea580c", "#7c3aed", "#db2777", "#475569"];
+            const entity = { id, nome, tipo, cor: palette[current.length % palette.length] };
+
+            try {
+                await DataService.setConfig("entidades", [...current, entity]);
+                nameInput.value = "";
+                typeInput.value = "PF";
+                showToast(`Entidade ${tipo} adicionada.`);
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível cadastrar a entidade.", "error");
+            }
+        }
+
+        window.editEntity = async index => {
+            const current = [...dbLocal.config.entidades];
+            const entity = current[index];
+            if (!entity) return;
+
+            const nameResponse = prompt("Nome da entidade:", entity.nome);
+            if (nameResponse === null) return;
+            const nome = nameResponse.trim().toUpperCase();
+            if (!nome) return showToast("O nome da entidade não pode ficar vazio.", "info");
+            if (current.some((item, itemIndex) => itemIndex !== index && normalizeText(item.nome) === normalizeText(nome))) {
+                return showToast("Já existe uma entidade com esse nome.", "info");
+            }
+
+            const typeResponse = prompt("Tipo da entidade (PF ou PJ):", entity.tipo || "PJ");
+            if (typeResponse === null) return;
+            const tipo = typeResponse.trim().toUpperCase();
+            if (!["PF", "PJ"].includes(tipo)) return showToast("Use apenas PF ou PJ como tipo.", "info");
+
+            current[index] = { ...entity, nome, tipo };
+            try {
+                await DataService.setConfig("entidades", current);
+                showToast("Entidade atualizada.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível editar a entidade.", "error");
+            }
+        };
+
+        window.removeEntity = async index => {
+            const current = [...dbLocal.config.entidades];
+            const entity = current[index];
+            if (!entity) return;
+            if (current.length <= 1) return showToast("É necessário manter pelo menos uma entidade cadastrada.", "info");
+
+            const financeUses = Object.values(dbLocal.lancamentos).filter(item => financeEntityId(item) === entity.id).length;
+            const taskUses = Object.values(dbLocal.tarefas).filter(item => item.entidadeId === entity.id).length;
+            const noteUses = Object.values(dbLocal.notas).filter(item => item.entidadeId === entity.id).length;
+            const totalUses = financeUses + taskUses + noteUses;
+            if (totalUses) {
+                return showToast(`Esta entidade está vinculada a ${totalUses} item(ns). Altere esses vínculos antes de excluí-la.`, "info");
+            }
+
+            if (!confirm(`Remover a entidade "${entity.nome}" (${entity.tipo})?`)) return;
+            current.splice(index, 1);
+            try {
+                await DataService.setConfig("entidades", current);
+                if (financeFilters.entity === entity.id) financeFilters.entity = "all";
+                if (noteFilters.entity === entity.id) noteFilters.entity = "all";
+                showToast("Entidade removida.");
+            } catch (error) {
+                console.error(error);
+                showToast("Não foi possível remover a entidade.", "error");
+            }
+        };
+
         document.querySelectorAll("[data-add-config]").forEach(button => button.addEventListener("click", () => addConfigItem(button.dataset.addConfig, button.dataset.input)));
 
         async function addConfigItem(key, inputId) {
@@ -2187,12 +2327,20 @@
         };
 
         function renderSettings() {
+            renderEntityList();
             renderConfigList("settings-names", "nomes");
             renderConfigList("settings-categories", "categorias");
             renderConfigList("settings-status", "status");
             const titles = { firebase: ["FIREBASE ATUAL", "Mantém os lançamentos existentes funcionando."], gas: ["GOOGLE SHEETS", "Dados sincronizados pelo Google Apps Script."], local: ["MODO LOCAL DE TESTE", "Informações salvas somente neste navegador."] };
             setText("settings-provider-title", titles[runtimeProvider][0]);
             setText("settings-provider-copy", titles[runtimeProvider][1]);
+        }
+
+        function renderEntityList() {
+            const container = document.getElementById("settings-entities");
+            if (!container) return;
+            const entities = dbLocal.config.entidades || [];
+            container.innerHTML = entities.length ? entities.map((entity, index) => `<div class="config-pill"><span class="d-flex align-items-center gap-2 min-w-0"><span class="entity-badge" style="color:${escapeHTML(entity.cor)}">${escapeHTML(entity.tipo)}</span><span class="text-truncate">${escapeHTML(entity.nome)}</span></span><span class="row-actions"><button class="btn-icon" title="Editar entidade" onclick="window.editEntity(${index})"><i class="bi bi-pencil"></i></button><button class="btn-icon danger" title="Excluir entidade" onclick="window.removeEntity(${index})"><i class="bi bi-trash3"></i></button></span></div>`).join("") : emptyPanel("building", "Nenhuma entidade", "Cadastre uma pessoa física ou jurídica acima.");
         }
 
         function renderConfigList(containerId, key) {
@@ -2301,7 +2449,7 @@
             initializeReportDates();
             populateSelects();
             renderAll();
-            document.getElementById("form-entidade").value = "pf";
+            document.getElementById("form-entidade").value = dbLocal.config.entidades[0]?.id || "";
             document.getElementById("form-status").value = dbLocal.config.status.includes(dbLocal.config.statusPendente) ? dbLocal.config.statusPendente : (dbLocal.config.status[0] || "");
             document.getElementById("form-pagante").value = dbLocal.config.nomes[0] || "";
             document.getElementById("task-list").value = "inbox";
